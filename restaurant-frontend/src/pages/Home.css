@@ -1,0 +1,179 @@
+.home {
+  padding: 2rem 0;
+}
+
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  text-decoration: none;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.cta-button:hover {
+  background: white;
+  color: #667eea;
+}
+
+.categories,
+.featured-dishes,
+.restaurant-info {
+  padding: 3rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.categories h2,
+.featured-dishes h2,
+.restaurant-info h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.categories-grid,
+.dishes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.category-card,
+.dish-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover,
+.dish-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.category-image,
+.dish-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.dish-info {
+  padding: 1.5rem;
+}
+
+.dish-info h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.dish-description {
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.dish-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.prep-time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.dish-tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: 1px solid #ddd;
+}
+
+.tag.vegetarian {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.tag.spicy {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.view-dish-btn {
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.3s ease;
+}
+
+.view-dish-btn:hover {
+  background: #0056b3;
+  color: white;
+}
+
+.restaurant-info {
+  background: #f8f9fa;
+  border-radius: 15px;
+  margin: 2rem auto;
+}
+
+.contact-info p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .categories-grid,
+  .dishes-grid {
+    grid-template-columns: 1fr;
+  }
+} 

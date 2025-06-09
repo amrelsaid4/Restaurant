@@ -1,0 +1,9 @@
+# Ignore everything by default
+*
+
+# But include these folders and files
+!restaurant-frontend/
+!restaurant-frontend/**
+!restaurant-backend/
+!restaurant-backend/**
+!.gitignore
