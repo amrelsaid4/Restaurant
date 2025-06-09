@@ -7,3 +7,10 @@
 !restaurant-backend/
 !restaurant-backend/**
 !.gitignore
+
+# Exclude node_modules and other unnecessary files
+restaurant-frontend/node_modules/
+restaurant-backend/env/
+*.pyc
+__pycache__/
+.env
