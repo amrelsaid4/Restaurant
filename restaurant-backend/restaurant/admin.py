@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant
+from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant, AdminProfile
+
+@admin.register(AdminProfile)
+class AdminProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'admin_email', 'is_super_admin', 'created_at']
+    list_filter = ['is_super_admin', 'created_at']
+    search_fields = ['user__username', 'admin_email']
+    list_editable = ['is_super_admin']
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
