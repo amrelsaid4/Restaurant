@@ -2,6 +2,25 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+# Admin Profile for managing admin users
+class AdminProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="User")
+    is_super_admin = models.BooleanField(default=False, verbose_name="Super Admin")
+    admin_email = models.EmailField(unique=True, verbose_name="Admin Email")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Admin Profile"
+        verbose_name_plural = "Admin Profiles"
+    
+    def __str__(self):
+        return f"Admin: {self.user.username} ({self.admin_email})"
+    
+    @classmethod
+    def is_admin_email(cls, email):
+        """Check if email belongs to an admin"""
+        return cls.objects.filter(admin_email=email).exists()
+
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Category Name")
     description = models.TextField(blank=True, verbose_name="Description")

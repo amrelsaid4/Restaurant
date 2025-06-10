@@ -1,11 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant
+from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant, AdminProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
+class AdminProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = AdminProfile
+        fields = ['id', 'user', 'admin_email', 'is_super_admin', 'created_at']
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

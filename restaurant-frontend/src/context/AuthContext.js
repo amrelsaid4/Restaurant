@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await axios.get('/api/profile/');
+      const response = await axios.get('/api/check-user-type/');
       setUser(response.data);
     } catch (error) {
       setUser(null);
@@ -57,6 +57,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const adminLogin = async (email, password) => {
+    try {
+      const response = await axios.post('/api/admin/login/', {
+        email,
+        password
+      });
+
+      if (response.status === 200) {
+        await checkAuthStatus();
+        return { success: true, data: response.data };
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.response?.data?.error || 'Admin login failed' 
+      };
+    }
+  };
+
   const register = async (userData) => {
     try {
       const response = await axios.post('/api/register/', userData);
@@ -82,10 +101,13 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     login,
+    adminLogin,
     register,
     logout,
     loading,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    isAdmin: user?.is_admin || false,
+    isCustomer: user?.is_customer || false
   };
 
   return (

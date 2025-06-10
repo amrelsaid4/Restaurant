@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import Modal from '../components/Modal';
 import axios from 'axios';
 
 const Cart = () => {
@@ -11,6 +12,14 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState('');
   const [instructions, setInstructions] = useState('');
+
+  // Modal state
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'success'
+  });
 
   const handleQuantityChange = (cartItemId, newQuantity) => {
     if (newQuantity <= 0) {
@@ -22,12 +31,23 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
-      navigate('/login');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to place an order.',
+        type: 'warning'
+      });
+      setTimeout(() => navigate('/login'), 2000);
       return;
     }
 
     if (!address.trim()) {
-      alert('Please enter a delivery address');
+      setModalState({
+        isOpen: true,
+        title: 'Address Required',
+        message: 'Please enter a delivery address to continue.',
+        type: 'warning'
+      });
       return;
     }
 
@@ -47,15 +67,29 @@ const Cart = () => {
       
       if (response.status === 201) {
         clearCart();
-        alert('Order placed successfully!');
-        navigate('/orders');
+        setModalState({
+          isOpen: true,
+          title: 'Order Placed Successfully!',
+          message: 'Your order has been placed and will be prepared shortly. You can track your order status in the "My Orders" section.',
+          type: 'success'
+        });
+        setTimeout(() => navigate('/orders'), 3000);
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to place order. Please try again.');
+      setModalState({
+        isOpen: true,
+        title: 'Order Failed',
+        message: 'Failed to place order. Please check your details and try again.',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const closeModal = () => {
+    setModalState(prev => ({ ...prev, isOpen: false }));
   };
 
   if (cartItems.length === 0) {
@@ -187,6 +221,15 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+      />
     </div>
   );
 };
