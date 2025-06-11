@@ -1,97 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAlert } from '../../contexts/AlertContext';
+import { getCustomers } from '../../services/api';
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const { showInfo } = useAlert();
+  const { showInfo, showError } = useAlert();
 
   useEffect(() => {
     fetchCustomers();
   }, []);
 
   const fetchCustomers = async () => {
+    setLoading(true);
     try {
-      // Mock data
-      setTimeout(() => {
-        setCustomers([
-          {
-            id: 1,
-            user: {
-              first_name: 'Ahmed',
-              last_name: 'Salem',
-              email: 'ahmed@example.com',
-              username: 'ahmed_salem'
-            },
-            phone: '+201234567890',
-            address: 'Zamalek, Cairo',
-            created_at: '2024-01-15T10:30:00',
-            orders_count: 12,
-            total_spent: 850.50
-          },
-          {
-            id: 2,
-            user: {
-              first_name: 'Sarah',
-              last_name: 'Mohamed',
-              email: 'sara@example.com',
-              username: 'sara_mohamed'
-            },
-            phone: '+201234567891',
-            address: 'Maadi, Cairo',
-            created_at: '2024-02-10T14:20:00',
-            orders_count: 8,
-            total_spent: 640.75
-          },
-          {
-            id: 3,
-            user: {
-              first_name: 'Omar',
-              last_name: 'Hassan',
-              email: 'omar@example.com',
-              username: 'omar_hassan'
-            },
-            phone: '+201234567892',
-            address: 'Heliopolis, Cairo',
-            created_at: '2024-03-05T09:15:00',
-            orders_count: 15,
-            total_spent: 1200.25
-          },
-          {
-            id: 4,
-            user: {
-              first_name: 'Fatma',
-              last_name: 'Ali',
-              email: 'fatma@example.com',
-              username: 'fatma_ali'
-            },
-            phone: '+201234567893',
-            address: 'Dokki, Giza',
-            created_at: '2024-03-20T16:45:00',
-            orders_count: 6,
-            total_spent: 420.00
-          },
-          {
-            id: 5,
-            user: {
-              first_name: 'Mohamed',
-              last_name: 'Ahmed',
-              email: 'mohamed@example.com',
-              username: 'mohamed_ahmed'
-            },
-            phone: '+201234567894',
-            address: 'Nasr City, Cairo',
-            created_at: '2024-04-01T11:30:00',
-            orders_count: 10,
-            total_spent: 750.80
-          }
-        ]);
-        setLoading(false);
-      }, 800);
+      const data = await getCustomers();
+      setCustomers(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching customers:', error);
+      showError('Failed to load customers.', 'Loading Failed');
+      setCustomers([]);
+    } finally {
       setLoading(false);
     }
   };

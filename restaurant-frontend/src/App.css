@@ -7,7 +7,7 @@
 :root {
   /* 🔥 Primary Colors - Warm & Appetizing */
   --primary-orange: #FF6B35;        /* Spicy Orange - Main Brand */
-  --primary-red: #E63946;           /* Tomato Red - Accents */
+  --primary-red: rgb(230, 57, 70);           /* Tomato Red - Accents */
   --primary-brown: #8B4513;         /* Coffee Brown - Elegance */
   --primary-gold: #FFD700;          /* Golden Yellow - Premium */
   
@@ -82,7 +82,7 @@ body {
 
 .main-content {
   flex: 1;
-  padding-top: var(--header-height);
+  padding-top: calc(var(--header-height) + 0.5rem);
   background: var(--light-gray);
 }
 
@@ -103,8 +103,7 @@ body {
 }
 
 .navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0 1.5rem;
   height: 100%;
   display: flex;
@@ -580,7 +579,7 @@ body {
   
   /* Container padding */
   .container {
-    padding: 0 1rem;
+    padding: 70px 0px !important;
   }
   
   /* Admin Layout - Stack vertically on mobile */

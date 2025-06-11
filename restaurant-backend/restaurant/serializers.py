@@ -15,9 +15,14 @@ class AdminProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'admin_email', 'is_super_admin', 'created_at']
 
 class CategorySerializer(serializers.ModelSerializer):
+    dishes_count = serializers.SerializerMethodField()
+    
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description', 'image', 'is_active', 'created_at']
+        fields = ['id', 'name', 'description', 'image', 'is_active', 'created_at', 'dishes_count']
+    
+    def get_dishes_count(self, obj):
+        return obj.dish_set.count()
 
 class DishSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -35,10 +40,19 @@ class DishSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    
+    total_orders = serializers.SerializerMethodField()
+    total_spent = serializers.SerializerMethodField()
+
     class Meta:
         model = Customer
-        fields = ['id', 'user', 'phone', 'address', 'date_of_birth', 'created_at']
+        fields = ['id', 'user', 'phone', 'address', 'date_of_birth', 'created_at', 'total_orders', 'total_spent']
+    
+    def get_total_orders(self, obj):
+        return Order.objects.filter(customer=obj).count()
+    
+    def get_total_spent(self, obj):
+        orders = Order.objects.filter(customer=obj, payment_status='paid')
+        return sum(order.total_amount for order in orders)
 
 class OrderItemSerializer(serializers.ModelSerializer):
     dish = DishSerializer(read_only=True)
