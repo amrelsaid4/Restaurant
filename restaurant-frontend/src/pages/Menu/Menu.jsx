@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { useCart } from '../context/CartContext';
-import Modal from '../components/Modal';
+import { useCart } from '@/contexts/CartContext';
+import Modal from '@/components/common/ConfirmModal';
 import './Menu.css';
 
 const Menu = () => {

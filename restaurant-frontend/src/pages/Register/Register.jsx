@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -80,135 +81,27 @@ const Register = () => {
     }
   };
 
-  const registerPageStyles = {
-    container: {
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '2rem'
-    },
-    card: {
-      background: 'white',
-      borderRadius: '16px',
-      boxShadow: '0 20px 25px rgba(0,0,0,0.1)',
-      padding: '3rem',
-      maxWidth: '500px',
-      width: '100%'
-    },
-    title: {
-      textAlign: 'center',
-      marginBottom: '2rem',
-      fontSize: '2rem',
-      fontWeight: '700',
-      color: '#2d3748',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent'
-    },
-    formRow: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '1rem',
-      marginBottom: '1.5rem'
-    },
-    formGroup: {
-      marginBottom: '1.5rem'
-    },
-    label: {
-      display: 'block',
-      marginBottom: '8px',
-      fontSize: '14px',
-      fontWeight: '600',
-      color: '#374151'
-    },
-    input: {
-      width: '100%',
-      padding: '12px 16px',
-      border: '2px solid #e5e7eb',
-      borderRadius: '8px',
-      fontSize: '16px',
-      transition: 'border-color 0.3s ease',
-      outline: 'none',
-      boxSizing: 'border-box'
-    },
-    textarea: {
-      width: '100%',
-      padding: '12px 16px',
-      border: '2px solid #e5e7eb',
-      borderRadius: '8px',
-      fontSize: '16px',
-      transition: 'border-color 0.3s ease',
-      outline: 'none',
-      boxSizing: 'border-box',
-      minHeight: '80px',
-      resize: 'vertical'
-    },
-    button: {
-      width: '100%',
-      padding: '14px',
-      border: 'none',
-      borderRadius: '8px',
-      fontSize: '16px',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      color: 'white'
-    },
-    error: {
-      background: '#fee2e2',
-      color: '#991b1b',
-      padding: '12px',
-      borderRadius: '8px',
-      marginBottom: '1rem',
-      fontSize: '14px',
-      border: '1px solid #fecaca'
-    },
-    success: {
-      background: '#dcfce7',
-      color: '#166534',
-      padding: '12px',
-      borderRadius: '8px',
-      marginBottom: '1rem',
-      fontSize: '14px',
-      border: '1px solid #bbf7d0'
-    },
-    link: {
-      textAlign: 'center',
-      marginTop: '1.5rem',
-      fontSize: '14px',
-      color: '#6b7280'
-    },
-    linkAnchor: {
-      color: '#667eea',
-      textDecoration: 'none',
-      fontWeight: '600'
-    }
-  };
-
   return (
-    <div style={registerPageStyles.container}>
-      <div style={registerPageStyles.card}>
-        <h2 style={registerPageStyles.title}>Create Account</h2>
+    <div className="register-container">
+      <div className="register-card">
+        <h2 className="register-title">Create Account</h2>
         
         {error && (
-          <div style={registerPageStyles.error}>
+          <div className="register-message error">
             {error}
           </div>
         )}
 
         {success && (
-          <div style={registerPageStyles.success}>
+          <div className="register-message success">
             {success}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div style={registerPageStyles.formRow}>
-            <div>
-              <label style={registerPageStyles.label}>First Name *</label>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="register-form-row">
+            <div className="register-form-group">
+              <label className="register-label">First Name *</label>
               <input
                 type="text"
                 name="firstName"
@@ -216,11 +109,11 @@ const Register = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter your first name"
-                style={registerPageStyles.input}
+                className="register-input"
               />
             </div>
-            <div>
-              <label style={registerPageStyles.label}>Last Name *</label>
+            <div className="register-form-group">
+              <label className="register-label">Last Name *</label>
               <input
                 type="text"
                 name="lastName"
@@ -228,13 +121,13 @@ const Register = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter your last name"
-                style={registerPageStyles.input}
+                className="register-input"
               />
             </div>
           </div>
 
-          <div style={registerPageStyles.formGroup}>
-            <label style={registerPageStyles.label}>Username *</label>
+          <div className="register-form-group">
+            <label className="register-label">Username *</label>
             <input
               type="text"
               name="username"
@@ -242,12 +135,12 @@ const Register = () => {
               onChange={handleChange}
               required
               placeholder="Choose a username"
-              style={registerPageStyles.input}
+              className="register-input"
             />
           </div>
 
-          <div style={registerPageStyles.formGroup}>
-            <label style={registerPageStyles.label}>Email *</label>
+          <div className="register-form-group">
+            <label className="register-label">Email *</label>
             <input
               type="email"
               name="email"
@@ -255,13 +148,13 @@ const Register = () => {
               onChange={handleChange}
               required
               placeholder="Enter your email"
-              style={registerPageStyles.input}
+              className="register-input"
             />
           </div>
 
-          <div style={registerPageStyles.formRow}>
-            <div>
-              <label style={registerPageStyles.label}>Password *</label>
+          <div className="register-form-row">
+            <div className="register-form-group">
+              <label className="register-label">Password *</label>
               <input
                 type="password"
                 name="password"
@@ -269,11 +162,11 @@ const Register = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter password"
-                style={registerPageStyles.input}
+                className="register-input"
               />
             </div>
-            <div>
-              <label style={registerPageStyles.label}>Confirm Password *</label>
+            <div className="register-form-group">
+              <label className="register-label">Confirm Password *</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -281,45 +174,46 @@ const Register = () => {
                 onChange={handleChange}
                 required
                 placeholder="Confirm password"
-                style={registerPageStyles.input}
+                className="register-input"
               />
             </div>
           </div>
-
-          <div style={registerPageStyles.formGroup}>
-            <label style={registerPageStyles.label}>Phone Number</label>
+          
+          <div className="register-form-group">
+            <label className="register-label">Phone Number</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               placeholder="Enter your phone number"
-              style={registerPageStyles.input}
+              className="register-input"
             />
           </div>
 
-          <div style={registerPageStyles.formGroup}>
-            <label style={registerPageStyles.label}>Address</label>
+          <div className="register-form-group">
+            <label className="register-label">Address</label>
             <textarea
               name="address"
               value={formData.address}
               onChange={handleChange}
               placeholder="Enter your address"
-              style={registerPageStyles.textarea}
-            />
+              className="register-input"
+              rows="3"
+            ></textarea>
           </div>
 
           <button 
             type="submit" 
             disabled={loading}
-            style={registerPageStyles.button}
+            className="register-button"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <p style={registerPageStyles.link}>
-          Already have an account? <Link to="/login" style={registerPageStyles.linkAnchor}>Login here</Link>
+        <p className="register-link">
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>
     </div>

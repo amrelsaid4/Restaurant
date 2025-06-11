@@ -24,6 +24,8 @@ urlpatterns = [
     path('api/restaurant-info/', views.restaurant_info, name='restaurant-info'),
     path('api/menu-overview/', views.menu_overview, name='menu-overview'),
     path('api/register/', views.register_user, name='register'),
+    path('api/login/', views.customer_login, name='customer-login'),
+    path('api/logout/', views.user_logout, name='user-logout'),
     path('api/profile/', views.user_profile, name='profile'),
     
     # 🛡️ Admin API
