@@ -32,7 +32,9 @@ const AdminCategories = () => {
     setLoading(true);
     try {
       const data = await getCategories();
-      setCategories(Array.isArray(data) ? data : []);
+      // Handle paginated response from DRF
+      const categoriesArray = data.results ? data.results : (Array.isArray(data) ? data : []);
+      setCategories(categoriesArray);
     } catch (error) {
       console.error('Error fetching categories:', error);
       showError('Failed to load categories.', 'Loading Failed');

@@ -10,7 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  console.log('Navbar Auth State:', { isAuthenticated, isAdmin, user });
+
 
   const handleLogout = async () => {
     await logout();
@@ -80,7 +80,7 @@ const Navbar = () => {
                   </li>
                   <li className="nav-item">
                     <Link to="/cart" className="nav-link cart-link" onClick={closeMobileMenu}>
-                      Cart ({getTotalItems()})
+                      🛒 Cart ({getTotalItems()})
                     </Link>
                   </li>
                 </>
@@ -102,10 +102,15 @@ const Navbar = () => {
                 <Link to="/menu" className="nav-link" onClick={closeMobileMenu}>Menu</Link>
               </li>
               <li className="nav-item">
-                <Link to="/login" className="nav-link" onClick={closeMobileMenu}>Login</Link>
+                <Link to="/cart" className="nav-link cart-link" onClick={closeMobileMenu}>
+                  🛒 Cart ({getTotalItems()})
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/register" className="nav-link" onClick={closeMobileMenu}>Register</Link>
+                <Link to="/login" className="nav-link login-link" onClick={closeMobileMenu}>Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/register" className="nav-link register-link" onClick={closeMobileMenu}>Register</Link>
               </li>
             </>
           )}

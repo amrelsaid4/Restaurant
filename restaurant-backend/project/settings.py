@@ -47,8 +47,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',  # Re-enabled with proper frontend handling
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'restaurant.middleware.SessionKeyMiddleware',  # Moved after AuthenticationMiddleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -146,15 +147,31 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'x-session-key',  # Allow our custom session key header
+]
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 
 # For development - disable CSRF for API
@@ -162,8 +179,14 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SECURE = False
 
-# Session settings
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_HTTPONLY = True
+# Session settings for development
+SESSION_COOKIE_SAMESITE = 'Lax'   # More permissive for development
+CSRF_COOKIE_SAMESITE = 'Lax'      # More permissive for development
+SESSION_COOKIE_HTTPONLY = False   # Allow JS access for debugging
 CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_DOMAIN = None      # Don't restrict domain
+CSRF_COOKIE_DOMAIN = None         # Don't restrict domain
+SESSION_COOKIE_SECURE = False     # For development (HTTP)
+CSRF_COOKIE_SECURE = False        # For development (HTTP)
+SESSION_COOKIE_AGE = 86400        # 24 hours
+SESSION_SAVE_EVERY_REQUEST = True # Force session save

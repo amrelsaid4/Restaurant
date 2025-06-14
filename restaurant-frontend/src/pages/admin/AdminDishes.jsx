@@ -29,8 +29,11 @@ const AdminDishes = () => {
     calories: '',
     is_spicy: false,
     is_vegetarian: false,
-    is_available: true
+    is_available: true,
+    image: null
   });
+
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -43,8 +46,11 @@ const AdminDishes = () => {
         getDishes(),
         getCategories()
       ]);
-      setDishes(Array.isArray(dishesData) ? dishesData : []);
-      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      // Handle paginated response from DRF
+      const dishesArray = dishesData.results ? dishesData.results : (Array.isArray(dishesData) ? dishesData : []);
+      const categoriesArray = categoriesData.results ? categoriesData.results : (Array.isArray(categoriesData) ? categoriesData : []);
+      setDishes(dishesArray);
+      setCategories(categoriesArray);
     } catch (error) {
       showError('Could not load data from the server.', 'Loading Failed');
       setDishes([]);
@@ -63,24 +69,53 @@ const AdminDishes = () => {
     setModalState({ isOpen: false, title: '', message: '', onConfirm: () => {} });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({...formData, image: file});
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setFormData({...formData, image: null});
+    setImagePreview(null);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    const processedFormData = {
-      ...formData,
-      price: parseFloat(formData.price),
-      preparation_time: parseInt(formData.preparation_time, 10) || 0,
-      calories: parseInt(formData.calories, 10) || 0,
-      category_id: parseInt(formData.category_id, 10),
-    };
-
     const action = async () => {
       try {
+        // Create FormData for file upload
+        const submitData = new FormData();
+        submitData.append('name', formData.name);
+        submitData.append('description', formData.description);
+        submitData.append('price', parseFloat(formData.price));
+        submitData.append('category_id', parseInt(formData.category_id, 10));
+        submitData.append('preparation_time', parseInt(formData.preparation_time, 10) || 0);
+        submitData.append('ingredients', formData.ingredients);
+        submitData.append('calories', parseInt(formData.calories, 10) || 0);
+        submitData.append('is_spicy', formData.is_spicy);
+        submitData.append('is_vegetarian', formData.is_vegetarian);
+        submitData.append('is_available', formData.is_available);
+        
+        // Add image if selected
+        if (formData.image) {
+          submitData.append('image', formData.image);
+        }
+
         if (editingDish) {
-          await updateDish(editingDish.id, processedFormData);
+          await updateDish(editingDish.id, submitData);
           showSuccess('Dish has been updated successfully!', 'Updated!');
         } else {
-          await createDish(processedFormData);
+          await createDish(submitData);
           showSuccess('New dish has been added successfully!', 'Dish Added!');
         }
         resetForm();
@@ -110,8 +145,10 @@ const AdminDishes = () => {
       calories: '',
       is_spicy: false,
       is_vegetarian: false,
-      is_available: true
+      is_available: true,
+      image: null
     });
+    setImagePreview(null);
     setShowAddForm(false);
     setEditingDish(null);
   };
@@ -128,8 +165,11 @@ const AdminDishes = () => {
       calories: dish.calories,
       is_spicy: dish.is_spicy,
       is_vegetarian: dish.is_vegetarian,
-      is_available: dish.is_available
+      is_available: dish.is_available,
+      image: null
     });
+    // Set existing image as preview if available
+    setImagePreview(dish.image || null);
     setShowAddForm(true);
   };
 
@@ -354,6 +394,208 @@ const AdminDishes = () => {
                       placeholder="List ingredients separated by commas"
                       style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
                     />
+                  </div>
+
+                  {/* Image Upload Section */}
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', marginBottom: '1rem', fontWeight: '600', fontSize: '1.1rem' }}>
+                      📷 Dish Image
+                    </label>
+                    
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '1.5rem', 
+                      alignItems: 'flex-start',
+                      flexWrap: 'wrap'
+                    }}>
+                      {/* Image Preview */}
+                      <div style={{ 
+                        minWidth: '200px',
+                        textAlign: 'center'
+                      }}>
+                        {imagePreview ? (
+                          <div style={{ 
+                            position: 'relative', 
+                            display: 'inline-block',
+                            borderRadius: '12px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                          }}>
+                            <img 
+                              src={imagePreview} 
+                              alt="Dish Preview" 
+                              style={{ 
+                                width: '200px', 
+                                height: '200px', 
+                                objectFit: 'cover',
+                                display: 'block'
+                              }} 
+                            />
+                            <div style={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              background: 'linear-gradient(45deg, transparent 60%, rgba(0,0,0,0.1))',
+                              pointerEvents: 'none'
+                            }} />
+                            <button
+                              type="button"
+                              onClick={removeImage}
+                              style={{
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
+                                background: 'rgba(220, 53, 69, 0.9)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '32px',
+                                height: '32px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.2s ease',
+                                backdropFilter: 'blur(4px)'
+                              }}
+                              onMouseOver={(e) => e.target.style.background = 'rgba(220, 53, 69, 1)'}
+                              onMouseOut={(e) => e.target.style.background = 'rgba(220, 53, 69, 0.9)'}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{
+                            width: '200px',
+                            height: '200px',
+                            border: '2px dashed #ddd',
+                            borderRadius: '12px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#f8f9fa',
+                            color: '#6c757d',
+                            fontSize: '0.9rem'
+                          }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🖼️</div>
+                            <div>No image selected</div>
+                            <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Upload to preview</div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Upload Controls */}
+                      <div style={{ flex: 1, minWidth: '300px' }}>
+                        <div style={{
+                          border: '2px dashed var(--primary-orange)',
+                          borderRadius: '12px',
+                          padding: '2rem',
+                          textAlign: 'center',
+                          backgroundColor: 'rgba(255, 107, 53, 0.05)',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer',
+                          position: 'relative'
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.1)';
+                          e.currentTarget.style.borderColor = 'var(--primary-red)';
+                        }}
+                        onDragLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
+                          e.currentTarget.style.borderColor = 'var(--primary-orange)';
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
+                          e.currentTarget.style.borderColor = 'var(--primary-orange)';
+                          const files = e.dataTransfer.files;
+                          if (files.length > 0) {
+                            const file = files[0];
+                            if (file.type.startsWith('image/')) {
+                              handleImageChange({ target: { files: [file] } });
+                            }
+                          }
+                        }}
+                        >
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            style={{ 
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '100%',
+                              opacity: 0,
+                              cursor: 'pointer'
+                            }}
+                          />
+                          
+                          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📤</div>
+                          <h4 style={{ 
+                            color: 'var(--primary-orange)', 
+                            marginBottom: '0.5rem',
+                            fontSize: '1.2rem'
+                          }}>
+                            Upload Dish Image
+                          </h4>
+                          <p style={{ 
+                            color: 'var(--medium-gray)', 
+                            marginBottom: '1rem',
+                            fontSize: '0.95rem'
+                          }}>
+                            Drag & drop your image here, or click to browse
+                          </p>
+                          
+                          <div style={{
+                            display: 'inline-block',
+                            background: 'var(--primary-orange)',
+                            color: 'white',
+                            padding: '0.75rem 1.5rem',
+                            borderRadius: '8px',
+                            fontSize: '0.9rem',
+                            fontWeight: '600',
+                            pointerEvents: 'none'
+                          }}>
+                            📁 Choose File
+                          </div>
+                        </div>
+                        
+                        <div style={{ 
+                          marginTop: '1rem',
+                          padding: '1rem',
+                          backgroundColor: '#f8f9fa',
+                          borderRadius: '8px',
+                          border: '1px solid #e9ecef'
+                        }}>
+                          <h5 style={{ 
+                            color: 'var(--dark-charcoal)', 
+                            marginBottom: '0.5rem',
+                            fontSize: '0.9rem'
+                          }}>
+                            📋 Upload Guidelines
+                          </h5>
+                          <ul style={{ 
+                            margin: 0, 
+                            paddingLeft: '1.2rem',
+                            color: 'var(--medium-gray)',
+                            fontSize: '0.8rem',
+                            lineHeight: '1.4'
+                          }}>
+                            <li>Supported formats: <strong>JPG, PNG, GIF</strong></li>
+                            <li>Maximum file size: <strong>5MB</strong></li>
+                            <li>Recommended size: <strong>800x800px</strong></li>
+                            <li>Square images work best for display</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
