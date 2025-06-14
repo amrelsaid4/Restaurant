@@ -17,7 +17,9 @@ const AdminCustomers = () => {
     setLoading(true);
     try {
       const data = await getCustomers();
-      setCustomers(Array.isArray(data) ? data : []);
+      // Handle paginated response from DRF
+      const customersArray = data.results ? data.results : (Array.isArray(data) ? data : []);
+      setCustomers(customersArray);
     } catch (error) {
       console.error('Error fetching customers:', error);
       showError('Failed to load customers.', 'Loading Failed');

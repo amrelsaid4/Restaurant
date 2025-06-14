@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { useAlert } from '../contexts/AlertContext';
+import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAlert } from '@/contexts/AlertContext';
 
 const DishDetail = () => {
   const { id } = useParams();
@@ -526,8 +526,6 @@ const DishDetail = () => {
           )}
         </div>
       </div>
-
-
     </div>
   );
 };

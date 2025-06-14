@@ -41,14 +41,24 @@ export const CartProvider = ({ children }) => {
         setCartItems([]);
     };
 
+    const getTotalItems = () => {
+        return cartItems.reduce((total, item) => total + item.quantity, 0);
+    };
+
+    const getTotalPrice = () => {
+        return cartItems.reduce((total, item) => total + (item.dish?.price || item.price || 0) * item.quantity, 0);
+    };
+
     const value = {
         cartItems,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
+        getTotalItems,
+        getTotalPrice,
         cartCount: cartItems.reduce((total, item) => total + item.quantity, 0),
-        cartTotal: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+        cartTotal: cartItems.reduce((total, item) => total + (item.dish?.price || item.price || 0) * item.quantity, 0),
     };
 
     return (

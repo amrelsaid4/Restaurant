@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { CartProvider } from '@/contexts/CartContext';
 
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/Navbar/Navbar';
 import AlertModal from '@/components/common/ConfirmModal';
 import Home from '@/pages/Home/Home';
 import Menu from '@/pages/Menu/Menu';
@@ -26,6 +26,8 @@ import './App.css';
 
 const PrivateRoute = ({ children, adminOnly }) => {
   const { isAuthenticated, isAdmin, loading } = useAuth();
+  
+
 
   if (loading) {
     return <div>Loading...</div>; // Or a spinner component

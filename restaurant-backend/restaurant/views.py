@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.middleware.csrf import get_token
 from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant, AdminProfile
 from .serializers import (
     CategorySerializer, DishSerializer, CustomerSerializer,
@@ -256,11 +257,12 @@ def register_user(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
-    """Get current user profile"""
+    """Get current user profile with recent orders"""
+    print(f"Profile request - User: {request.user}, Authenticated: {request.user.is_authenticated}")  # Debug
+    print(f"Session key: {request.session.session_key}")  # Debug
+    
     try:
         customer = request.user.customer
-        serializer = CustomerSerializer(customer)
-        return Response(serializer.data)
     except Customer.DoesNotExist:
         # Create customer if it doesn't exist
         customer = Customer.objects.create(
@@ -268,8 +270,20 @@ def user_profile(request):
             phone='',
             address=''
         )
-        serializer = CustomerSerializer(customer)
-        return Response(serializer.data)
+    
+    # Get customer data
+    customer_serializer = CustomerSerializer(customer)
+    customer_data = customer_serializer.data
+    
+    # Get recent orders (last 10)
+    recent_orders = Order.objects.filter(customer=customer).order_by('-order_date')[:10]
+    orders_serializer = OrderSerializer(recent_orders, many=True)
+    
+    # Combine data
+    profile_data = customer_data.copy()
+    profile_data['orders'] = orders_serializer.data
+    
+    return Response(profile_data)
 
 # ========================================
 # 🎛️ ADMIN DASHBOARD API
@@ -282,6 +296,8 @@ def admin_dashboard_stats(request):
     from django.db.models import Count, Sum, Avg
     from django.utils import timezone
     from datetime import timedelta
+    
+
     
     # Basic counts
     total_orders = Order.objects.count()
@@ -330,13 +346,19 @@ def admin_dashboard_stats(request):
         'top_dishes': list(top_dishes)
     })
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_csrf_token(request):
+    """Get CSRF token for frontend"""
+    token = get_token(request)
+    return Response({'csrf_token': token})
+
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def customer_login(request):
     """Login function for regular customers, allows login with username or email."""
     from django.contrib.auth import authenticate, login
-
-    print("Request data received:", request.data) # DEBUGGING LINE
 
     identity = request.data.get('identity') # Can be username or email
     password = request.data.get('password')
@@ -355,11 +377,19 @@ def customer_login(request):
     user = authenticate(request, username=username, password=password)
     if user:
         # Check if it's not an admin user trying to use customer login
-        if AdminProfile.is_admin_email(user.email):
-            return Response({'error': 'Admin users should use admin login'}, status=403)
+        try:
+            if AdminProfile.is_admin_email(user.email):
+                return Response({'error': 'Admin users should use admin login'}, status=403)
+        except Exception as e:
+            # Continue with login if AdminProfile check fails
+            pass
         
         login(request, user)
-        return Response({
+        
+        # Force session save
+        request.session.save()
+        
+        response = Response({
             'message': 'Login successful',
             'user': {
                 'id': user.id,
@@ -367,11 +397,19 @@ def customer_login(request):
                 'email': user.email,
                 'is_admin': False,
                 'is_customer': True
-            }
+            },
+            'session_key': request.session.session_key
         })
+        
+        # Set CORS headers explicitly
+        response['Access-Control-Allow-Credentials'] = 'true'
+        response['Access-Control-Allow-Origin'] = 'http://localhost:5174'
+        
+        return response
     else:
         return Response({'error': 'Invalid credentials'}, status=401)
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def admin_login(request):
@@ -385,43 +423,52 @@ def admin_login(request):
         return Response({'error': 'Email and password required'}, status=400)
     
     # Check if email is registered as admin
-    if not AdminProfile.is_admin_email(email):
-        return Response({'error': 'Unauthorized: Not an admin email'}, status=403)
+    try:
+        is_admin = AdminProfile.is_admin_email(email)
+        if not is_admin:
+            return Response({'error': 'Unauthorized: Not an admin email'}, status=403)
+    except Exception as e:
+        return Response({'error': 'Admin system error'}, status=500)
     
     # Get user by email
     try:
         user = User.objects.get(email=email)
-        # --- TEMPORARY FIX: Reset password for admin user for easy testing ---
-        if email == 'admin@restaurant.com':
-            user.set_password('admin123')
-            user.save()
-        # --- END TEMPORARY FIX ---
     except User.DoesNotExist:
         return Response({'error': 'Invalid credentials'}, status=401)
     
     # Authenticate user
-    user = authenticate(request, username=user.username, password=password)
-    if user:
-        login(request, user)
+    auth_user = authenticate(request, username=user.username, password=password)
+    
+    if auth_user:
+        login(request, auth_user)
+        request.session.save()
         admin_profile = AdminProfile.objects.get(admin_email=email)
-        return Response({
+        
+        response = Response({
             'message': 'Login successful',
             'user': {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
+                'id': auth_user.id,
+                'username': auth_user.username,
+                'email': auth_user.email,
                 'is_admin': True,
                 'is_super_admin': admin_profile.is_super_admin
-            }
+            },
+            'session_key': request.session.session_key
         })
+        
+        # Set CORS headers explicitly
+        response['Access-Control-Allow-Credentials'] = 'true'
+        response['Access-Control-Allow-Origin'] = 'http://localhost:5174'
+        
+        return response
     else:
         return Response({'error': 'Invalid credentials'}, status=401)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-@ensure_csrf_cookie
 def check_user_type(request):
     """Check if current user is admin or customer"""
+    
     if not request.user.is_authenticated:
         return Response({
             'user_id': None,
@@ -433,7 +480,12 @@ def check_user_type(request):
         })
     
     user = request.user
-    is_admin = AdminProfile.is_admin_email(user.email)
+    is_admin = False
+    
+    try:
+        is_admin = AdminProfile.is_admin_email(user.email)
+    except Exception as e:
+        pass
     
     response_data = {
         'user_id': user.id,

@@ -25,7 +25,9 @@ const AdminOrders = () => {
     setLoading(true);
     try {
       const data = await getOrders();
-      setOrders(Array.isArray(data) ? data : []);
+      // Handle paginated response from DRF
+      const ordersArray = data.results ? data.results : (Array.isArray(data) ? data : []);
+      setOrders(ordersArray);
     } catch (error) {
       console.error('Error fetching orders:', error);
       showError('Failed to load orders.', 'Loading error');

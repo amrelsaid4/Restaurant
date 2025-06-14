@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import Modal from '../components/Modal';
+import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAlert } from '@/contexts/AlertContext';
 import axios from 'axios';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { showSuccess, showError, showWarning } = useAlert();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState('');
   const [instructions, setInstructions] = useState('');
-
-  // Modal state
-  const [modalState, setModalState] = useState({
-    isOpen: false,
-    title: '',
-    message: '',
-    type: 'success'
-  });
 
   const handleQuantityChange = (cartItemId, newQuantity) => {
     if (newQuantity <= 0) {
@@ -31,23 +24,13 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
-      setModalState({
-        isOpen: true,
-        title: 'Login Required',
-        message: 'Please login to place an order.',
-        type: 'warning'
-      });
+      showWarning('Please login to place an order.', 'Login Required');
       setTimeout(() => navigate('/login'), 2000);
       return;
     }
 
     if (!address.trim()) {
-      setModalState({
-        isOpen: true,
-        title: 'Address Required',
-        message: 'Please enter a delivery address to continue.',
-        type: 'warning'
-      });
+      showWarning('Please enter a delivery address to continue.', 'Address Required');
       return;
     }
 
@@ -67,29 +50,15 @@ const Cart = () => {
       
       if (response.status === 201) {
         clearCart();
-        setModalState({
-          isOpen: true,
-          title: 'Order Placed Successfully!',
-          message: 'Your order has been placed and will be prepared shortly. You can track your order status in the "My Orders" section.',
-          type: 'success'
-        });
+        showSuccess('Your order has been placed and will be prepared shortly. You can track your order status in the "My Orders" section.', 'Order Placed Successfully!');
         setTimeout(() => navigate('/orders'), 3000);
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      setModalState({
-        isOpen: true,
-        title: 'Order Failed',
-        message: 'Failed to place order. Please check your details and try again.',
-        type: 'error'
-      });
+      showError('Failed to place order. Please check your details and try again.', 'Order Failed');
     } finally {
       setLoading(false);
     }
-  };
-
-  const closeModal = () => {
-    setModalState(prev => ({ ...prev, isOpen: false }));
   };
 
   if (cartItems.length === 0) {
@@ -222,14 +191,6 @@ const Cart = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      <Modal
-        isOpen={modalState.isOpen}
-        onClose={closeModal}
-        title={modalState.title}
-        message={modalState.message}
-        type={modalState.type}
-      />
     </div>
   );
 };

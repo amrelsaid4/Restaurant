@@ -1,65 +1,115 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
-import './Profile.css'; // We will create this file for styling
+import { getUserProfile } from '@/services/api';
+import { useNavigate } from 'react-router-dom';
+import './Profile.css';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Don't fetch if auth is still loading
+    if (authLoading) return;
+    
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     const fetchProfile = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      setLoading(true);
+      setError('');
+      
       try {
-        const response = await axios.get('/api/profile/');
-        setProfileData(response.data);
+        const data = await getUserProfile();
+        setProfileData(data);
       } catch (err) {
-        setError('Failed to fetch profile data. Please try again later.');
         console.error('Profile fetch error:', err);
+        if (err.message.includes('Authentication') || err.message.includes('credentials')) {
+          // If authentication failed, redirect to login
+          navigate('/login');
+        } else {
+          setError('Failed to fetch profile data. Please try again later.');
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [user]);
+  }, [isAuthenticated, authLoading, navigate]);
 
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return (
+      <div className="profile-container">
+        <div className="profile-card">
+          <h2>Loading...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while profile data is being fetched
   if (loading) {
-    return <div className="profile-container"><h2>Loading Profile...</h2></div>;
+    return (
+      <div className="profile-container">
+        <div className="profile-card">
+          <h2>Loading Profile...</h2>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="profile-container"><p className="error-message">{error}</p></div>;
+    return (
+      <div className="profile-container">
+        <div className="profile-card">
+          <p className="error-message">{error}</p>
+          <button onClick={() => window.location.reload()}>Try Again</button>
+        </div>
+      </div>
+    );
   }
 
-  if (!profileData) {
-    return <div className="profile-container"><p>No profile data available.</p></div>;
+  if (!isAuthenticated) {
+    return (
+      <div className="profile-container">
+        <div className="profile-card">
+          <p>Please log in to view your profile.</p>
+        </div>
+      </div>
+    );
   }
 
-  const { user: profileUser, phone, address, orders } = profileData;
+  // Use user data from AuthContext if profileData is not available
+  const displayUser = profileData?.user || user;
+  const phone = profileData?.phone || 'Not provided';
+  const address = profileData?.address || 'Not provided';
+  const orders = profileData?.orders || [];
 
   return (
     <div className="profile-container">
       <div className="profile-card">
         <div className="profile-header">
           <div className="profile-avatar">
-            {profileUser.username.charAt(0).toUpperCase()}
+            {(displayUser?.username || displayUser?.email || 'U').charAt(0).toUpperCase()}
           </div>
           <div className="profile-info">
-            <h1>{profileUser.first_name || profileUser.username}</h1>
-            <p>{profileUser.email}</p>
+            <h1>{displayUser?.first_name || displayUser?.username || 'User'}</h1>
+            <p>{displayUser?.email || 'No email provided'}</p>
           </div>
         </div>
 
         <div className="profile-details">
           <h2>Contact Information</h2>
-          <p><strong>Phone:</strong> {phone || 'Not provided'}</p>
-          <p><strong>Address:</strong> {address || 'Not provided'}</p>
+          <p><strong>Phone:</strong> {phone}</p>
+          <p><strong>Address:</strong> {address}</p>
         </div>
 
         <div className="profile-orders">

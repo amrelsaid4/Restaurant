@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { motion } from 'framer-motion';
+import { useAlert } from '../../contexts/AlertContext';
 import './Home.css';
 
 const Home = () => {
-  const [menuData, setMenuData] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [featuredDishes, setFeaturedDishes] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { showSuccess } = useAlert();
 
   useEffect(() => {
     fetchData();
@@ -14,13 +18,16 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      const [menuResponse, restaurantResponse] = await Promise.all([
-        axios.get('http://127.0.0.1:8000/api/menu-overview/'),
+      setLoading(true);
+      const [categoriesRes, dishesRes, infoRes] = await Promise.all([
+        axios.get('http://127.0.0.1:8000/api/categories/'),
+        axios.get('http://127.0.0.1:8000/api/dishes/'),
         axios.get('http://127.0.0.1:8000/api/restaurant-info/')
       ]);
       
-      setMenuData(menuResponse.data);
-      setRestaurantInfo(restaurantResponse.data);
+      setCategories(categoriesRes.data.results || categoriesRes.data);
+      setFeaturedDishes((dishesRes.data.results || dishesRes.data).slice(0, 6));
+      setRestaurantInfo(infoRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -28,130 +35,204 @@ const Home = () => {
     }
   };
 
+  const addToCart = (dish) => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItem = cart.find(item => item.id === dish.id);
+    
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({ ...dish, quantity: 1 });
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated'));
+    showSuccess(`${dish.name} added to cart!`, 'Cart Updated');
+  };
+
   if (loading) {
-    return <div className="loading">🍽️ Loading...</div>;
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading delicious options...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="home">
-      {/* Hero Section */}
-      <section className="hero">
+    <div className="restaurant-app">
+      {/* Hero Banner */}
+      <section className="hero-banner">
+        <div className="hero-image-container">
+          <img 
+            src={restaurantInfo?.hero_image || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4'} 
+            alt="Restaurant interior"
+            className="hero-img"
+          />
+          <div className="hero-overlay"></div>
+        </div>
         <div className="hero-content">
-          <h1>Welcome to {restaurantInfo?.name || 'Our Restaurant'}</h1>
-          <p>Delicious food delivered to your doorstep</p>
-          <Link to="/menu" className="cta-button">
-            Browse Menu
+          <h1>{restaurantInfo?.name || 'Premium Dining'}</h1>
+          <p className="hero-subtext">{restaurantInfo?.tagline || 'Exceptional culinary experiences'}</p>
+          <Link to="/menu" className="main-cta">
+            Explore Our Menu
           </Link>
         </div>
-        <div className="hero-overlay"></div>
       </section>
 
-      {/* Categories Section */}
-      {menuData?.categories && menuData.categories.length > 0 && (
-        <section className="categories">
-          <div className="container">
-            <h2>Food Categories</h2>
-            <div className="categories-grid">
-              {menuData.categories.map(category => (
-                <Link
-                  key={category.id}
-                  to={`/menu?category=${category.id}`}
-                  className="category-card"
-                >
-                  {category.image && (
-                    <img 
-                      src={category.image.startsWith('http') ? category.image : `http://127.0.0.1:8000${category.image}`} 
-                      alt={category.name}
-                      className="category-image"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/placeholder-category.jpg';
-                      }}
-                    />
-                  )}
-                  <div className="category-content">
-                    <h3>{category.name}</h3>
-                    <p>{category.description}</p>
-                  </div>
-                </Link>
-              ))}
+      {/* Features Grid */}
+      <section className="features-section">
+        <div className="section-container">
+          <div className="features-grid">
+            <div className="feature-box">
+              <div className="feature-icon">🍽️</div>
+              <h3>Fresh Ingredients</h3>
+              <p>Locally sourced, always fresh</p>
+            </div>
+            <div className="feature-box">
+              <div className="feature-icon">⏱️</div>
+              <h3>Quick Service</h3>
+              <p>Fast and efficient</p>
+            </div>
+            <div className="feature-box">
+              <div className="feature-icon">👨‍🍳</div>
+              <h3>Expert Chefs</h3>
+              <p>Professional culinary team</p>
+            </div>
+            <div className="feature-box">
+              <div className="feature-icon">⭐</div>
+              <h3>Premium Quality</h3>
+              <p>Uncompromising standards</p>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
+
+      {/* Food Categories */}
+      <section className="categories-section">
+        <div className="section-container">
+          <h2 className="section-title">Our Categories</h2>
+          <div className="categories-grid">
+            {categories.map((category) => (
+              <Link 
+                to={`/menu?category=${category.id}`} 
+                key={category.id} 
+                className="category-card"
+              >
+                <div className="category-img-container">
+                  <img 
+                    src={category.image || 'https://images.unsplash.com/photo-1544025162-d76694265947'} 
+                    alt={category.name}
+                    onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1544025162-d76694265947'}
+                  />
+                  <div className="category-overlay"></div>
+                </div>
+                <h3>{category.name}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Featured Dishes */}
-      {menuData?.featured_dishes && menuData.featured_dishes.length > 0 && (
-        <section className="featured-dishes">
-          <div className="container">
-            <h2>Featured Dishes</h2>
-            <div className="dishes-grid">
-              {menuData.featured_dishes.map(dish => (
-                <div key={dish.id} className="dish-card">
-                  {dish.image && (
-                    <img 
-                      src={dish.image.startsWith('http') ? dish.image : `http://127.0.0.1:8000${dish.image}`} 
-                      alt={dish.name}
-                      className="dish-image"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/placeholder-dish.jpg';
-                      }}
-                    />
-                  )}
-                  <div className="dish-info">
-                    <h3>{dish.name}</h3>
-                    <p className="dish-description">{dish.description}</p>
-                    <div className="dish-details">
-                      <span className="price">${dish.price}</span>
-                      <span className="prep-time">⏱️ {dish.preparation_time} min</span>
-                    </div>
-                    <div className="dish-tags">
-                      {dish.is_vegetarian && <span className="tag vegetarian">🌱 Vegetarian</span>}
-                      {dish.is_spicy && <span className="tag spicy">🌶️ Spicy</span>}
-                    </div>
-                    <Link to={`/dish/${dish.id}`} className="view-dish-btn">
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              ))}
+      <section className="menu featured-section">
+  <div className="container">
+    <h1 className="section-title">Featured Dishes</h1>
+
+    <div className="dishes-grid">
+      {featuredDishes.map((dish) => (
+        <div key={dish.id} className="dish-card">
+          {dish.image && (
+            <img 
+              src={dish.image.startsWith('http') ? dish.image : `http://127.0.0.1:8000${dish.image}`} 
+              alt={dish.name}
+              className="dish-image"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/placeholder-dish.jpg';
+              }}
+            />
+          )}
+
+          <div className="dish-info">
+            <h3>{dish.name}</h3>
+            <p className="dish-description">
+              {dish.description || 'Delicious dish prepared with care'}
+            </p>
+            <div className="dish-details">
+              <span className="price">${dish.price}</span>
+              <span className="prep-time">⏱️ {dish.preparation_time} min</span>
+              {dish.calories && <span className="calories">🔥 {dish.calories} cal</span>}
+            </div>
+
+            <div className="dish-tags">
+              {dish.is_vegetarian && <span className="tag vegetarian">🌱 Vegetarian</span>}
+              {dish.is_spicy && <span className="tag spicy">🌶️ Spicy</span>}
+            </div>
+
+            <div className="dish-actions">
+              <Link to={`/dish/${dish.id}`} className="view-details-btn">
+                View Details
+              </Link>
+              <button 
+                onClick={() => addToCart(dish)}
+                className="add-to-cart-btn"
+              >
+                + Add to Cart
+              </button>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      ))}
+    </div>
+
+    <div className="view-all-container">
+      <Link to="/menu" className="view-all-btn">
+        View Full Menu →
+      </Link>
+    </div>
+  </div>
+</section>
+
 
       {/* Restaurant Info */}
-      {restaurantInfo && (
-        <section className="restaurant-info">
-          <div className="container">
-            <h2>Restaurant Information</h2>
-            <div className="info-content">
-              <p>{restaurantInfo.description || 'Welcome to our restaurant!'}</p>
-              <div className="contact-info">
-                <div className="info-item">
-                  <span className="icon">📍</span>
-                  <span>{restaurantInfo.address}</span>
-                </div>
-                <div className="info-item">
-                  <span className="icon">📞</span>
-                  <span>{restaurantInfo.phone}</span>
-                </div>
-                <div className="info-item">
-                  <span className="icon">📧</span>
-                  <span>{restaurantInfo.email}</span>
-                </div>
-                <div className="info-item">
-                  <span className="icon">🕒</span>
-                  <span>Hours: {restaurantInfo.opening_time} - {restaurantInfo.closing_time}</span>
+      <section className="info-section">
+        <div className="section-container">
+          <div className="info-grid">
+            <div className="info-card">
+              <div className="info-image">
+                <img 
+                  src={restaurantInfo?.interior_image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5'} 
+                  alt="Restaurant interior"
+                />
+              </div>
+              <div className="info-content">
+                <h3>Our Atmosphere</h3>
+                <p>Elegant dining experience with comfortable seating</p>
+                <div className="contact-details">
+                  <p><span>📍</span> {restaurantInfo?.address || '123 Main Street'}</p>
+                  <p><span>📞</span> {restaurantInfo?.phone || '+1 234 567 8900'}</p>
+                  <p><span>🕒</span> {restaurantInfo?.opening_time || '10:00 AM'} - {restaurantInfo?.closing_time || '10:00 PM'}</p>
                 </div>
               </div>
             </div>
+            <div className="info-card">
+              <div className="info-image">
+                <img 
+                  src={restaurantInfo?.chef_image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c'} 
+                  alt="Our chef"
+                />
+              </div>
+              <div className="info-content">
+                <h3>Our Kitchen</h3>
+                <p>Professional chefs creating culinary masterpieces</p>
+              </div>
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 };
 
-export default Home; 
+export default Home;
