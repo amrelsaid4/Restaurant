@@ -177,7 +177,7 @@ const AdminCategories = () => {
         <div className="admin-sidebar">
           <div style={{ padding: '0 2rem' }}>
             <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              🛡️ Admin Panel
+              Admin Panel
             </h3>
             
             <nav className="admin-nav">

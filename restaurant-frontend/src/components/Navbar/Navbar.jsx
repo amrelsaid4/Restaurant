@@ -87,9 +87,9 @@ const Navbar = () => {
               )}
               {/* Logout button for all authenticated users */}
               <li className="nav-item">
-                <button onClick={handleLogout} className="nav-button logout-button">
+                <Link onClick={handleLogout} className="nav-link">
                   Logout ({user?.username})
-                </button>
+                </Link>
               </li>
             </>
           ) : (

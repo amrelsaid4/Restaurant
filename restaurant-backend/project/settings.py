@@ -47,7 +47,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # Re-enabled with proper frontend handling
+    'restaurant.middleware.CSRFExemptMiddleware',  # Custom CSRF exempt middleware
+    'django.middleware.csrf.CsrfViewMiddleware',  # Re-enabled with exemptions
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'restaurant.middleware.SessionKeyMiddleware',  # Moved after AuthenticationMiddleware
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -166,6 +167,13 @@ CORS_ALLOW_HEADERS = [
     'x-session-key',  # Allow our custom session key header
 ]
 
+# Disable CSRF for specific endpoints
+CSRF_EXEMPT_URLS = [
+    r'/api/add-rating/',
+    r'/api/submit-rating/',
+    r'/api/stripe/.*',  # Exempt all Stripe endpoints from CSRF
+]
+
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
@@ -174,9 +182,15 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5174",
 ]
 
-# For development - disable CSRF for API
+# CSRF cookie and header settings
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_PATH = '/'
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 SESSION_COOKIE_SECURE = False
 
 # Session settings for development
@@ -185,6 +199,12 @@ CSRF_COOKIE_SAMESITE = 'Lax'      # More permissive for development
 SESSION_COOKIE_HTTPONLY = False   # Allow JS access for debugging
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_DOMAIN = None      # Don't restrict domain
+
+# Stripe Configuration
+import os
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_TYooMQauvdEDq54NiTphI7jx')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_ENDPOINT_SECRET = os.environ.get('STRIPE_ENDPOINT_SECRET', 'whsec_test_endpoint_secret')
 CSRF_COOKIE_DOMAIN = None         # Don't restrict domain
 SESSION_COOKIE_SECURE = False     # For development (HTTP)
 CSRF_COOKIE_SECURE = False        # For development (HTTP)

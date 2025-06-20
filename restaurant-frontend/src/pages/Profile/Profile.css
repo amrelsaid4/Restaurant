@@ -7,6 +7,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-card {
@@ -17,6 +19,7 @@
   max-width: 800px;
   padding: 2.5rem;
   border: 1px solid #e5e7eb;
+  box-sizing: border-box;
 }
 
 .profile-header {
@@ -152,4 +155,120 @@
 
 .profile-container button:hover {
   background-color: #3730a3;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+    min-height: calc(100vh - 65px); /* Adjust for mobile navbar height */
+  }
+  
+  .profile-card {
+    padding: 1.5rem;
+    margin: 0;
+    border-radius: 8px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+  
+  .profile-info h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-info p {
+    font-size: 1rem;
+  }
+  
+  .profile-details h2,
+  .profile-orders h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .profile-details p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .order-item {
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .order-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .order-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .order-id {
+    font-size: 1rem;
+  }
+  
+  .order-date {
+    font-size: 0.85rem;
+  }
+  
+  .order-status {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 0.5rem;
+  }
+  
+  .profile-card {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+  
+  .profile-info h1 {
+    font-size: 1.4rem;
+  }
+  
+  .profile-details h2,
+  .profile-orders h2 {
+    font-size: 1.2rem;
+  }
+  
+  .order-item {
+    padding: 0.8rem;
+  }
+  
+  .profile-container button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
 } 

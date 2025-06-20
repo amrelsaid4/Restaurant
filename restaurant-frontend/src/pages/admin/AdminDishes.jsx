@@ -243,27 +243,27 @@ const AdminDishes = () => {
         <div className="admin-sidebar">
           <div style={{ padding: '0 2rem' }}>
             <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              🛡️ Admin Panel
+              Admin Panel
             </h3>
             
             <nav className="admin-nav">
               <Link to="/admin/dashboard" className="admin-nav-link">
-                📊 Dashboard
+                Dashboard
               </Link>
               <Link to="/admin/orders" className="admin-nav-link">
-                📋 Orders
+                Orders
               </Link>
               <Link to="/admin/dishes" className="admin-nav-link active">
-                🍕 Dishes
+                Dishes
               </Link>
               <Link to="/admin/categories" className="admin-nav-link">
-                📂 Categories
+                Categories
               </Link>
               <Link to="/admin/customers" className="admin-nav-link">
-                👥 Customers
+                Customers
               </Link>
               <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-                🏠 Back to Website
+                Back to Website
               </Link>
             </nav>
           </div>
@@ -273,7 +273,7 @@ const AdminDishes = () => {
         <div className="admin-content">
           <div className="admin-header" style={{ marginBottom: '2rem' }}>
             <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary-orange)' }}>
-              🍕 Dish Management
+              Dish Management
             </h1>
             <p style={{ color: 'var(--medium-gray)', fontSize: '1.1rem' }}>
               Add, edit and manage restaurant dishes

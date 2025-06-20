@@ -4,6 +4,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
 import axios from 'axios';
+import './Cart.css';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
@@ -22,7 +23,7 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!isAuthenticated) {
       showWarning('Please login to place an order.', 'Login Required');
       setTimeout(() => navigate('/login'), 2000);
@@ -34,103 +35,85 @@ const Cart = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const orderData = {
-        delivery_address: address,
-        special_instructions: instructions,
-        items: cartItems.map(item => ({
-          dish_id: item.dish.id,
-          quantity: item.quantity,
-          special_instructions: item.specialInstructions || ''
-        }))
-      };
+    // Prepare checkout data and navigate to checkout page
+    const checkoutData = {
+      items: cartItems.map(item => ({
+        dish_id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        special_instructions: item.specialInstructions || ''
+      })),
+      delivery_address: address,
+      special_instructions: instructions,
+      total: getTotalPrice()
+    };
 
-      const response = await axios.post('/api/orders/', orderData);
-      
-      if (response.status === 201) {
-        clearCart();
-        showSuccess('Your order has been placed and will be prepared shortly. You can track your order status in the "My Orders" section.', 'Order Placed Successfully!');
-        setTimeout(() => navigate('/orders'), 3000);
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      showError('Failed to place order. Please check your details and try again.', 'Order Failed');
-    } finally {
-      setLoading(false);
-    }
+    // Store checkout data in sessionStorage for checkout page
+    sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+    navigate('/checkout-test'); // Use test checkout for now
   };
 
   if (cartItems.length === 0) {
     return (
-      <div className="container" style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>Your Cart is Empty</h2>
-        <p>Add some delicious dishes to your cart!</p>
-        <button 
-          onClick={() => navigate('/menu')} 
-          className="btn btn-primary"
-          style={{ marginTop: '1rem' }}
-        >
-          Browse Menu
-        </button>
+      <div className="cart-container">
+        <div className="empty-cart">
+          <h2>Your Cart is Empty</h2>
+          <p>Add some delicious dishes to your cart!</p>
+          <button 
+            onClick={() => navigate('/menu')} 
+            className="btn btn-primary"
+          >
+            Browse Menu
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container" style={{ padding: '2rem' }}>
+    <div className="cart-container">
       <h1>Shopping Cart</h1>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginTop: '2rem' }}>
+      <div className="cart-grid">
         {/* Cart Items */}
         <div>
           {cartItems.map(item => (
-            <div key={item.id} className="card" style={{ marginBottom: '1rem' }}>
+            <div key={item.id} className="card cart-item-card">
               <div className="card-body">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                  <div style={{ flex: 1 }}>
-                    <h3>{item.dish.name}</h3>
-                    <p>Price: ${item.dish.price}</p>
+                <div className="cart-item-content">
+                  <div className="cart-item-info">
+                    <h3>{item.name}</h3>
+                    <p>Price: ${item.price}</p>
                     {item.specialInstructions && (
                       <p><small>Special Instructions: {item.specialInstructions}</small></p>
                     )}
                   </div>
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div className="cart-item-actions">
+                    <div className="quantity-controls">
                       <button 
                         onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                        style={{ 
-                          padding: '5px 10px', 
-                          border: '1px solid #ddd', 
-                          background: 'white',
-                          cursor: 'pointer'
-                        }}
+                        className="quantity-btn"
                       >
                         -
                       </button>
-                      <span style={{ minWidth: '2rem', textAlign: 'center' }}>{item.quantity}</span>
+                      <span className="quantity-display">{item.quantity}</span>
                       <button 
                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                        style={{ 
-                          padding: '5px 10px', 
-                          border: '1px solid #ddd', 
-                          background: 'white',
-                          cursor: 'pointer'
-                        }}
+                        className="quantity-btn"
                       >
                         +
                       </button>
                     </div>
                     
-                    <div style={{ minWidth: '4rem', textAlign: 'right' }}>
-                      <strong>${(item.dish.price * item.quantity).toFixed(2)}</strong>
+                    <div className="item-total">
+                      <strong>${(item.price * item.quantity).toFixed(2)}</strong>
                     </div>
                     
                     <button 
                       onClick={() => removeFromCart(item.id)}
                       className="btn btn-danger"
-                      style={{ padding: '5px 10px' }}
                     >
                       Remove
                     </button>
@@ -142,49 +125,50 @@ const Cart = () => {
         </div>
 
         {/* Checkout */}
-        <div className="card">
+        <div className="card checkout-card">
           <div className="card-body">
             <h3>Order Summary</h3>
-            <div style={{ margin: '1rem 0', paddingTop: '1rem', borderTop: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 'bold' }}>
+            <div className="order-summary-total">
+              <div className="total-display">
                 <span>Total: </span>
                 <span>${getTotalPrice().toFixed(2)}</span>
               </div>
             </div>
 
             <div className="form-group">
-              <label>Delivery Address *</label>
+              <label className="form-label">Delivery Address *</label>
               <textarea
+                className="form-control"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter your delivery address"
+                placeholder="📍 Enter your complete delivery address"
                 rows="3"
                 required
               />
             </div>
 
             <div className="form-group">
-              <label>Special Instructions</label>
+              <label className="form-label">Special Instructions</label>
               <textarea
+                className="form-control"
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
-                placeholder="Any special instructions for your order"
+                placeholder="✨ Any special instructions for your order (optional)"
                 rows="2"
               />
             </div>
 
             <button 
               onClick={handleCheckout}
-              disabled={loading || !address.trim()}
-              className="btn btn-success"
-              style={{ width: '100%', marginTop: '1rem' }}
+              disabled={!address.trim()}
+              className="checkout-btn"
             >
-              {loading ? 'Placing Order...' : 'Place Order'}
+              Proceed to Payment
             </button>
 
             {!isAuthenticated && (
-              <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-                You need to <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}>login</button> to place an order.
+              <p className="login-prompt">
+                You need to <button onClick={() => navigate('/login')} className="login-link">login</button> to place an order.
               </p>
             )}
           </div>

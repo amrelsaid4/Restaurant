@@ -5,11 +5,13 @@ import { AlertProvider } from '@/contexts/AlertContext';
 import { CartProvider } from '@/contexts/CartContext';
 
 import Navbar from '@/components/Navbar/Navbar';
-import AlertModal from '@/components/common/ConfirmModal';
+import AlertModal from './components/AlertModal';
 import Home from '@/pages/Home/Home';
 import Menu from '@/pages/Menu/Menu';
-import DishDetail from '@/pages/DishDetail';
+import DishDetail from '@/pages/DishDetail/DishDetail';
 import Cart from '@/pages/Cart';
+import Checkout from '@/pages/Checkout/Checkout';
+import CheckoutTest from '@/pages/Checkout/CheckoutTest';
 import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
 import Profile from '@/pages/Profile/Profile';
@@ -56,8 +58,10 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/menu" element={<Menu />} />
-                <Route path="/dishes/:id" element={<DishDetail />} />
+                <Route path="/dish/:id" element={<DishDetail />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+                <Route path="/checkout-test" element={<PrivateRoute><CheckoutTest /></PrivateRoute>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />

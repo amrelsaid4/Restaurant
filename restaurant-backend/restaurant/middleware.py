@@ -2,8 +2,30 @@ from django.contrib.sessions.models import Session
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.db import SessionStore
+import re
 
 User = get_user_model()
+
+class CSRFExemptMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # Exempt these URLs from CSRF
+        self.exempt_urls = [
+            re.compile(r'/api/add-rating/'),
+            re.compile(r'/api/submit-rating/'),
+            re.compile(r'/api/update-rating/\d+/'),
+        ]
+
+    def __call__(self, request):
+        # Check if the request path should be exempt from CSRF
+        for url_pattern in self.exempt_urls:
+            if url_pattern.match(request.path):
+                print(f"🚫 CSRF Exempt: {request.path}")
+                setattr(request, '_dont_enforce_csrf_checks', True)
+                break
+        
+        response = self.get_response(request)
+        return response
 
 class SessionKeyMiddleware:
     def __init__(self, get_response):
@@ -36,6 +58,9 @@ class SessionKeyMiddleware:
                     if user_id:
                         try:
                             user = User.objects.get(id=user_id)
+                            
+                            # Set user with authentication backend
+                            user.backend = 'django.contrib.auth.backends.ModelBackend'
                             request.user = user
                             
                             # Properly restore the session

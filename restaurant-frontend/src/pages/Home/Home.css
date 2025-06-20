@@ -59,19 +59,16 @@ html {
   position: fixed;
   top: 0;
   left: 0;
-  width: 120%;
-  height: 120%;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 80% 20%, rgba(247, 147, 30, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 40% 40%, rgba(255, 107, 53, 0.02) 0%, transparent 30%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(247, 147, 30, 0.03) 0%, transparent 50%);
   pointer-events: none;
   z-index: -1;
-  animation: backgroundFloat 25s ease-in-out infinite;
-  transform-origin: center;
+  /* animation: backgroundFloat 20s ease-in-out infinite; - Removed for performance */
 }
 
-/* Floating Particles */
+/* Floating Particles - Simplified */
 .restaurant-app::after {
   content: '';
   position: fixed;
@@ -88,27 +85,6 @@ html {
   background-size: 200px 150px;
   pointer-events: none;
   z-index: -1;
-  animation: particleFloat 30s linear infinite;
-}
-
-@keyframes backgroundFloat {
-  0%, 100% { 
-    transform: scale(1) rotate(0deg) translateX(0); 
-    opacity: 0.4; 
-  }
-  33% { 
-    transform: scale(1.05) rotate(1deg) translateX(10px); 
-    opacity: 0.6; 
-  }
-  66% { 
-    transform: scale(0.95) rotate(-1deg) translateX(-5px); 
-    opacity: 0.5; 
-  }
-}
-
-@keyframes particleFloat {
-  0% { transform: translateY(0px) rotate(0deg); }
-  100% { transform: translateY(-200px) rotate(360deg); }
 }
 
 /* Base Styles */
@@ -139,7 +115,7 @@ html {
   50% { transform: scale(1.1) rotate(2deg); opacity: 0.5; }
 }
 
-/* Enhanced Loading Screen */
+/* Enhanced Loading Screen - Simplified */
 .loading-screen {
   display: flex;
   flex-direction: column;
@@ -147,8 +123,8 @@ html {
   justify-content: center;
   height: 100vh;
   background: var(--gradient-dynamic);
-  background-size: 400% 400%;
-  animation: gradientWave 4s ease infinite;
+  /* background-size: 400% 400%; */
+  /* animation: gradientWave 4s ease infinite; - Removed for performance */
   position: relative;
   overflow: hidden;
 }
@@ -163,7 +139,7 @@ html {
   background: 
     radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  animation: loadingOrbs 6s ease-in-out infinite;
+  /* animation: loadingOrbs 6s ease-in-out infinite; - Removed for performance */
 }
 
 .loading-screen::after {
@@ -175,7 +151,7 @@ html {
   height: 300px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
   transform: translate(-50%, -50%);
-  animation: loadingPulse 3s ease-in-out infinite;
+  /* animation: loadingPulse 3s ease-in-out infinite; - Removed for performance */
   border-radius: 50%;
 }
 
@@ -184,16 +160,11 @@ html {
   height: 80px;
   border: 8px solid rgba(255, 255, 255, 0.1);
   border-top: 8px solid var(--white);
-  border-right: 8px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
-  animation: 
-    spinAdvanced 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite,
-    pulseGlow 2s ease-in-out infinite alternate,
-    scaleBreath 3s ease-in-out infinite;
+  animation: spin 1s linear infinite;
   margin-bottom: 30px;
   position: relative;
   z-index: 10;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
 }
 
 .spinner::before {
@@ -205,7 +176,7 @@ html {
   bottom: -8px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  animation: spinSlow 3s linear infinite reverse;
+  /* animation: spinSlow 3s linear infinite reverse; - Removed for performance */
 }
 
 .spinner::after {
@@ -218,7 +189,7 @@ html {
   background: radial-gradient(circle, var(--white) 0%, transparent 70%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: innerPulse 1.5s ease-in-out infinite;
+  /* animation: innerPulse 1.5s ease-in-out infinite; - Removed for performance */
 }
 
 .loading-text {
@@ -226,89 +197,11 @@ html {
   font-size: 1.2rem;
   font-weight: 600;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-  animation: textFloat 2s ease-in-out infinite alternate;
+  /* animation: textFloat 2s ease-in-out infinite alternate; - Removed for performance */
   position: relative;
   z-index: 10;
   letter-spacing: 2px;
   text-transform: uppercase;
-}
-
-@keyframes gradientWave {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes loadingOrbs {
-  0%, 100% { 
-    transform: scale(1) rotate(0deg); 
-    opacity: 0.3; 
-  }
-  50% { 
-    transform: scale(1.2) rotate(180deg); 
-    opacity: 0.6; 
-  }
-}
-
-@keyframes loadingPulse {
-  0%, 100% { 
-    transform: translate(-50%, -50%) scale(1); 
-    opacity: 0.2; 
-  }
-  50% { 
-    transform: translate(-50%, -50%) scale(1.3); 
-    opacity: 0.4; 
-  }
-}
-
-@keyframes spinAdvanced {
-  0% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(90deg) scale(1.1); }
-  50% { transform: rotate(180deg) scale(1); }
-  75% { transform: rotate(270deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes pulseGlow {
-  0% { 
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
-  }
-  100% { 
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
-    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
-  }
-}
-
-@keyframes scaleBreath {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes spinSlow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes innerPulse {
-  0%, 100% { 
-    transform: translate(-50%, -50%) scale(0.5); 
-    opacity: 0.7; 
-  }
-  50% { 
-    transform: translate(-50%, -50%) scale(1.2); 
-    opacity: 1; 
-  }
-}
-
-@keyframes textFloat {
-  0% { 
-    transform: translateY(0); 
-    opacity: 0.8; 
-  }
-  100% { 
-    transform: translateY(-10px); 
-    opacity: 1; 
-  }
 }
 
 /* Hero Banner */
@@ -332,8 +225,9 @@ html {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: slowZoom 25s ease-in-out infinite alternate;
-  filter: brightness(0.9) saturate(1.1);
+  object-position: center;
+  transition: transform 0.3s ease;
+  /* animation: slowZoom 25s ease-in-out infinite alternate; - Removed for performance */
 }
 
 .hero-overlay {
@@ -343,10 +237,11 @@ html {
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, 
-    rgba(255, 107, 53, 0.3) 0%, 
-    rgba(0, 0, 0, 0.4) 40%, 
-    rgba(247, 147, 30, 0.3) 100%);
-  animation: overlayPulse 4s ease-in-out infinite alternate;
+    rgba(255, 107, 53, 0.8) 0%, 
+    rgba(247, 147, 30, 0.7) 50%, 
+    rgba(255, 107, 53, 0.8) 100%);
+  /* animation: overlayPulse 4s ease-in-out infinite alternate; - Removed for performance */
+  border-radius: var(--border-radius-large);
 }
 
 .hero-content {
@@ -426,6 +321,7 @@ html {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left 0.6s;
+  /* Removed shimmer animation for performance */
 }
 
 .main-cta:hover {
@@ -591,7 +487,7 @@ html {
   width: 200%;
   height: 100%;
   background: linear-gradient(45deg, transparent, rgba(255, 107, 53, 0.02), transparent);
-  animation: featureWave 8s ease-in-out infinite;
+  /* animation: featureWave 8s ease-in-out infinite; - Removed for performance */
 }
 
 .features-grid {
@@ -742,8 +638,6 @@ html {
               0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-
-
 .category-img-container {
   position: relative;
   height: 250px;
@@ -822,10 +716,6 @@ html {
   position: relative;
   overflow: hidden;
 }
-
-
-
-
 
 .featured-section .section-container {
   position: relative;
@@ -928,7 +818,6 @@ html {
 @keyframes featuredLineGrow {
   to { transform: translateX(-50%) scaleX(1); }
 }
-
 
 /* Info Section */
 .info-section {
@@ -1236,6 +1125,15 @@ img {
   .category-card {
     animation-duration: 0.6s;
   }
+  
+  /* Mobile container adjustments */
+  .section-container {
+    padding: 0 1rem;
+  }
+  
+  .hero-banner {
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1471,4 +1369,9 @@ img {
   background: linear-gradient(var(--white), var(--white)) padding-box,
               var(--gradient-primary) border-box;
   border: 2px solid transparent;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

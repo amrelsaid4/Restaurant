@@ -60,4 +60,12 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/check-user-type/', views.check_user_type, name='check-user-type'),
     path('api/csrf-token/', views.get_csrf_token, name='csrf-token'),
+    path('api/submit-rating/', views.submit_rating_simple, name='submit-rating'),
+    path('api/add-rating/', views.add_rating, name='add-rating'),
+    path('api/update-rating/<int:rating_id>/', views.update_rating, name='update-rating'),
+    
+    # 💳 Payment endpoints
+    path('api/stripe/config/', views.get_stripe_config, name='stripe-config'),
+    path('api/stripe/create-payment-intent/', views.create_payment_intent, name='create-payment-intent'),
+    path('api/stripe/confirm-payment/', views.confirm_payment_and_create_order, name='confirm-payment'),
 ] 

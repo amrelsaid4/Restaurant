@@ -42,27 +42,27 @@ const AdminDashboard = () => {
         <div className="admin-sidebar">
           <div style={{ padding: '0 2rem' }}>
             <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              🛡️ Admin Panel
+              Admin Panel
             </h3>
             
             <nav className="admin-nav">
               <Link to="/admin/dashboard" className="admin-nav-link active">
-                📊 Dashboard
+                Dashboard
               </Link>
               <Link to="/admin/orders" className="admin-nav-link">
-                📋 Orders
+                Orders
               </Link>
               <Link to="/admin/dishes" className="admin-nav-link">
-                🍕 Dishes
+                Dishes
               </Link>
               <Link to="/admin/categories" className="admin-nav-link">
-                📂 Categories
+                Categories
               </Link>
               <Link to="/admin/customers" className="admin-nav-link">
-                👥 Customers
+                Customers
               </Link>
               <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-                🏠 Back to Website
+                Back to Website
               </Link>
             </nav>
           </div>
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
         <div className="admin-content">
           <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
             <h3 style={{ color: 'var(--danger-red)', marginBottom: '1rem' }}>
-              📊 Error Loading Dashboard
+              Error Loading Dashboard
             </h3>
             <p style={{ color: 'var(--medium-gray)' }}>
               Could not fetch statistics from the server. Please try again later.
@@ -87,27 +87,27 @@ const AdminDashboard = () => {
       <div className="admin-sidebar">
         <div style={{ padding: '0 2rem' }}>
           <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-            🛡️ Admin Panel
+            Admin Panel
           </h3>
           
           <nav className="admin-nav">
             <Link to="/admin/dashboard" className="admin-nav-link active">
-              📊 Dashboard
+              Dashboard
             </Link>
             <Link to="/admin/orders" className="admin-nav-link">
-              📋 Orders
+              Orders
             </Link>
             <Link to="/admin/dishes" className="admin-nav-link">
-              🍕 Dishes
+              Dishes
             </Link>
             <Link to="/admin/categories" className="admin-nav-link">
-              📂 Categories
+              Categories
             </Link>
             <Link to="/admin/customers" className="admin-nav-link">
-              👥 Customers
+              Customers
             </Link>
             <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-              🏠 Back to Website
+              Back to Website
             </Link>
           </nav>
         </div>
@@ -155,7 +155,7 @@ const AdminDashboard = () => {
 
           <div className="stat-card" style={{ borderLeftColor: 'var(--primary-gold)' }}>
             <div className="stat-value" style={{ color: 'var(--primary-gold)' }}>
-              ⭐ {stats.overview.average_rating}
+              {stats.overview.average_rating}
             </div>
             <div className="stat-label">Average Rating</div>
           </div>
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
           {/* Order Status Chart */}
           <div className="card">
             <div className="card-header">
-              <h3>📋 Order Status</h3>
+              <h3>Order Status</h3>
             </div>
             <div className="card-body">
               {stats.order_statuses.map((status, index) => (
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
           {/* Top Dishes */}
           <div className="card">
             <div className="card-header">
-              <h3>🏆 Most Ordered Dishes</h3>
+              <h3>Most Ordered Dishes</h3>
             </div>
             <div className="card-body">
               {stats.top_dishes.map((dish, index) => (

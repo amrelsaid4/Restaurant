@@ -12,8 +12,14 @@ export const useAlert = () => {
 
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState(null);
+  const [timeoutId, setTimeoutId] = useState(null);
 
   const showAlert = (message, type = 'info', title = null, duration = 3000) => {
+    // Clear any existing timeout
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
     setAlert({
       message,
       type, // 'success', 'error', 'warning', 'info'
@@ -24,13 +30,20 @@ export const AlertProvider = ({ children }) => {
 
     // Auto hide after duration
     if (duration > 0) {
-      setTimeout(() => {
+      const newTimeoutId = setTimeout(() => {
         setAlert(null);
+        setTimeoutId(null);
       }, duration);
+      setTimeoutId(newTimeoutId);
     }
   };
 
   const hideAlert = () => {
+    // Clear the timeout when manually hiding
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+    }
     setAlert(null);
   };
 

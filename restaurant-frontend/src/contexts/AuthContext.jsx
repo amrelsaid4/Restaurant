@@ -105,11 +105,12 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const initAuth = async () => {
-            // Get CSRF token first
+            // Get CSRF token first - this is critical for POST requests
             try {
-                await fetchCSRFToken();
+                const token = await fetchCSRFToken();
+                console.log('CSRF token fetched on app init:', token ? 'Success' : 'Failed');
             } catch (error) {
-                // Continue without CSRF token
+                console.error('Failed to fetch CSRF token on init:', error);
             }
             await checkAuthStatus();
         };

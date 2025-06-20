@@ -64,6 +64,23 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  padding-top: 75px; /* Space for fixed navbar */
+}
+
+@media (max-width: 820px) {
+  body {
+    padding-top: 65px; /* Smaller padding for mobile navbar */
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  /* Ensure all pages are mobile responsive */
+  .container {
+    padding: 0.5rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* ========================================
@@ -94,15 +111,7 @@ body {
    🧭 NAVIGATION STYLES
    ======================================== */
 
-.navbar {
-  position: static;
-  width: 100%;
-  height: var(--header-height);
-  background: var(--gradient-warm);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  box-shadow: var(--box-shadow);
-}
+/* Navbar styles moved to Navbar.css */
 
 .navbar-container {
   width: 100%;
@@ -271,27 +280,53 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.form-label {
+.form-label, label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-weight: 600;
   color: var(--dark-charcoal);
-}
-
-.form-control {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid #E0E0E0;
-  border-radius: var(--border-radius);
   font-size: var(--font-size-base);
-  transition: all 0.3s ease;
-  background: var(--white);
 }
 
-.form-control:focus {
+.form-control, input, textarea, select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #E0E6ED;
+  border-radius: 12px;
+  font-size: var(--font-size-base);
+  font-family: var(--font-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  color: var(--dark-charcoal);
+  line-height: 1.5;
+}
+
+.form-control:focus, input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--primary-orange);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.form-control::placeholder, input::placeholder, textarea::placeholder {
+  color: var(--medium-gray);
+  font-style: italic;
+}
+
+/* Enhanced textarea styling */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: var(--font-primary);
+}
+
+/* Required field indicator */
+label[for*="required"]::after,
+.form-label.required::after {
+  content: " *";
+  color: var(--danger-red);
+  font-weight: bold;
 }
 
 /* ========================================
@@ -581,7 +616,16 @@ body {
   
   /* Container padding */
   .container {
-    padding: 100px 0px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure proper spacing and no overflow */
+  .main-content {
+    padding: 0.5rem !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
   }
   
   /* Admin Layout - Stack vertically on mobile */

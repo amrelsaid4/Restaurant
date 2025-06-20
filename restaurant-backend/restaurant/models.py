@@ -146,7 +146,7 @@ class DishRating(models.Model):
     class Meta:
         verbose_name = "Dish Rating"
         verbose_name_plural = "Dish Ratings"
-        unique_together = ['dish', 'customer']
+        # Removed unique_together to allow multiple ratings from same customer
 
     def __str__(self):
         return f"{self.dish.name} - {self.rating} stars"

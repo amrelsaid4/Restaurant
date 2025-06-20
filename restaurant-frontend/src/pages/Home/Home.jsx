@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useAlert } from '../../contexts/AlertContext';
+import { useCart } from '../../contexts/CartContext';
 import './Home.css';
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
   const [restaurantInfo, setRestaurantInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const { showSuccess } = useAlert();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchData();
@@ -35,18 +37,8 @@ const Home = () => {
     }
   };
 
-  const addToCart = (dish) => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingItem = cart.find(item => item.id === dish.id);
-    
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({ ...dish, quantity: 1 });
-    }
-    
-    localStorage.setItem('cart', JSON.stringify(cart));
-    window.dispatchEvent(new Event('cartUpdated'));
+  const handleAddToCart = (dish) => {
+    addToCart(dish);
     showSuccess(`${dish.name} added to cart!`, 'Cart Updated');
   };
 
@@ -175,7 +167,7 @@ const Home = () => {
                 View Details
               </Link>
               <button 
-                onClick={() => addToCart(dish)}
+                onClick={() => handleAddToCart(dish)}
                 className="add-to-cart-btn"
               >
                 + Add to Cart

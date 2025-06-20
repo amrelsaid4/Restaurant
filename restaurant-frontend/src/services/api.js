@@ -6,10 +6,12 @@ const getCSRFToken = () => {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
     if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
+    
+    // If no cookie found, try localStorage
+    return localStorage.getItem('csrftoken');
 };
 
-// Get CSRF token from backend
+// Get CSRF token from backend and store it
 export const fetchCSRFToken = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/csrf-token/`, {
@@ -17,8 +19,15 @@ export const fetchCSRFToken = async () => {
             credentials: 'include',
         });
         const data = await response.json();
+        
+        // Store CSRF token in localStorage as fallback
+        if (data.csrf_token) {
+            localStorage.setItem('csrftoken', data.csrf_token);
+        }
+        
         return data.csrf_token;
     } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
         return null;
     }
 };
@@ -44,9 +53,18 @@ export const apiService = async (endpoint, method = 'GET', data = null) => {
 
         // Add CSRF token for POST requests
         if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
-            const csrfToken = getCSRFToken() || await fetchCSRFToken();
+            let csrfToken = getCSRFToken() || localStorage.getItem('csrftoken');
+            
+            // If no token found, fetch it
+            if (!csrfToken) {
+                csrfToken = await fetchCSRFToken();
+            }
+            
             if (csrfToken) {
                 options.headers['X-CSRFToken'] = csrfToken;
+                console.log('Using CSRF token:', csrfToken.substring(0, 10) + '...');
+            } else {
+                console.error('No CSRF token available');
             }
         }
 
@@ -75,6 +93,13 @@ export const apiService = async (endpoint, method = 'GET', data = null) => {
             } catch (e) {
                 errorData = { error: `HTTP error! status: ${response.status}` };
             }
+            
+            // Log authentication errors for debugging
+            if (response.status === 403 || response.status === 401) {
+                console.error('Authentication error:', errorData);
+                console.log('Request headers:', options.headers);
+            }
+            
             throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
         }
 
@@ -133,5 +158,68 @@ export const updateOrderStatus = (id, status) => apiService(`admin/orders/${id}/
 
 // Admin Customers
 export const getCustomers = () => apiService('admin/customers/', 'GET');
+
+// Rating functions
+export const submitRating = async (ratingData) => {
+    try {
+        console.log('Submitting rating:', ratingData);
+        
+        // Use the new add-rating endpoint
+        const sessionKey = localStorage.getItem('session_key');
+        const response = await fetch(`${API_BASE_URL}/add-rating/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Session-Key': sessionKey
+            },
+            credentials: 'include',
+            body: JSON.stringify(ratingData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Rating submitted successfully:', result);
+        return result;
+    } catch (error) {
+        console.error('Error submitting rating:', error);
+        throw error;
+    }
+};
+
+// Update rating function
+export const updateRating = async (ratingId, ratingData) => {
+    try {
+        console.log('Updating rating:', ratingId, ratingData);
+        
+        const sessionKey = localStorage.getItem('session_key');
+        const response = await fetch(`${API_BASE_URL}/update-rating/${ratingId}/`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Session-Key': sessionKey
+            },
+            credentials: 'include',
+            body: JSON.stringify(ratingData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Rating updated successfully:', result);
+        return result;
+    } catch (error) {
+        console.error('Error updating rating:', error);
+        throw error;
+    }
+};
 
  
