@@ -1,0 +1,274 @@
+/* Profile Page Styling */
+.profile-container {
+  padding: 2rem;
+  padding-top: 1rem;
+  background-color: #f9fafb;
+  min-height: calc(100vh - 70px); /* Adjust for navbar height */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 800px;
+  padding: 2.5rem;
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-right: 1.5rem;
+}
+
+.profile-info h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.profile-info p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.profile-details,
+.profile-orders {
+  margin-bottom: 2rem;
+}
+
+.profile-details h2,
+.profile-orders h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-details p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-item {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.3s ease;
+}
+
+.order-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.order-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.order-id {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.order-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.order-status.pending { background-color: #fef3c7; color: #92400e; }
+.order-status.processing { background-color: #dbeafe; color: #1e40af; }
+.order-status.delivered { background-color: #d1fae5; color: #065f46; }
+.order-status.cancelled { background-color: #fee2e2; color: #991b1b; }
+
+.error-message {
+  color: #991b1b;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.profile-container button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-container button:hover {
+  background-color: #3730a3;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+    min-height: calc(100vh - 65px); /* Adjust for mobile navbar height */
+  }
+  
+  .profile-card {
+    padding: 1.5rem;
+    margin: 0;
+    border-radius: 8px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+  
+  .profile-info h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-info p {
+    font-size: 1rem;
+  }
+  
+  .profile-details h2,
+  .profile-orders h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .profile-details p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .order-item {
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .order-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .order-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .order-id {
+    font-size: 1rem;
+  }
+  
+  .order-date {
+    font-size: 0.85rem;
+  }
+  
+  .order-status {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 0.5rem;
+  }
+  
+  .profile-card {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+  
+  .profile-info h1 {
+    font-size: 1.4rem;
+  }
+  
+  .profile-details h2,
+  .profile-orders h2 {
+    font-size: 1.2rem;
+  }
+  
+  .order-item {
+    padding: 0.8rem;
+  }
+  
+  .profile-container button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+} 
