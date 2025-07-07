@@ -6,6 +6,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.contrib.auth.models import User
+from django.db import models
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
@@ -15,11 +16,20 @@ import stripe
 import json
 import logging
 import time
-from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant, AdminProfile
+from .models import (
+    Category, Dish, Customer, Order, OrderItem, DishRating, 
+    Restaurant, AdminProfile, Notification, OrderAnalytics
+)
 from .serializers import (
     CategorySerializer, DishSerializer, CustomerSerializer,
     OrderSerializer, OrderCreateSerializer, DishRatingSerializer,
-    RestaurantSerializer, UserSerializer
+    RestaurantSerializer, UserSerializer, NotificationSerializer,
+    OrderAnalyticsSerializer, EnhancedOrderCreateSerializer
+)
+from .filters import DishFilter, CategoryFilter, OrderFilter, DishRatingFilter
+from .utils import (
+    get_popular_dishes, send_order_notifications, send_stock_alert,
+    calculate_daily_analytics, invalidate_dish_cache
 )
 
 # Configure logging
@@ -50,29 +60,45 @@ class IsRestaurantAdmin(permissions.BasePermission):
 # ========================================
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.filter(is_active=True)
+    queryset = Category.objects.filter(is_active=True).prefetch_related('dish_set')
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
+    filterset_class = CategoryFilter
+    search_fields = ['name', 'description']
+    ordering_fields = ['name', 'created_at']
+    ordering = ['name']
 
 class DishViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Dish.objects.filter(is_available=True)
+    queryset = (
+        Dish.objects
+        .filter(is_available=True)
+        .select_related('category')
+        .prefetch_related('dishrating_set')
+    )
     serializer_class = DishSerializer
     permission_classes = [AllowAny]
+    filterset_class = DishFilter
+    search_fields = ['name', 'description', 'ingredients']
+    ordering_fields = ['name', 'price', 'created_at', 'average_rating']
+    ordering = ['name']
     
-    def get_queryset(self):
-        queryset = Dish.objects.filter(is_available=True)
-        category = self.request.query_params.get('category', None)
-        is_vegetarian = self.request.query_params.get('vegetarian', None)
-        is_spicy = self.request.query_params.get('spicy', None)
+    @action(detail=False, methods=['get'])
+    def popular(self, request):
+        """الأطباق الشعبية"""
+        popular_dishes = get_popular_dishes(limit=10)
+        return Response(popular_dishes)
+    
+    @action(detail=False, methods=['get'])
+    def low_stock(self, request):
+        """الأطباق ذات المخزون المنخفض"""
+        if not request.user.is_staff:
+            return Response({'error': 'Permission denied'}, status=403)
         
-        if category is not None:
-            queryset = queryset.filter(category_id=category)
-        if is_vegetarian is not None:
-            queryset = queryset.filter(is_vegetarian=is_vegetarian.lower() == 'true')
-        if is_spicy is not None:
-            queryset = queryset.filter(is_spicy=is_spicy.lower() == 'true')
-            
-        return queryset
+        low_stock_dishes = Dish.objects.filter(
+            stock_quantity__lte=models.F('low_stock_threshold')
+        ).select_related('category')
+        serializer = self.get_serializer(low_stock_dishes, many=True)
+        return Response(serializer.data)
     
     @action(detail=True, methods=['get'])
     def ratings(self, request, pk=None):
@@ -85,6 +111,58 @@ class RestaurantViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Restaurant.objects.filter(is_active=True)
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
+
+# ViewSets جديدة للميزات المتقدمة
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        """عرض إشعارات المستخدم فقط"""
+        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+    
+    @action(detail=True, methods=['post'])
+    def mark_read(self, request, pk=None):
+        """تحديد الإشعار كمقروء"""
+        notification = self.get_object()
+        notification.is_read = True
+        notification.save()
+        return Response({'status': 'marked as read'})
+    
+    @action(detail=False, methods=['post'])
+    def mark_all_read(self, request):
+        """تحديد جميع الإشعارات كمقروءة"""
+        self.get_queryset().update(is_read=True)
+        return Response({'status': 'all notifications marked as read'})
+
+class OrderAnalyticsViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = OrderAnalyticsSerializer
+    permission_classes = [IsAdminUser]
+    
+    def get_queryset(self):
+        return OrderAnalytics.objects.all().order_by('-date')
+    
+    @action(detail=False, methods=['get'])
+    def weekly_stats(self, request):
+        """إحصائيات الأسبوع"""
+        from .utils import get_weekly_stats
+        stats = get_weekly_stats()
+        return Response(stats)
+    
+    @action(detail=False, methods=['get'])
+    def monthly_stats(self, request):
+        """إحصائيات الشهر"""
+        from .utils import get_monthly_stats
+        stats = get_monthly_stats()
+        return Response(stats)
+    
+    @action(detail=False, methods=['post'])
+    def calculate_daily(self, request):
+        """حساب الإحصائيات اليومية"""
+        date = request.data.get('date')
+        analytics = calculate_daily_analytics(date)
+        serializer = self.get_serializer(analytics)
+        return Response(serializer.data)
 
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
@@ -445,6 +523,8 @@ def customer_login(request):
         identity = data.get('identity')
         password = data.get('password')
         
+        logger.info(f"🔐 Customer login attempt: {identity}")
+        
         if not identity or not password:
             return JsonResponse({'error': 'Identity and password are required'}, status=400)
         
@@ -453,31 +533,42 @@ def customer_login(request):
         if '@' in identity:
             try:
                 user = User.objects.get(email=identity)
+                logger.info(f"📧 Found user by email: {user.username}")
             except User.DoesNotExist:
-                pass
+                logger.warning(f"❌ No user found with email: {identity}")
         else:
             try:
                 user = User.objects.get(username=identity)
+                logger.info(f"👤 Found user by username: {user.username}")
             except User.DoesNotExist:
-                pass
+                logger.warning(f"❌ No user found with username: {identity}")
         
         if not user:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
         
         # Check password
         if not user.check_password(password):
+            logger.warning(f"❌ Invalid password for user: {user.username}")
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
         
-        # Check if user is a customer (not admin)
-        if user.is_staff or user.is_superuser:
-            return JsonResponse({'error': 'Admin users should use admin login'}, status=403)
+        # Ensure user has customer profile (allow admin users if they have customer profile)
+        if not hasattr(user, 'customer'):
+            logger.warning(f"❌ User has no customer profile: {user.username}")
+            return JsonResponse({'error': 'User is not a customer'}, status=403)
         
         # Log the user in
         login(request, user)
         
-        # Create session
+        # Force session creation and save
+        request.session.create()
+        request.session['user_id'] = user.id
+        request.session['is_customer'] = True
+        request.session['customer_email'] = user.email
         request.session.save()
+        
         session_key = request.session.session_key
+        logger.info(f"✅ User logged in successfully: {user.username}, session: {session_key}")
+        logger.info(f"🔍 Session data: {dict(request.session)}")
         
         response_data = {
             'message': 'Login successful',
@@ -485,13 +576,29 @@ def customer_login(request):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'is_admin': user.is_staff or user.is_superuser,
-                'is_customer': not (user.is_staff or user.is_superuser)
+                'is_customer': hasattr(user, 'customer')
             },
             'session_key': session_key
         }
         
-        return JsonResponse(response_data)
+        response = JsonResponse(response_data)
+        response['Access-Control-Allow-Credentials'] = 'true'
+        
+        # Set session cookie explicitly
+        response.set_cookie(
+            'sessionid',
+            session_key,
+            max_age=86400,  # 24 hours
+            httponly=True,
+            secure=False,  # Development mode
+            samesite='Lax',
+            path='/'
+        )
+        
+        return response
         
     except json.JSONDecodeError as e:
         logger.error(f"JSON decode error: {str(e)}")
@@ -501,89 +608,219 @@ def customer_login(request):
         return JsonResponse({'error': 'Login failed'}, status=500)
 
 @csrf_exempt
-@api_view(['POST'])
-@permission_classes([AllowAny])
 def admin_login(request):
-    """Login function specifically for admin users"""
-    from django.contrib.auth import authenticate, login
+    """Admin login endpoint"""
+    logger = logging.getLogger(__name__)
     
-    email = request.data.get('email')
-    password = request.data.get('password')
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
     
-    if not email or not password:
-        return Response({'error': 'Email and password required'}, status=400)
-    
-    # Check if email is registered as admin
     try:
-        is_admin = AdminProfile.is_admin_email(email)
-        if not is_admin:
-            return Response({'error': 'Unauthorized: Not an admin email'}, status=403)
-    except Exception as e:
-        return Response({'error': 'Admin system error'}, status=500)
-    
-    # Get user by email
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        return Response({'error': 'Invalid credentials'}, status=401)
-    
-    # Authenticate user
-    auth_user = authenticate(request, username=user.username, password=password)
-    
-    if auth_user:
-        login(request, auth_user)
+        data = json.loads(request.body)
+        email = data.get('email')
+        password = data.get('password')
+        
+        logger.info(f"🔐 Admin login attempt: {email}")
+        
+        if not email or not password:
+            return JsonResponse({'error': 'Email and password are required'}, status=400)
+        
+        # Check if email is admin
+        if not AdminProfile.is_admin_email(email):
+            logger.warning(f"❌ Not an admin email: {email}")
+            return JsonResponse({'error': 'Unauthorized: Not an admin email'}, status=403)
+        
+        # Find user
+        try:
+            user = User.objects.get(email=email)
+            logger.info(f"📧 Found admin user: {user.username}")
+        except User.DoesNotExist:
+            logger.warning(f"❌ No user found with email: {email}")
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+        
+        # Check password
+        if not user.check_password(password):
+            logger.warning(f"❌ Invalid password for admin: {user.username}")
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+        
+        # Log the user in
+        login(request, user)
+        
+        # Check if admin also has customer profile
+        has_customer = hasattr(user, 'customer')
+        logger.info(f"🔍 Admin user has customer profile: {has_customer}")
+        
+        # Force session creation and save
+        request.session.create()
+        request.session['user_id'] = user.id
+        request.session['is_admin'] = True
+        request.session['is_customer'] = has_customer  # Add customer flag for dual-role users
+        request.session['admin_email'] = email
         request.session.save()
+        
+        session_key = request.session.session_key
+        logger.info(f"✅ Admin logged in successfully: {user.username}, session: {session_key}")
+        logger.info(f"🔍 Session data: {dict(request.session)}")
+        
+        # Get admin profile
         admin_profile = AdminProfile.objects.get(admin_email=email)
         
-        response = Response({
+        response_data = {
             'message': 'Login successful',
             'user': {
-                'id': auth_user.id,
-                'username': auth_user.username,
-                'email': auth_user.email,
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'is_admin': True,
+                'is_customer': has_customer,
                 'is_super_admin': admin_profile.is_super_admin
             },
-            'session_key': request.session.session_key
-        })
+            'session_key': session_key
+        }
         
-        # Set CORS headers explicitly
+        response = JsonResponse(response_data)
         response['Access-Control-Allow-Credentials'] = 'true'
-        response['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        
+        # Set session cookie explicitly
+        response.set_cookie(
+            'sessionid',
+            session_key,
+            max_age=86400,  # 24 hours
+            httponly=True,
+            secure=False,  # Development mode
+            samesite='Lax',
+            path='/'
+        )
         
         return response
-    else:
-        return Response({'error': 'Invalid credentials'}, status=401)
+        
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.error(f"Admin login error: {str(e)}")
+        return JsonResponse({'error': 'Admin login failed'}, status=500)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def check_user_type(request):
     """Check if current user is admin or customer"""
+    logger = logging.getLogger(__name__)
     
-    if not request.user.is_authenticated:
+    logger.info(f"🔍 Checking user type for request")
+    logger.info(f"🔍 Session key: {request.session.session_key}")
+    logger.info(f"🔍 Session data: {dict(request.session)}")
+    logger.info(f"🔍 User authenticated: {request.user.is_authenticated}")
+    logger.info(f"🔍 User: {request.user}")
+    
+    # Check for X-Session-Key header first
+    session_key_header = request.headers.get('X-Session-Key')
+    if session_key_header:
+        logger.info(f"🔑 Found X-Session-Key header: {session_key_header[:10]}...")
+        
+        try:
+            from django.contrib.sessions.models import Session
+            session = Session.objects.get(session_key=session_key_header)
+            session_data = session.get_decoded()
+            logger.info(f"🔍 Session data from header: {session_data}")
+            
+            user_id = session_data.get('user_id')
+            if user_id:
+                try:
+                    user = User.objects.get(id=user_id)
+                    logger.info(f"✅ Found user from X-Session-Key: {user.username}")
+                    
+                    # Get admin/customer status from session
+                    is_admin = session_data.get('is_admin', False)
+                    is_customer = session_data.get('is_customer', False)
+                    
+                    response_data = {
+                        'user_id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'is_admin': is_admin,
+                        'is_customer': is_customer,
+                        'is_authenticated': True
+                    }
+                    
+                    if is_admin:
+                        try:
+                            admin_profile = AdminProfile.objects.get(admin_email=user.email)
+                            response_data['is_super_admin'] = admin_profile.is_super_admin
+                            logger.info(f"✅ Super admin status: {admin_profile.is_super_admin}")
+                        except AdminProfile.DoesNotExist:
+                            logger.warning(f"⚠️ AdminProfile not found for {user.email}")
+                    
+                    logger.info(f"✅ Final response data from X-Session-Key: {response_data}")
+                    return Response(response_data)
+                    
+                except User.DoesNotExist:
+                    logger.warning(f"❌ User not found for ID from session: {user_id}")
+        except Exception as e:
+            logger.error(f"❌ Error reading X-Session-Key: {e}")
+    
+    # Fallback to Django session middleware
+    user = request.user
+    if not user.is_authenticated:
+        # Try to get user from current session
+        user_id = request.session.get('user_id')
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                logger.info(f"🔍 Found user from Django session: {user.username}")
+            except User.DoesNotExist:
+                logger.warning(f"❌ User not found in Django session: {user_id}")
+                user = None
+    
+    if not user or not user.is_authenticated:
+        logger.info("❌ User not authenticated")
         return Response({
             'user_id': None,
             'username': None,
             'email': None,
+            'first_name': None,
+            'last_name': None,
             'is_admin': False,
             'is_customer': False,
             'is_authenticated': False
         })
     
-    user = request.user
     is_admin = False
     
-    try:
-        is_admin = AdminProfile.is_admin_email(user.email)
-    except Exception as e:
-        pass
+    # Check if admin from session first
+    if request.session.get('is_admin'):
+        is_admin = True
+        logger.info(f"✅ Admin status from Django session: {is_admin}")
+    else:
+        # Fallback to email check
+        try:
+            is_admin = AdminProfile.is_admin_email(user.email)
+            logger.info(f"✅ Admin check result for {user.email}: {is_admin}")
+        except Exception as e:
+            logger.warning(f"⚠️ Admin check failed: {e}")
+    
+    # Check customer status
+    has_customer = False
+    if request.session.get('is_customer'):
+        has_customer = True
+        logger.info(f"✅ Customer status from Django session: {has_customer}")
+    else:
+        # Fallback to model check
+        has_customer = hasattr(user, 'customer')
+        logger.info(f"✅ Customer check result for {user.username}: {has_customer}")
     
     response_data = {
         'user_id': user.id,
         'username': user.username,
         'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
         'is_admin': is_admin,
-        'is_customer': hasattr(user, 'customer'),
+        'is_customer': has_customer,
         'is_authenticated': True
     }
     
@@ -591,9 +828,11 @@ def check_user_type(request):
         try:
             admin_profile = AdminProfile.objects.get(admin_email=user.email)
             response_data['is_super_admin'] = admin_profile.is_super_admin
+            logger.info(f"✅ Super admin status: {admin_profile.is_super_admin}")
         except AdminProfile.DoesNotExist:
-            pass
+            logger.warning(f"⚠️ AdminProfile not found for {user.email}")
     
+    logger.info(f"✅ Final response data from Django session: {response_data}")
     return Response(response_data)
 
 @csrf_exempt

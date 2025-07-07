@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Dish, Customer, Order, OrderItem, DishRating, Restaurant, AdminProfile
+from django.core.cache import cache
+from .models import (
+    Category, Dish, Customer, Order, OrderItem, 
+    DishRating, Restaurant, AdminProfile, Notification, OrderAnalytics
+)
+import logging
+
+logger = logging.getLogger('restaurant')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,27 +23,78 @@ class AdminProfileSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     dishes_count = serializers.SerializerMethodField()
+    available_dishes_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description', 'image', 'is_active', 'created_at', 'dishes_count']
+        fields = [
+            'id', 'name', 'slug', 'description', 'image', 'is_active', 
+            'created_at', 'dishes_count', 'available_dishes_count'
+        ]
     
     def get_dishes_count(self, obj):
-        return obj.dish_set.count()
+        # استخدام cache للأداء
+        cache_key = f'category_dishes_count_{obj.id}'
+        count = cache.get(cache_key)
+        if count is None:
+            count = obj.dish_set.count()
+            cache.set(cache_key, count, 300)  # 5 minutes
+        return count
+    
+    def get_available_dishes_count(self, obj):
+        cache_key = f'category_available_dishes_count_{obj.id}'
+        count = cache.get(cache_key)
+        if count is None:
+            count = obj.dish_set.filter(is_available=True).count()
+            cache.set(cache_key, count, 300)  # 5 minutes
+        return count
 
 class DishSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     category_id = serializers.IntegerField(write_only=True)
     average_rating = serializers.ReadOnlyField()
+    rating_count = serializers.SerializerMethodField()  # Changed from ratings_count
+    is_in_stock = serializers.ReadOnlyField()
+    is_low_stock = serializers.ReadOnlyField()
+    image = serializers.SerializerMethodField()  # Custom field for full image URL
     
     class Meta:
         model = Dish
         fields = [
-            'id', 'name', 'description', 'price', 'category', 'category_id',
-            'image', 'is_available', 'preparation_time', 'ingredients',
-            'calories', 'is_spicy', 'is_vegetarian', 'average_rating',
-            'created_at', 'updated_at'
+            'id', 'name', 'slug', 'description', 'price', 'category', 'category_id',
+            'image', 'is_available', 'stock_quantity', 'low_stock_threshold',
+            'preparation_time', 'ingredients', 'calories', 'is_spicy', 
+            'is_vegetarian', 'average_rating', 'rating_count',
+            'is_in_stock', 'is_low_stock', 'created_at', 'updated_at'
         ]
+    
+    def get_image(self, obj):
+        """Return full URL for image or None if no image"""
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
+    
+    def get_rating_count(self, obj):
+        # استخدام cache للأداء
+        cache_key = f'dish_ratings_count_{obj.id}'
+        count = cache.get(cache_key)
+        if count is None:
+            count = obj.dishrating_set.count()
+            cache.set(cache_key, count, 300)  # 5 minutes
+        return count
+    
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Price must be greater than 0")
+        return value
+    
+    def validate_stock_quantity(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Stock quantity cannot be negative")
+        return value
 
 class CustomerSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -115,4 +173,77 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'id', 'name', 'address', 'phone', 'email',
             'opening_time', 'closing_time', 'is_active',
             'description', 'logo'
-        ] 
+        ]
+
+# إضافة Serializers للنماذج الجديدة
+class NotificationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Notification
+        fields = [
+            'id', 'user', 'title', 'message', 'notification_type',
+            'is_read', 'created_at'
+        ]
+        read_only_fields = ['created_at']
+
+class OrderAnalyticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderAnalytics
+        fields = [
+            'id', 'date', 'total_orders', 'total_revenue',
+            'popular_dishes', 'avg_order_value'
+        ]
+
+# تحسين OrderCreateSerializer مع validation
+class EnhancedOrderCreateSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    
+    class Meta:
+        model = Order
+        fields = [
+            'delivery_address', 'special_instructions', 'items'
+        ]
+    
+    def validate_items(self, value):
+        if not value:
+            raise serializers.ValidationError("Order must contain at least one item")
+        
+        for item_data in value:
+            dish_id = item_data.get('dish_id')
+            quantity = item_data.get('quantity', 0)
+            
+            try:
+                dish = Dish.objects.get(id=dish_id)
+                if not dish.is_available:
+                    raise serializers.ValidationError(f"Dish '{dish.name}' is not available")
+                if not dish.is_in_stock:
+                    raise serializers.ValidationError(f"Dish '{dish.name}' is out of stock")
+                if dish.stock_quantity < quantity:
+                    raise serializers.ValidationError(
+                        f"Insufficient stock for '{dish.name}'. Available: {dish.stock_quantity}"
+                    )
+            except Dish.DoesNotExist:
+                raise serializers.ValidationError(f"Dish with id {dish_id} does not exist")
+        
+        return value
+    
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        order = Order.objects.create(**validated_data)
+        
+        total_amount = 0
+        for item_data in items_data:
+            dish = Dish.objects.get(id=item_data['dish_id'])
+            item_data['price'] = dish.price
+            order_item = OrderItem.objects.create(order=order, **item_data)
+            total_amount += order_item.total_price
+            
+            # تقليل المخزون
+            dish.reduce_stock(item_data['quantity'])
+        
+        order.total_amount = total_amount
+        order.save()
+        
+        logger.info(f"Order created successfully: #{order.id} - Total: ${total_amount}")
+        return order 

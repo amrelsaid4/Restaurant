@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+import logging
+
+# إعداد الـ logger
+logger = logging.getLogger('restaurant')
 
 # Admin Profile for managing admin users
 class AdminProfile(models.Model):
@@ -23,6 +29,7 @@ class AdminProfile(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Category Name")
+    slug = models.SlugField(blank=True, verbose_name="Slug")
     description = models.TextField(blank=True, verbose_name="Description")
     image = models.ImageField(upload_to='categories/', blank=True, null=True, verbose_name="Category Image")
     is_active = models.BooleanField(default=True, verbose_name="Active")
@@ -32,17 +39,37 @@ class Category(models.Model):
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         ordering = ['name']
+        # إضافة فهارس للأداء
+        indexes = [
+            models.Index(fields=['created_at']),
+            models.Index(fields=['is_active']),
+            models.Index(fields=['slug']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        logger.info(f"Category saved: {self.name}")
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if Category.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            raise ValidationError({'slug': 'Category with this slug already exists'})
 
     def __str__(self):
         return self.name
 
 class Dish(models.Model):
     name = models.CharField(max_length=100, verbose_name="Dish Name")
+    slug = models.SlugField(blank=True, verbose_name="Slug")
     description = models.TextField(verbose_name="Description")
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Price")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Category")
     image = models.ImageField(upload_to='dishes/', blank=True, null=True, verbose_name="Dish Image")
     is_available = models.BooleanField(default=True, verbose_name="Available")
+    # إضافة Stock Management
+    stock_quantity = models.PositiveIntegerField(default=0, verbose_name="Stock Quantity")
+    low_stock_threshold = models.PositiveIntegerField(default=5, verbose_name="Low Stock Alert")
     preparation_time = models.PositiveIntegerField(default=15, verbose_name="Preparation Time (minutes)")
     ingredients = models.TextField(blank=True, verbose_name="Ingredients")
     calories = models.PositiveIntegerField(blank=True, null=True, verbose_name="Calories")
@@ -55,6 +82,47 @@ class Dish(models.Model):
         verbose_name = "Dish"
         verbose_name_plural = "Dishes"
         ordering = ['category', 'name']
+        # إضافة فهارس محسنة للأداء
+        indexes = [
+            models.Index(fields=['category', 'is_available']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['price']),
+            models.Index(fields=['slug']),
+            models.Index(fields=['stock_quantity']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        logger.info(f"Dish saved: {self.name} - Stock: {self.stock_quantity}")
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if Dish.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            raise ValidationError({'slug': 'Dish with this slug already exists'})
+        if self.price <= 0:
+            raise ValidationError({'price': 'Price must be greater than 0'})
+
+    @property
+    def is_low_stock(self):
+        """Check if dish is low on stock"""
+        return self.stock_quantity <= self.low_stock_threshold
+
+    @property
+    def is_in_stock(self):
+        """Check if dish is in stock"""
+        return self.stock_quantity > 0
+
+    def reduce_stock(self, quantity):
+        """Reduce stock when order is placed"""
+        if self.stock_quantity >= quantity:
+            self.stock_quantity -= quantity
+            self.save()
+            logger.info(f"Stock reduced for {self.name}: {quantity} units")
+            return True
+        else:
+            logger.warning(f"Insufficient stock for {self.name}. Available: {self.stock_quantity}, Requested: {quantity}")
+            return False
 
     def __str__(self):
         return f"{self.name} - ${self.price}"
@@ -111,6 +179,17 @@ class Order(models.Model):
         verbose_name = "Order"
         verbose_name_plural = "Orders"
         ordering = ['-order_date']
+        # إضافة فهارس للأداء
+        indexes = [
+            models.Index(fields=['order_date']),
+            models.Index(fields=['status']),
+            models.Index(fields=['payment_status']),
+            models.Index(fields=['customer', 'order_date']),
+        ]
+
+    def save(self, *args, **kwargs):
+        logger.info(f"Order saved: #{self.id} - Customer: {self.customer} - Total: ${self.total_amount}")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order #{self.id} - {self.customer} - ${self.total_amount}"
@@ -171,3 +250,55 @@ class Restaurant(models.Model):
 
 # MenuItem - keeping for backward compatibility, now points to Dish
 MenuItem = Dish
+
+# إضافة نموذج الإشعارات
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('order_placed', 'Order Placed'),
+        ('order_confirmed', 'Order Confirmed'),
+        ('order_preparing', 'Order Preparing'),
+        ('order_ready', 'Order Ready'),
+        ('order_delivered', 'Order Delivered'),
+        ('stock_low', 'Stock Low'),
+        ('payment_received', 'Payment Received'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="User")
+    title = models.CharField(max_length=200, verbose_name="Title")
+    message = models.TextField(verbose_name="Message")
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, verbose_name="Type")
+    is_read = models.BooleanField(default=False, verbose_name="Read")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    
+    class Meta:
+        verbose_name = "Notification"
+        verbose_name_plural = "Notifications"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'is_read']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['notification_type']),
+        ]
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+
+# إضافة نموذج التحليلات
+class OrderAnalytics(models.Model):
+    date = models.DateField(verbose_name="Date")
+    total_orders = models.IntegerField(default=0, verbose_name="Total Orders")
+    total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Total Revenue")
+    popular_dishes = models.JSONField(default=dict, verbose_name="Popular Dishes")
+    avg_order_value = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name="Average Order Value")
+    
+    class Meta:
+        verbose_name = "Order Analytics"
+        verbose_name_plural = "Order Analytics"
+        ordering = ['-date']
+        unique_together = ['date']
+        indexes = [
+            models.Index(fields=['date']),
+        ]
+    
+    def __str__(self):
+        return f"Analytics {self.date} - {self.total_orders} orders"

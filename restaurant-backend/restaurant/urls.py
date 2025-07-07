@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.http import JsonResponse
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from . import views
 
 def api_root(request):
@@ -31,6 +32,7 @@ router.register(r'dishes', views.DishViewSet)
 router.register(r'restaurants', views.RestaurantViewSet)
 router.register(r'orders', views.OrderViewSet, basename='order')
 router.register(r'ratings', views.DishRatingViewSet, basename='rating')
+router.register(r'notifications', views.NotificationViewSet, basename='notification')
 
 # Admin API Router
 admin_router = DefaultRouter()
@@ -39,6 +41,7 @@ admin_router.register(r'dishes', views.AdminDishViewSet, basename='admin-dish')
 admin_router.register(r'orders', views.AdminOrderViewSet, basename='admin-order')
 admin_router.register(r'customers', views.AdminCustomerViewSet, basename='admin-customer')
 admin_router.register(r'restaurants', views.AdminRestaurantViewSet, basename='admin-restaurant')
+admin_router.register(r'analytics', views.OrderAnalyticsViewSet, basename='admin-analytics')
 
 urlpatterns = [
     # 🏠 Root path
@@ -72,4 +75,9 @@ urlpatterns = [
     path('api/stripe/success/', views.stripe_success, name='stripe-success'),
     path('api/stripe/cancel/', views.stripe_cancel, name='stripe-cancel'),
     path('api/stripe/webhook/', views.stripe_webhook, name='stripe-webhook'),
+    
+    # 📚 API Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ] 
