@@ -1,105 +1,57 @@
-import React, { useEffect } from 'react';
-import { useAlert } from '../contexts/AlertContext';
-import './AlertModal.css';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const AlertModal = () => {
-  const { alert, hideAlert } = useAlert();
-
-  useEffect(() => {
-    if (alert) {
-      // Only prevent scrolling for errors and warnings, not for success/info
-      if (alert.type === 'error' || alert.type === 'warning') {
-        document.body.style.overflow = 'hidden';
-        return () => {
-          document.body.style.overflow = 'unset';
-        };
-      }
-    }
-  }, [alert]);
-
-  if (!alert) return null;
-
-  const getIcon = (type) => {
-    switch (type) {
-      case 'success':
-        return '✅';
-      case 'error':
-        return '❌';
-      case 'warning':
-        return '⚠️';
-      case 'info':
-        return 'ℹ️';
-      default:
-        return 'ℹ️';
-    }
+const AlertModal = ({ isOpen, onClose, title, message, type = 'info' }) => {
+  const typeStyles = {
+    success: 'bg-green-50 border-green-200 text-green-800',
+    error: 'bg-red-50 border-red-200 text-red-800',
+    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
   };
 
-  const getTypeClass = (type) => {
-    switch (type) {
-      case 'success':
-        return 'alert-modal-success';
-      case 'error':
-        return 'alert-modal-error';
-      case 'warning':
-        return 'alert-modal-warning';
-      case 'info':
-        return 'alert-modal-info';
-      default:
-        return 'alert-modal-info';
-    }
+  const iconMap = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️',
   };
-
-  // For success and info, show as toast-style notification
-  const isToastStyle = alert.type === 'success' || alert.type === 'info';
 
   return (
-    <div 
-      className={`alert-modal-overlay ${isToastStyle ? 'alert-modal-toast' : ''}`} 
-      onClick={isToastStyle ? hideAlert : hideAlert}
-    >
-      <div 
-        className={`alert-modal ${getTypeClass(alert.type)} ${isToastStyle ? 'alert-modal-minimal' : ''}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="alert-modal-header">
-          <div className="alert-modal-icon">
-            {getIcon(alert.type)}
-          </div>
-          {alert.title && (
-            <div className="alert-modal-title">
-              {alert.title}
-            </div>
-          )}
-          <button 
-            className="alert-modal-close"
-            onClick={hideAlert}
-            aria-label="Close"
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={onClose}
           >
-            ×
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="alert-modal-body">
-          <p className="alert-modal-message">
-            {alert.message}
-          </p>
-        </div>
-
-        {/* Footer - only show for errors and warnings */}
-        {!isToastStyle && (
-          <div className="alert-modal-footer">
-            <button 
-              className={`alert-modal-btn alert-modal-btn-${alert.type}`}
-              onClick={hideAlert}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className={`bg-white rounded-lg shadow-xl max-w-md w-full p-6 ${typeStyles[type]}`}
+              onClick={(e) => e.stopPropagation()}
             >
-              OK
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+              <div className="flex items-center mb-4">
+                <span className="text-2xl mr-3">{iconMap[type]}</span>
+                <h3 className="text-lg font-semibold">{title}</h3>
+              </div>
+              <p className="mb-4">{message}</p>
+              <div className="flex justify-end">
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -32,10 +32,12 @@ const OrderSuccess = () => {
         setOrderData(data);
         showSuccess('Your order has been confirmed!', 'Payment Successful');
       } else {
-        console.error('Failed to verify payment');
+        setPaymentStatus('error');
+        setPaymentError('Payment verification failed');
       }
     } catch (error) {
-      console.error('Error verifying payment:', error);
+      setPaymentStatus('error');
+      setPaymentError('Payment verification failed');
     } finally {
       setLoading(false);
     }

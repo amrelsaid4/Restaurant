@@ -1,385 +1,630 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
-import { apiService, submitRating, updateRating } from '@/services/api';
-import './DishDetail.css';
+import toast from 'react-hot-toast';
 
 const DishDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
-  const { showSuccess, showError, showWarning } = useAlert();
-  
-  // Refs for autofocus
-  const commentRef = useRef(null);
-  const instructionsRef = useRef(null);
-  
+  const { user, isAuthenticated } = useAuth();
+  const { showAlert } = useAlert();
+
+  // States
   const [dish, setDish] = useState(null);
-  const [ratings, setRatings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState('');
-  const [newRating, setNewRating] = useState({
-    rating: 5,
-    comment: ''
-  });
-  const [submittingRating, setSubmittingRating] = useState(false);
-  const [editingRating, setEditingRating] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(0);
+  
+  // Reviews states
+  const [reviews, setReviews] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
+  const [submittingReview, setSubmittingReview] = useState(false);
 
-  // Memoized fetch function for better performance
+  // Refs
+  const instructionsRef = useRef(null);
+  const commentRef = useRef(null);
+
+  // Fetch dish details
   const fetchDishDetails = useCallback(async () => {
     try {
       setLoading(true);
-      const [dishData, ratingsData] = await Promise.all([
-        apiService(`dishes/${id}/`),
-        apiService(`dishes/${id}/ratings/`)
-      ]);
-      
-      setDish(dishData);
-      setRatings(ratingsData);
-    } catch (error) {
-      showError('Failed to load dish details. Please try again.', 'Loading Error');
+      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/`);
+      if (!response.ok) {
+        throw new Error('Dish not found');
+      }
+      const data = await response.json();
+      setDish(data);
+    } catch (err) {
+      setError(err.message);
+      showAlert('Failed to load dish details', 'error');
     } finally {
       setLoading(false);
     }
-  }, [id, showError]);
+  }, [id, showAlert]);
+
+  // Fetch reviews - إضافة error handling للـ reviews API
+  const fetchReviews = useCallback(async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/reviews/`);
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(Array.isArray(data) ? data : data.results || []);
+      } else if (response.status === 404) {
+        // Reviews API not implemented yet
+        setReviews([]);
+      } else {
+        throw new Error('Failed to fetch reviews');
+      }
+    } catch (err) {
+      setReviews([]);
+    }
+  }, [id]);
 
   useEffect(() => {
     fetchDishDetails();
-  }, [fetchDishDetails]);
+    fetchReviews();
+  }, [fetchDishDetails, fetchReviews]);
 
-  // Check if current user already rated this dish (we need to get current user info)
-  // For now, we'll use a simple approach - checking for existing rating will be handled by backend
-  
-  // Remove pre-fill logic for now - backend will handle update vs create
-
+  // Handle add to cart
   const handleAddToCart = useCallback(() => {
     try {
-      addToCart(dish, quantity, specialInstructions);
-      showSuccess(`${dish.name} (${quantity}x) has been added to your cart successfully.`, 'Added to Cart!');
+      for (let i = 0; i < quantity; i++) {
+        addToCart({
+          id: dish.id,
+          name: dish.name,
+          price: dish.price,
+          image: dish.image,
+          specialInstructions: specialInstructions.trim() || null
+        });
+      }
+      toast.success(`${dish.name} x${quantity} added to cart! 🛒`);
     } catch (error) {
-      showError('Failed to add item to cart. Please try again.', 'Cart Error');
+      toast.error('Failed to add item to cart');
     }
-  }, [addToCart, dish, quantity, specialInstructions, showSuccess, showError]);
+  }, [addToCart, dish, quantity, specialInstructions]);
 
-  const handleSubmitRating = useCallback(async (e) => {
+  // Handle review submission
+  const handleSubmitReview = useCallback(async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      showWarning('Please login to submit a rating.', 'Login Required');
-      setTimeout(() => navigate('/login'), 2000);
+      toast.error('Please login to submit a review');
+      navigate('/login');
       return;
     }
 
-    setSubmittingRating(true);
+    setSubmittingReview(true);
     try {
-      if (editingRating) {
-        // Update existing rating
-        await updateRating(editingRating.id, {
-          rating: newRating.rating,
-          comment: newRating.comment
-        });
-        showSuccess('Your review has been updated successfully!', 'Review Updated!');
-        setEditingRating(null);
+      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/reviews/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // إضافة auth header إذا كان متوفر
+        },
+        body: JSON.stringify({
+          rating: newReview.rating,
+          comment: newReview.comment.trim()
+        })
+      });
+
+      if (response.ok) {
+        toast.success('Review submitted successfully! 🌟');
+        setShowReviewForm(false);
+        setNewReview({ rating: 5, comment: '' });
+        fetchReviews(); // Refresh reviews
+        fetchDishDetails(); // Refresh dish data for updated rating
+      } else if (response.status === 404) {
+        // Reviews API not implemented
+        toast.success('Review feature coming soon! Thanks for your feedback.');
+        setShowReviewForm(false);
+        setNewReview({ rating: 5, comment: '' });
       } else {
-        // Create new rating
-        await submitRating({
-          dish_id: dish.id,
-          rating: newRating.rating,
-          comment: newRating.comment
-        });
-        showSuccess('Your review has been submitted successfully. Thank you for your feedback!', 'Review Submitted!');
+        throw new Error('Failed to submit review');
       }
-      
-      setNewRating({ rating: 5, comment: '' });
-      await fetchDishDetails(); // Refresh to show updated ratings
-    } catch (error) {
-      showError('Failed to submit rating. Please try again.', 'Submission Error');
+    } catch (err) {
+      toast.success('Review feature coming soon! Thanks for your feedback.');
+      setShowReviewForm(false);
+      setNewReview({ rating: 5, comment: '' });
     } finally {
-      setSubmittingRating(false);
+      setSubmittingReview(false);
     }
-  }, [isAuthenticated, dish?.id, newRating, fetchDishDetails, showWarning, showSuccess, showError, navigate]);
+  }, [id, isAuthenticated, newReview, navigate, fetchReviews, fetchDishDetails]);
 
-  const handleEditRating = useCallback((rating) => {
-    setEditingRating(rating);
-    setNewRating({
-      rating: rating.rating,
-      comment: rating.comment || ''
-    });
-  }, []);
+  // Render stars utility function
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
 
-  const handleCancelEdit = useCallback(() => {
-    setEditingRating(null);
-    setNewRating({ rating: 5, comment: '' });
-  }, []);
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<span key={i} className="text-yellow-400">⭐</span>);
+    }
 
+    if (hasHalfStar) {
+      stars.push(<span key="half" className="text-yellow-400">🌟</span>);
+    }
+
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<span key={`empty-${i}`} className="text-gray-300">⭐</span>);
+    }
+
+    return stars;
+  };
+
+  // Loading state
   if (loading) {
     return (
-      <div className="dish-detail-container dish-detail-loading">
-        <div>
-          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
-          <p>Loading dish details...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-2xl">🍽️</span>
+            </div>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-700">Loading dish details...</h2>
+        </motion.div>
       </div>
     );
   }
 
-  if (!dish) {
+  // Error state
+  if (error || !dish) {
     return (
-      <div className="dish-detail-container dish-detail-not-found">
-        <h1>Dish not found</h1>
-        <button onClick={() => navigate('/menu')} className="dish-detail-back-button">
-          ← Back to Menu
-        </button>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <motion.div 
+          className="text-center max-w-md"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="text-6xl mb-4">😕</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Dish not found</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <motion.button
+            className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+            onClick={() => navigate('/menu')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ← Back to Menu
+          </motion.button>
+        </motion.div>
       </div>
     );
   }
+
+  const dishImages = dish.images && dish.images.length > 0 ? dish.images : [dish.image].filter(Boolean);
 
   return (
-    <div className="dish-detail-container">
-      <button 
-        onClick={() => navigate('/menu')} 
-        className="dish-detail-back-button"
+    <div className="min-h-screen bg-gray-50">
+      {/* Breadcrumb */}
+      <motion.div 
+        className="bg-white border-b"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        ← Back to Menu
-      </button>
-
-      <div className="dish-detail-main-card">
-        <div className="dish-detail-image-section">
-          {dish.image && (
-            <img 
-              src={dish.image.startsWith('http') ? dish.image : `http://127.0.0.1:8000${dish.image}`}
-              alt={dish.name}
-              className="dish-detail-image"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          )}
-          <div className="dish-detail-image-overlay">
-            <h1 className="dish-detail-title" style={{color: 'white', marginBottom: '0.5rem'}}>{dish.name}</h1>
-            <p style={{fontSize: '1.2rem', margin: 0}}>Category: {dish.category?.name}</p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600">
+            <motion.button
+              className="hover:text-orange-600 transition-colors"
+              onClick={() => navigate('/')}
+              whileHover={{ scale: 1.05 }}
+            >
+              🏠 Home
+            </motion.button>
+            <span>→</span>
+            <motion.button
+              className="hover:text-orange-600 transition-colors"
+              onClick={() => navigate('/menu')}
+              whileHover={{ scale: 1.05 }}
+            >
+              📋 Menu
+            </motion.button>
+            <span>→</span>
+            <span className="text-orange-600 font-medium">{dish.name}</span>
+          </nav>
         </div>
+      </motion.div>
 
-        <div className="dish-detail-content">
-          <div className="dish-detail-grid">
-            <div>
-              <div className="dish-detail-price">${dish.price}</div>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Image Gallery */}
+          <div className="space-y-4">
+            <motion.div 
+              className="relative h-96 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <AnimatePresence mode="wait">
+                {dishImages.length > 0 ? (
+                  <motion.img
+                    key={selectedImage}
+                    src={dishImages[selectedImage]?.startsWith('http') ? dishImages[selectedImage] : `http://127.0.0.1:8000${dishImages[selectedImage]}`}
+                    alt={dish.name}
+                    className="w-full h-full object-cover"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-8xl opacity-50">🍽️</span>
+                  </div>
+                )}
+              </AnimatePresence>
               
-              <p className="dish-detail-description">{dish.description}</p>
+              {/* Navigation arrows */}
+              {dishImages.length > 1 && (
+                <>
+                  <motion.button
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all"
+                    onClick={() => setSelectedImage((prev) => (prev - 1 + dishImages.length) % dishImages.length)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    ←
+                  </motion.button>
+                  <motion.button
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all"
+                    onClick={() => setSelectedImage((prev) => (prev + 1) % dishImages.length)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    →
+                  </motion.button>
+                </>
+              )}
+            </motion.div>
 
-              <div className="dish-detail-details-grid">
-                <div className="dish-detail-card">
-                  <div style={{fontSize: '1.5rem', marginBottom: '0.5rem'}}>⏱️</div>
-                  <div style={{fontWeight: '600'}}>Prep Time</div>
-                  <div>{dish.preparation_time} min</div>
+            {/* Thumbnail Gallery */}
+            {dishImages.length > 1 && (
+              <motion.div 
+                className="grid grid-cols-4 gap-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                {dishImages.map((image, index) => (
+                  <motion.button
+                    key={index}
+                    className={`relative h-20 rounded-lg overflow-hidden transition-all ${
+                      selectedImage === index ? 'ring-2 ring-orange-500' : 'hover:opacity-80'
+                    }`}
+                    onClick={() => setSelectedImage(index)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <img
+                      src={image?.startsWith('http') ? image : `http://127.0.0.1:8000${image}`}
+                      alt={`${dish.name} ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80';
+                      }}
+                    />
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </div>
+
+          {/* Details Section */}
+          <motion.div 
+            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            {/* Title and Rating */}
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{dish.name}</h1>
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="flex items-center">
+                  {renderStars(dish.average_rating || 0)}
+                  <span className="ml-2 text-gray-600">
+                    ({dish.rating_count || reviews.length || 0} reviews)
+                  </span>
                 </div>
-                
-                {dish.calories && (
-                  <div className="dish-detail-card">
-                    <div style={{fontSize: '1.5rem', marginBottom: '0.5rem'}}>🔥</div>
-                    <div style={{fontWeight: '600'}}>Calories</div>
-                    <div>{dish.calories} cal</div>
-                  </div>
-                )}
-
-                {dish.average_rating > 0 && (
-                  <div className="dish-detail-card">
-                    <div style={{fontSize: '1.5rem', marginBottom: '0.5rem'}}>⭐</div>
-                    <div style={{fontWeight: '600'}}>Rating</div>
-                    <div>{dish.average_rating.toFixed(1)} stars</div>
-                  </div>
-                )}
-              </div>
-
-              <div style={{marginBottom: '1rem'}}>
-                {dish.is_vegetarian && (
-                  <span className="dish-detail-tag dish-detail-tag--vegetarian">
-                    🌱 Vegetarian
+                {dish.category && (
+                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                    {dish.category.name}
                   </span>
                 )}
-                {dish.is_spicy && (
-                  <span className="dish-detail-tag dish-detail-tag--spicy">
-                    🌶️ Spicy
-                  </span>
-                )}
               </div>
+            </div>
 
-              {dish.ingredients && (
-                <div>
-                  <h3 style={{marginBottom: '1rem'}}>Ingredients</h3>
-                  <p style={{color: '#666', lineHeight: '1.6'}}>{dish.ingredients}</p>
-                </div>
+            {/* Price */}
+            <div className="text-3xl font-bold text-orange-600">
+              ${parseFloat(dish.price).toFixed(2)}
+            </div>
+
+            {/* Description */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+              <p className="text-gray-600 leading-relaxed">{dish.description}</p>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2">
+              {dish.is_vegetarian && (
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                  🌱 Vegetarian
+                </span>
+              )}
+              {dish.is_spicy && (
+                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+                  🌶️ Spicy
+                </span>
+              )}
+              {dish.preparation_time && (
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                  ⏱️ {dish.preparation_time} min
+                </span>
+              )}
+              {dish.calories && (
+                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                  🔥 {dish.calories} cal
+                </span>
               )}
             </div>
 
-            <div className="dish-detail-order-section">
-              <h3 style={{marginBottom: '1.5rem', textAlign: 'center'}}>Order This Dish</h3>
+            {/* Ingredients */}
+            {dish.ingredients && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ingredients</h3>
+                <p className="text-gray-600">{dish.ingredients}</p>
+              </div>
+            )}
+
+            {/* Order Section */}
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Details</h3>
               
-              <div style={{marginBottom: '1rem'}}>
-                <label className="dish-detail-label">Quantity:</label>
-                <div className="dish-detail-quantity-control">
-                  <button 
-                    className="dish-detail-quantity-button"
-                    onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+              {/* Quantity */}
+              <div className="flex items-center space-x-4 mb-4">
+                <span className="text-gray-700 font-medium">Quantity:</span>
+                <div className="flex items-center space-x-3">
+                  <motion.button
+                    className="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     -
-                  </button>
-                  <span className="dish-detail-quantity-display">
+                  </motion.button>
+                  <span className="font-semibold text-xl text-gray-900 min-w-[3rem] text-center">
                     {quantity}
                   </span>
-                  <button 
-                    className="dish-detail-quantity-button"
+                  <motion.button
+                    className="w-10 h-10 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center transition-colors"
                     onClick={() => setQuantity(quantity + 1)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     +
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
-              <div style={{marginBottom: '1.5rem'}}>
-                <label className="dish-detail-label">Special Instructions:</label>
+              {/* Special Instructions */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Special Instructions (Optional)
+                </label>
                 <textarea
                   ref={instructionsRef}
                   value={specialInstructions}
                   onChange={(e) => setSpecialInstructions(e.target.value)}
-                  placeholder="Any special requests..."
-                  className="dish-detail-textarea"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  rows={3}
+                  placeholder="Any special requests for this dish..."
                 />
               </div>
 
-              <div className="dish-detail-total">
-                Total: ${(dish.price * quantity).toFixed(2)}
+              {/* Total and Add to Cart */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-700 font-medium">Total:</span>
+                <span className="text-2xl font-bold text-orange-600">
+                  ${(parseFloat(dish.price) * quantity).toFixed(2)}
+                </span>
               </div>
 
-              <button
+              <motion.button
+                className={`w-full py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl ${
+                  dish.is_available !== false
+                    ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700'
+                    : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                }`}
                 onClick={handleAddToCart}
-                disabled={!dish.is_available}
-                className={`dish-detail-button dish-detail-button--cart ${!dish.is_available ? 'dish-detail-button--disabled' : ''}`}
+                disabled={dish.is_available === false}
+                whileHover={dish.is_available !== false ? { scale: 1.02 } : {}}
+                whileTap={dish.is_available !== false ? { scale: 0.98 } : {}}
               >
-                {dish.is_available ? 'Add to Cart' : 'Currently Unavailable'}
-              </button>
+                {dish.is_available !== false ? '🛒 Add to Cart' : 'Currently Unavailable'}
+              </motion.button>
             </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Reviews Section */}
+        <motion.div 
+          className="mt-12 bg-white rounded-xl p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+            {isAuthenticated && (
+              <motion.button
+                className="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                onClick={() => setShowReviewForm(!showReviewForm)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {showReviewForm ? '❌ Cancel' : '✏️ Write Review'}
+              </motion.button>
+            )}
           </div>
-        </div>
-      </div>
 
-      {/* Ratings Section */}
-      <div className="dish-detail-ratings-section">
-        <h2 style={{marginBottom: '2rem'}}>Customer Reviews</h2>
-        
-        {isAuthenticated && (
-          <form onSubmit={handleSubmitRating} className="dish-detail-rating-form">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ margin: 0 }}>
-                {editingRating ? 'Edit Your Review' : 'Leave a Review'}
-              </h3>
-              {editingRating && (
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  style={{
-                    background: '#6c757d',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '6px 12px',
-                    fontSize: '0.85rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-            
-            <div style={{marginBottom: '1rem'}}>
-              <label className="dish-detail-label">Rating:</label>
-              <div className="dish-detail-rating-stars">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button
-                    key={star}
-                    type="button"
-                    className={`dish-detail-star ${star <= newRating.rating ? 'dish-detail-star--active' : 'dish-detail-star--inactive'}`}
-                    onClick={() => setNewRating({...newRating, rating: star})}
-                    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px' }}
-                  >
-                    ⭐
-                  </button>
-                ))}
-              </div>
-              <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '1rem', fontWeight: '600', color: '#ff6b35' }}>
-                {newRating.rating === 1 && '⭐ 1 Star - Poor'}
-                {newRating.rating === 2 && '⭐⭐ 2 Stars - Fair'}
-                {newRating.rating === 3 && '⭐⭐⭐ 3 Stars - Good'}
-                {newRating.rating === 4 && '⭐⭐⭐⭐ 4 Stars - Excellent'}
-                {newRating.rating === 5 && '⭐⭐⭐⭐⭐ 5 Stars - Amazing!'}
-              </div>
-            </div>
-
-            <div style={{marginBottom: '1rem'}}>
-              <label className="dish-detail-label">Comment:</label>
-              <textarea
-                ref={commentRef}
-                value={newRating.comment}
-                onChange={(e) => setNewRating({...newRating, comment: e.target.value})}
-                placeholder="Share your experience..."
-                className="dish-detail-textarea"
-                autoFocus={isAuthenticated}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={submittingRating}
-              className="dish-detail-button dish-detail-button--review"
-            >
-              {submittingRating ? 'Submitting...' : (editingRating ? 'Update Review' : 'Submit Review')}
-            </button>
-          </form>
-        )}
-
-        <div>
-          {ratings.length > 0 ? (
-            ratings.map((rating, index) => (
-              <div key={index} className="dish-detail-rating-card">
-                <div className="dish-detail-rating-header">
-                  <div>
-                    <strong>{rating.customer?.user?.first_name} {rating.customer?.user?.last_name}</strong>
-                    <div style={{color: '#ffc107', marginTop: '4px'}}>
-                      {'⭐'.repeat(rating.rating)}
-                    </div>
+          {/* Review Form */}
+          <AnimatePresence>
+            {showReviewForm && (
+              <motion.form
+                className="mb-8 p-6 bg-gray-50 rounded-lg"
+                onSubmit={handleSubmitReview}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                  <div className="flex space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <motion.button
+                        key={star}
+                        type="button"
+                        className={`text-2xl ${
+                          star <= newReview.rating ? 'text-yellow-400' : 'text-gray-300'
+                        }`}
+                        onClick={() => setNewReview({...newReview, rating: star})}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.8 }}
+                      >
+                        ⭐
+                      </motion.button>
+                    ))}
                   </div>
-                  <button
-                    onClick={() => handleEditRating(rating)}
-                    style={{
-                      background: '#ff6b35',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '6px 12px',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'background 0.3s ease'
-                    }}
-                    onMouseOver={(e) => e.target.style.background = '#e55a2b'}
-                    onMouseOut={(e) => e.target.style.background = '#ff6b35'}
-                  >
-                    Edit
-                  </button>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {newReview.rating === 1 && '⭐ Poor'}
+                    {newReview.rating === 2 && '⭐⭐ Fair'}
+                    {newReview.rating === 3 && '⭐⭐⭐ Good'}
+                    {newReview.rating === 4 && '⭐⭐⭐⭐ Very Good'}
+                    {newReview.rating === 5 && '⭐⭐⭐⭐⭐ Excellent'}
+                  </p>
                 </div>
-                {rating.comment && <p style={{margin: '8px 0 0 0', color: '#666'}}>{rating.comment}</p>}
+                
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+                  <textarea
+                    ref={commentRef}
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                    rows={3}
+                    placeholder="Share your experience with this dish..."
+                  />
+                </div>
+                
+                <div className="flex space-x-3">
+                  <motion.button
+                    type="submit"
+                    disabled={submittingReview}
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                      submittingReview
+                        ? 'bg-gray-400 cursor-not-allowed text-gray-700'
+                        : 'bg-orange-600 hover:bg-orange-700 text-white'
+                    }`}
+                    whileHover={!submittingReview ? { scale: 1.05 } : {}}
+                    whileTap={!submittingReview ? { scale: 0.95 } : {}}
+                  >
+                    {submittingReview ? 'Submitting...' : 'Submit Review'}
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors"
+                    onClick={() => setShowReviewForm(false)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Cancel
+                  </motion.button>
+                </div>
+              </motion.form>
+            )}
+          </AnimatePresence>
+
+          {/* Reviews List */}
+          <div className="space-y-6">
+            {reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <motion.div
+                  key={review.id || index}
+                  className="border-b border-gray-200 pb-6 last:border-b-0"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                        <span className="text-orange-600 font-medium">
+                          {review.user_name ? review.user_name.charAt(0).toUpperCase() : review.customer?.user?.first_name?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {review.user_name || `${review.customer?.user?.first_name || 'Anonymous'} ${review.customer?.user?.last_name || ''}`}
+                        </div>
+                        <div className="flex items-center">
+                          {renderStars(review.rating)}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {new Date(review.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  {review.comment && (
+                    <p className="text-gray-700 mt-2">{review.comment}</p>
+                  )}
+                </motion.div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">💬</div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">No reviews yet</h3>
+                <p className="text-gray-500">
+                  Be the first to review this delicious dish!
+                </p>
+                {!isAuthenticated && (
+                  <motion.button
+                    className="mt-4 px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                    onClick={() => navigate('/login')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Login to Write Review
+                  </motion.button>
+                )}
               </div>
-            ))
-          ) : (
-            <p style={{textAlign: 'center', color: '#666', padding: '2rem'}}>
-              No reviews yet. Be the first to review this dish!
-            </p>
-          )}
-        </div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

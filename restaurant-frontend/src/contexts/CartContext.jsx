@@ -30,13 +30,27 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (dish) => {
         setCartItems(prevItems => {
-            const itemExists = prevItems.find(item => item.id === dish.id);
+            // Create a unique identifier that includes special instructions
+            const uniqueKey = `${dish.id}_${dish.specialInstructions || 'none'}`;
+            
+            // Check if exact same item (including special instructions) exists
+            const itemExists = prevItems.find(item => {
+                const itemKey = `${item.id}_${item.specialInstructions || 'none'}`;
+                return itemKey === uniqueKey;
+            });
+            
             if (itemExists) {
-                return prevItems.map(item =>
-                    item.id === dish.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
+                // If exact same item exists, increase quantity
+                return prevItems.map(item => {
+                    const itemKey = `${item.id}_${item.specialInstructions || 'none'}`;
+                    return itemKey === uniqueKey 
+                        ? { ...item, quantity: item.quantity + 1 } 
+                        : item;
+                });
+            } else {
+                // Add as new item (even if same dish but different instructions)
+                return [...prevItems, { ...dish, quantity: 1 }];
             }
-            return [...prevItems, { ...dish, quantity: 1 }];
         });
     };
 
@@ -70,6 +84,7 @@ export const CartProvider = ({ children }) => {
 
     const value = {
         cartItems,
+        cart: cartItems, // Alias for backward compatibility
         addToCart,
         removeFromCart,
         updateQuantity,
