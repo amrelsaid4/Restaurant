@@ -11,27 +11,33 @@ const api = axios.create({
   },
 });
 
-// Session key for authentication
-let sessionKey = null;
-
-// Get session key from localStorage
-const getSessionKey = () => {
-  if (!sessionKey) {
-    sessionKey = localStorage.getItem('sessionKey');
+// Add response interceptor to handle session cookies
+api.interceptors.response.use(
+  (response) => {
+    // Store session key if provided
+    if (response.data && response.data.session_key) {
+      localStorage.setItem('session_key', response.data.session_key);
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return sessionKey;
-};
+);
 
-// Request interceptor to add session key
-api.interceptors.request.use((config) => {
-  const token = getSessionKey();
-  if (token) {
-    config.headers['X-Session-Key'] = token;
+// Add request interceptor to include session key
+api.interceptors.request.use(
+  (config) => {
+    const sessionKey = localStorage.getItem('session_key');
+    if (sessionKey) {
+      config.headers['X-Session-Key'] = sessionKey;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+);
 
 // CSRF Token Management
 let csrfToken = null;
@@ -55,11 +61,21 @@ const makeAuthenticatedRequest = async (method, url, data = null, options = {}) 
     }
 
     const config = {
-            method,
+      method,
       url,
       withCredentials: true,
       ...options
     };
+
+    // Add session key if available
+    const sessionKey = localStorage.getItem('session_key');
+    if (sessionKey) {
+      config.headers = {
+        ...config.headers,
+        'X-Session-Key': sessionKey
+      };
+      console.log('🔑 Adding session key to request:', sessionKey.substring(0, 10) + '...');
+    }
 
     // Add CSRF token for non-GET requests
     if (method !== 'GET' && csrfToken) {
@@ -73,6 +89,7 @@ const makeAuthenticatedRequest = async (method, url, data = null, options = {}) 
       config.data = data;
     }
 
+    console.log('📡 Making authenticated request to:', url, 'with headers:', config.headers);
     const response = await api(config);
     return response.data;
   } catch (error) {
@@ -80,6 +97,12 @@ const makeAuthenticatedRequest = async (method, url, data = null, options = {}) 
       // CSRF token might be expired, try to refresh it
       await fetchCSRFToken();
       throw error;
+    }
+    if (error.response?.status === 401) {
+      // Session expired, clear local storage
+      console.log('❌ Session expired, clearing localStorage');
+      localStorage.removeItem('session_key');
+      localStorage.removeItem('user_data');
     }
     throw error;
   }
@@ -89,8 +112,11 @@ const makeAuthenticatedRequest = async (method, url, data = null, options = {}) 
 export const authAPI = {
   login: async (credentials) => {
     try {
+      console.log('📡 Customer login API call:', { identity: credentials.identity });
+      
       // Fetch CSRF token first
       await fetchCSRFToken();
+      console.log('🔑 CSRF token ready for customer login');
       
       const response = await api.post('/api/login/', credentials, {
         withCredentials: true,
@@ -100,41 +126,50 @@ export const authAPI = {
         }
       });
       
-      // Store session key if provided
+      console.log('✅ Customer login API response:', response.data);
+      
+      // Save session key to localStorage
       if (response.data.session_key) {
-        sessionKey = response.data.session_key;
-        localStorage.setItem('sessionKey', sessionKey);
+        localStorage.setItem('session_key', response.data.session_key);
+        console.log('💾 Session key saved to localStorage:', response.data.session_key.substring(0, 10) + '...');
       }
       
       return response.data;
     } catch (error) {
+      console.error('❌ Customer login API error:', error.response?.data || error.message);
       const errorData = error.response?.data || { error: 'Login failed' };
       throw new Error(errorData.error || 'Authentication failed');
     }
   },
 
   register: async (userData) => {
+    console.log('📡 Register API call');
     return makeAuthenticatedRequest('POST', '/api/register/', userData);
   },
 
   logout: async () => {
     try {
+      console.log('📡 Logout API call');
       await makeAuthenticatedRequest('POST', '/api/logout/');
+      console.log('✅ Logout API successful');
     } catch (error) {
       // Ignore logout errors - even if backend fails, we clear local session
-      console.warn('Logout request failed, but clearing local session:', error.message);
+      console.warn('⚠️ Logout request failed, but clearing local session:', error.message);
     } finally {
       // Always clear local session data
-      sessionKey = null;
-      localStorage.removeItem('sessionKey');
+      localStorage.removeItem('session_key');
     }
   },
 
   checkUserType: async () => {
-    return makeAuthenticatedRequest('GET', '/api/check-user-type/');
+    console.log('📡 Check user type API call');
+    const result = await makeAuthenticatedRequest('GET', '/api/check-user-type/');
+    console.log('✅ Check user type response:', result);
+    return result;
   },
 
   getUserProfile: async () => {
+    console.log('📡 Get user profile API call');
     return makeAuthenticatedRequest('GET', '/api/profile/');
   }
 };
@@ -284,28 +319,34 @@ export const checkUserType = authAPI.checkUserType;
 export const loginUser = authAPI.login;
 export const loginAdmin = async (credentials) => {
   try {
+    console.log('📡 Admin login API call:', { email: credentials.email });
+    
     // Fetch CSRF token first
     await fetchCSRFToken();
+    console.log('🔑 CSRF token ready for admin login');
     
     const response = await api.post('/api/admin/login/', credentials, {
       withCredentials: true,
-            headers: {
+      headers: {
         'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       }
     });
     
-    // Store session key if provided
+    console.log('✅ Admin login API response:', response.data);
+    
+    // Save session key to localStorage
     if (response.data.session_key) {
-      sessionKey = response.data.session_key;
-      localStorage.setItem('sessionKey', sessionKey);
+      localStorage.setItem('session_key', response.data.session_key);
+      console.log('💾 Admin session key saved to localStorage:', response.data.session_key.substring(0, 10) + '...');
     }
     
     return response.data;
-    } catch (error) {
+  } catch (error) {
+    console.error('❌ Admin login API error:', error.response?.data || error.message);
     const errorData = error.response?.data || { error: 'Admin login failed' };
     throw new Error(errorData.error || 'Admin authentication failed');
-    }
+  }
 };
 export const logoutUser = authAPI.logout;
 export { fetchCSRFToken };
