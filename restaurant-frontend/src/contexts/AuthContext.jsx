@@ -17,89 +17,188 @@ export const AuthProvider = ({ children }) => {
         isAdmin: false,
         user: null,
         loading: true,
-        error: null
+        error: null,
+        initialized: false
     });
+
+    const updateAuthState = (newState) => {
+        console.log('🔄 Updating auth state:', newState);
+        setAuthState(prevState => {
+            const updatedState = { ...prevState, ...newState };
+            console.log('🔄 New auth state:', updatedState);
+            return updatedState;
+        });
+    };
+
+    const saveSessionData = (sessionKey, userData) => {
+        console.log('💾 Saving session data to localStorage');
+        localStorage.setItem('session_key', sessionKey);
+        localStorage.setItem('user_data', JSON.stringify(userData));
+    };
+
+    const clearSessionData = () => {
+        console.log('🗑️ Clearing session data from localStorage');
+        localStorage.removeItem('session_key');
+        localStorage.removeItem('user_data');
+    };
+
+    const loadSessionData = () => {
+        const sessionKey = localStorage.getItem('session_key');
+        const userData = localStorage.getItem('user_data');
+        
+        if (sessionKey && userData) {
+            try {
+                const user = JSON.parse(userData);
+                console.log('📋 Loaded session data from localStorage:', { sessionKey: !!sessionKey, user });
+                return { sessionKey, user };
+            } catch (error) {
+                console.error('❌ Failed to parse stored user data:', error);
+                clearSessionData();
+            }
+        }
+        return null;
+    };
 
     const checkAuthStatus = async () => {
         try {
+            console.log('🔍 Checking auth status...');
             const data = await checkUserType();
+            console.log('✅ Auth status response:', data);
             
-            const newAuthState = {
-                isAuthenticated: data.is_authenticated,
-                isAdmin: data.is_admin,
-                user: data.is_authenticated ? {
+            if (data.is_authenticated) {
+                const userData = {
                     id: data.user_id,
                     username: data.username,
                     email: data.email,
+                    first_name: data.first_name || data.username,
+                    last_name: data.last_name || '',
                     is_admin: data.is_admin,
                     is_customer: data.is_customer
-                } : null,
-                loading: false,
-                error: null
-            };
-            
-            setAuthState(newAuthState);
+                };
+
+                const newAuthState = {
+                    isAuthenticated: true,
+                    isAdmin: data.is_admin,
+                    user: userData,
+                    loading: false,
+                    error: null,
+                    initialized: true
+                };
+                
+                updateAuthState(newAuthState);
+                
+                // Save to localStorage if we have session data
+                const sessionKey = localStorage.getItem('session_key');
+                if (sessionKey) {
+                    saveSessionData(sessionKey, userData);
+                }
+                
+                return newAuthState;
+            } else {
+                const errorState = {
+                    isAuthenticated: false,
+                    isAdmin: false,
+                    user: null,
+                    loading: false,
+                    error: null,
+                    initialized: true
+                };
+                updateAuthState(errorState);
+                clearSessionData();
+                return errorState;
+            }
         } catch (error) {
-            setAuthState({
+            console.error('❌ Auth check failed:', error);
+            const errorState = {
                 isAuthenticated: false,
                 isAdmin: false,
                 user: null,
                 loading: false,
-                error: error.message
-            });
+                error: error.message,
+                initialized: true
+            };
+            updateAuthState(errorState);
+            clearSessionData();
+            return errorState;
         }
     };
 
     const login = async (credentials) => {
         try {
-            setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            const data = await loginUser(credentials);
+            console.log('🔐 Customer login attempt:', { identity: credentials.identity });
+            updateAuthState({ loading: true, error: null });
             
-            // After successful login, check auth status
-            await checkAuthStatus();
-            return { success: true };
+            const data = await loginUser(credentials);
+            console.log('✅ Customer login response:', data);
+            
+            // Save session key if provided
+            if (data.session_key) {
+                localStorage.setItem('session_key', data.session_key);
+            }
+            
+            // Check auth status and wait for complete update
+            const authStatus = await checkAuthStatus();
+            console.log('✅ Customer login complete, final auth state:', authStatus);
+            
+            return { success: true, authStatus };
         } catch (error) {
-            setAuthState(prev => ({
-                ...prev,
+            console.error('❌ Customer login failed:', error);
+            updateAuthState({
                 loading: false,
-                error: error.message
-            }));
+                error: error.message,
+                initialized: true
+            });
             return { success: false, error: error.message };
         }
     };
 
     const adminLogin = async (credentials) => {
         try {
-            setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            const data = await loginAdmin(credentials);
+            console.log('🔐 Admin login attempt:', { email: credentials.email });
+            updateAuthState({ loading: true, error: null });
             
-            // After successful login, check auth status
-            await checkAuthStatus();
-            return { success: true };
+            const data = await loginAdmin(credentials);
+            console.log('✅ Admin login response:', data);
+            
+            // Save session key if provided
+            if (data.session_key) {
+                localStorage.setItem('session_key', data.session_key);
+            }
+            
+            // Check auth status and wait for complete update
+            const authStatus = await checkAuthStatus();
+            console.log('✅ Admin login complete, final auth state:', authStatus);
+            
+            return { success: true, authStatus };
         } catch (error) {
-            setAuthState(prev => ({
-                ...prev,
+            console.error('❌ Admin login failed:', error);
+            updateAuthState({
                 loading: false,
-                error: error.message
-            }));
+                error: error.message,
+                initialized: true
+            });
             return { success: false, error: error.message };
         }
     };
 
     const logout = async () => {
         try {
+            console.log('🚪 Logout attempt...');
             await logoutUser();
+            console.log('✅ Logout successful');
         } catch (error) {
-            // Ignore logout errors
+            console.error('⚠️ Logout error (ignored):', error);
         } finally {
-            setAuthState({
+            updateAuthState({
                 isAuthenticated: false,
                 isAdmin: false,
                 user: null,
                 loading: false,
-                error: null
+                error: null,
+                initialized: true
             });
-            localStorage.removeItem('session_key');
+            clearSessionData();
+            console.log('✅ Auth state cleared');
         }
     };
 
@@ -107,33 +206,35 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const initAuth = async () => {
             try {
-                // Try to fetch CSRF token on app init
-                const token = await fetchCSRFToken();
+                console.log('🚀 Initializing auth...');
                 
-                // Check if user is already authenticated
-                try {
-                    const userData = await checkUserType();
-                    if (userData && userData.is_authenticated) {
-                        setAuthState(prev => ({
-                            ...prev,
-                            isAuthenticated: true,
-                            isAdmin: userData.is_admin || false,
-                            user: {
-                                id: userData.user_id,
-                                username: userData.username,
-                                email: userData.email,
-                                is_admin: userData.is_admin || false,
-                                is_customer: userData.is_customer || false
-                            }
-                        }));
-                    }
-                } catch (error) {
-                    // User not authenticated, that's fine
+                // Try to fetch CSRF token on app init
+                await fetchCSRFToken();
+                console.log('🔑 CSRF token fetched');
+                
+                // Check for stored session first
+                const storedSession = loadSessionData();
+                if (storedSession) {
+                    console.log('📋 Found stored session, verifying with server...');
+                    // Verify stored session with server
+                    await checkAuthStatus();
+                } else {
+                    console.log('📋 No stored session, checking server...');
+                    // No stored session, check server anyway
+                    await checkAuthStatus();
                 }
+                
+                console.log('✅ Auth initialization complete');
             } catch (error) {
-                // Failed to initialize auth, but don't break the app
-            } finally {
-                setAuthState(prev => ({ ...prev, loading: false }));
+                console.error('❌ Auth initialization failed:', error);
+                updateAuthState({ 
+                    loading: false, 
+                    initialized: true,
+                    isAuthenticated: false,
+                    isAdmin: false,
+                    user: null,
+                    error: null
+                });
             }
         };
 
@@ -146,7 +247,8 @@ export const AuthProvider = ({ children }) => {
             login, 
             adminLogin, 
             logout, 
-            checkAuthStatus 
+            checkAuthStatus,
+            updateAuthState
         }}>
             {children}
         </AuthContext.Provider>
