@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import axios from 'axios';
-import './Register.css';
+import toast from 'react-hot-toast';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -9,403 +10,464 @@ function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     phone: '',
-    address: '',
-    termsAccepted: false
+    address: ''
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
+  const [errors, setErrors] = useState({});
+  
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-    
-    // Clear errors when user starts typing
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors({
-        ...errors,
+      setErrors(prev => ({
+        ...prev,
         [name]: ''
-      });
+      }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-
+    
     if (!formData.username.trim()) {
       newErrors.username = 'Username is required';
     }
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-
+    
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email format is invalid';
+      newErrors.email = 'Email is invalid';
     }
-
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required for delivery';
+    } else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+    
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required for delivery';
+    }
+    
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
-
+    
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
-    if (!formData.termsAccepted) {
-      newErrors.termsAccepted = 'You must accept the terms and conditions';
-    }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     
     if (!validateForm()) {
-      setLoading(false);
       return;
     }
-
+    
+    setLoading(true);
+    
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register/', {
+      const response = await axios.post('http://127.0.0.1:8000/api/auth/register/', {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
         phone: formData.phone,
         address: formData.address
       });
-
-      setSuccess('Registration successful! Redirecting to login...');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-
+      
+      toast.success('Account created successfully! Please verify your phone number.');
+      navigate('/verify-phone', { 
+        state: { 
+          phone: formData.phone,
+          email: formData.email 
+        } 
+      });
     } catch (error) {
       if (error.response?.data) {
-        setErrors({
-          ...errors,
-          apiError: error.response.data.error || 'Registration failed. Please try again.'
-        });
+        const serverErrors = error.response.data;
+        setErrors(serverErrors);
+        toast.error('Registration failed. Please check your information.');
       } else {
-        setErrors({
-          ...errors,
-          apiError: 'Network error. Please check your connection.'
-        });
+        toast.error('Network error. Please try again.');
       }
     } finally {
       setLoading(false);
     }
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { 
+        duration: 0.6, 
+        staggerChildren: 0.1 
+      } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const benefits = [
+    {
+      icon: "🎉",
+      title: "Join Our Community",
+      description: "Be part of thousands of satisfied customers"
+    },
+    {
+      icon: "🍽️",
+      title: "Exclusive Access",
+      description: "Get access to special dishes and member-only offers"
+    },
+    {
+      icon: "⚡",
+      title: "Fast Ordering",
+      description: "Quick checkout with saved preferences"
+    },
+    {
+      icon: "🏆",
+      title: "Loyalty Rewards",
+      description: "Earn points with every order and get rewards"
+    }
+  ];
+
   return (
-    <div className="register-page">
-      <div className="register-container">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex m-[88px]">
+      <motion.div 
+        className="flex w-full max-w-7xl mx-auto my-auto shadow-2xl rounded-2xl overflow-hidden"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Left Side - Branding */}
-        <div className="register-image-section">
-          <div className="register-brand">
-            Delicious Bites
+        <motion.div 
+          className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-600 to-red-600 p-12 text-white relative overflow-hidden"
+          variants={itemVariants}
+        >
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="w-full h-full bg-repeat" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+            }}></div>
           </div>
-          <p className="register-tagline">
-            Join our culinary community and experience exceptional dining
-          </p>
-          <div className="register-benefits">
-            <div className="register-benefit">
-              <span className="register-benefit-icon">🎯</span>
-              <span className="register-benefit-text">
-                Priority reservations and exclusive offers
-              </span>
-            </div>
-            <div className="register-benefit">
-              <span className="register-benefit-icon">⭐</span>
-              <span className="register-benefit-text">
-                Personalized dining recommendations
-              </span>
-            </div>
-            <div className="register-benefit">
-              <span className="register-benefit-icon">🎉</span>
-              <span className="register-benefit-text">
-                Special birthday and anniversary treats
-              </span>
-            </div>
-            <div className="register-benefit">
-              <span className="register-benefit-icon">📱</span>
-              <span className="register-benefit-text">
-                Easy online ordering and delivery tracking
-              </span>
-            </div>
+          
+          <div className="relative z-10 flex flex-col justify-center">
+            <motion.div 
+              className="mb-8"
+              variants={itemVariants}
+            >
+              <h1 className="text-4xl font-bold mb-4">🍽️ Fine Dining</h1>
+              <p className="text-xl text-orange-100">
+                Join our culinary community and discover amazing flavors
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="space-y-6"
+              variants={itemVariants}
+            >
+              {benefits.map((benefit, index) => (
+                <motion.div 
+                  key={index}
+                  className="flex items-center space-x-4"
+                  variants={itemVariants}
+                  whileHover={{ x: 10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="flex-shrink-0 w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-2xl">
+                    {benefit.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">{benefit.title}</h3>
+                    <p className="text-orange-100 text-sm">{benefit.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div 
+              className="mt-12 p-6 bg-white bg-opacity-10 rounded-lg backdrop-blur-sm"
+              variants={itemVariants}
+            >
+              <h3 className="font-semibold text-white mb-2">🎊 Special Welcome Offer!</h3>
+              <p className="text-orange-100 text-sm">
+                Get 20% off your first order when you sign up today!
+              </p>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Side - Registration Form */}
-        <div className="register-form-section">
-          <div className="register-header">
-            <h2 className="register-title">Create Account</h2>
-            <p className="register-subtitle">
-              Join us for an unforgettable dining experience
-            </p>
-          </div>
+        <motion.div 
+          className="w-full lg:w-1/2 bg-white p-8 lg:p-12 overflow-y-auto"
+          variants={itemVariants}
+        >
+          <div className="max-w-md mx-auto">
+            <motion.div 
+              className="mb-8 text-center"
+              variants={itemVariants}
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+              <p className="text-gray-600">
+                Join our community and start your culinary journey
+              </p>
+            </motion.div>
 
-          {errors.apiError && (
-            <div className="validation-message error">
-              <span className="validation-icon">⚠️</span>
-              {errors.apiError}
-            </div>
-          )}
-
-          {success && (
-            <div className="validation-message success">
-              <span className="validation-icon">✅</span>
-              {success}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="register-form">
-            {/* Name Fields */}
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="firstName" className="form-label">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className={`form-input ${errors.firstName ? 'error' : ''}`}
-                  placeholder="Enter your first name"
-                />
-                {errors.firstName && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.firstName}
-                  </div>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="lastName" className="form-label">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className={`form-input ${errors.lastName ? 'error' : ''}`}
-                  placeholder="Enter your last name"
-                />
-                {errors.lastName && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.lastName}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Username Field */}
-            <div className="form-group">
-              <label htmlFor="username" className="form-label">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className={`form-input ${errors.username ? 'error' : ''}`}
-                placeholder="Choose a username"
-              />
-              {errors.username && (
-                <div className="validation-message error">
-                  <span className="validation-icon">⚠️</span>
-                  {errors.username}
+            <motion.form 
+              onSubmit={handleSubmit} 
+              className="space-y-4"
+              variants={itemVariants}
+            >
+              {/* Name Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name
+                  </label>
+                  <motion.input
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                    placeholder="Enter first name"
+                    whileFocus={{ scale: 1.02 }}
+                  />
                 </div>
-              )}
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name
+                  </label>
+                  <motion.input
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                    placeholder="Enter last name"
+                    whileFocus={{ scale: 1.02 }}
+                  />
+                </div>
+              </div>
 
-            {/* Contact Fields */}
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">Email Address</label>
-                <input
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username *
+                </label>
+                <motion.input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
+                    errors.username ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Choose a username"
+                  whileFocus={{ scale: 1.02 }}
+                />
+                {errors.username && (
+                  <p className="text-red-600 text-sm mt-1">{errors.username}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <motion.input
                   type="email"
-                  id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  className={`form-input ${errors.email ? 'error' : ''}`}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
+                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Enter your email"
+                  whileFocus={{ scale: 1.02 }}
                 />
                 {errors.email && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.email}
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{errors.email}</p>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="phone" className="form-label">Phone Number</label>
-                <input
+              {/* Phone - make it required */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <motion.input
                   type="tel"
-                  id="phone"
                   name="phone"
                   value={formData.phone}
-                  onChange={handleInputChange}
-                  className={`form-input ${errors.phone ? 'error' : ''}`}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
+                    errors.phone ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Enter your phone number"
+                  whileFocus={{ scale: 1.02 }}
                 />
                 {errors.phone && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.phone}
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
                 )}
               </div>
-            </div>
 
-            {/* Password Fields */}
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="password" className="form-label">Password</label>
-                <div className="password-input-container">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
+              {/* Address - new field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Delivery Address *
+                </label>
+                <motion.textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  rows={3}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none ${
+                    errors.address ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your full delivery address"
+                  whileFocus={{ scale: 1.02 }}
+                />
+                {errors.address && (
+                  <p className="text-red-600 text-sm mt-1">{errors.address}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password *
+                </label>
+                <div className="relative">
+                  <motion.input
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
-                    onChange={handleInputChange}
-                    className={`form-input ${errors.password ? 'error' : ''}`}
+                    onChange={handleChange}
+                    required
+                    className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
+                      errors.password ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     placeholder="Create a password"
+                    whileFocus={{ scale: 1.02 }}
                   />
-                  <button
+                  <motion.button
                     type="button"
-                    className="password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     {showPassword ? '👁️' : '👁️‍🗨️'}
-                  </button>
+                  </motion.button>
                 </div>
                 {errors.password && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.password}
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                <div className="password-input-container">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    id="confirmPassword"
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <motion.input
+                    type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
+                    onChange={handleChange}
+                    required
+                    className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
+                      errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     placeholder="Confirm your password"
+                    whileFocus={{ scale: 1.02 }}
                   />
-                  <button
+                  <motion.button
                     type="button"
-                    className="password-toggle"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-                  </button>
+                  </motion.button>
                 </div>
                 {errors.confirmPassword && (
-                  <div className="validation-message error">
-                    <span className="validation-icon">⚠️</span>
-                    {errors.confirmPassword}
-                  </div>
+                  <p className="text-red-600 text-sm mt-1">{errors.confirmPassword}</p>
                 )}
               </div>
-            </div>
 
-            {/* Address Field */}
-            <div className="form-group">
-              <label htmlFor="address" className="form-label">Address</label>
-              <textarea
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className="form-input"
-                placeholder="Enter your address"
-                rows="3"
-              ></textarea>
-            </div>
+              {/* Submit Button */}
+              <motion.button 
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-200 ${
+                  loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-lg hover:shadow-xl'
+                }`}
+                whileHover={!loading ? { scale: 1.02 } : {}}
+                whileTap={!loading ? { scale: 0.98 } : {}}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Creating account...</span>
+                  </div>
+                ) : (
+                  '🎉 Create Account'
+                )}
+              </motion.button>
+            </motion.form>
 
-            {/* Terms and Conditions */}
-            <div className="terms-section">
-              <input
-                type="checkbox"
-                id="termsAccepted"
-                name="termsAccepted"
-                checked={formData.termsAccepted}
-                onChange={handleInputChange}
-                className="terms-checkbox"
-              />
-              <label htmlFor="termsAccepted" className="terms-text">
-                I agree to the{' '}
-                <Link to="/terms" className="terms-link">Terms of Service</Link>
-                {' '}and{' '}
-                <Link to="/privacy" className="terms-link">Privacy Policy</Link>
-              </label>
-            </div>
-            {errors.termsAccepted && (
-              <div className="validation-message error">
-                <span className="validation-icon">⚠️</span>
-                {errors.termsAccepted}
-              </div>
-            )}
-
-            <button 
-              type="submit" 
-              className="register-submit-btn"
-              disabled={loading}
+            {/* Login Link */}
+            <motion.div 
+              className="mt-6 text-center"
+              variants={itemVariants}
             >
-              {loading ? (
-                <>
-                  <span className="loading-spinner"></span>
-                  Creating Account...
-                </>
-              ) : 'Create My Account'}
-            </button>
-          </form>
-
-          <div className="form-links">
-            <p>
-              Already have an account?{' '}
-              <Link to="/login" className="form-link">
-                Sign in here
-              </Link>
-            </p>
+              <p className="text-gray-600">
+                Already have an account?{' '}
+                <Link 
+                  to="/login" 
+                  className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+                >
+                  Sign in here
+                </Link>
+              </p>
+            </motion.div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
