@@ -102,7 +102,6 @@ export const StyledInput = ({
   );
 };
 
-// مكون كارت محسن
 export const StyledCard = ({ 
   children, 
   className = '', 

@@ -61,7 +61,7 @@ const makeAuthenticatedRequest = async (method, url, data = null, options = {}) 
     }
 
     const config = {
-      method,
+            method,
       url,
       withCredentials: true,
       ...options
@@ -327,9 +327,9 @@ export const loginAdmin = async (credentials) => {
     
     const response = await api.post('/api/admin/login/', credentials, {
       withCredentials: true,
-      headers: {
+            headers: {
         'X-CSRFToken': csrfToken,
-        'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
       }
     });
     
@@ -342,13 +342,26 @@ export const loginAdmin = async (credentials) => {
     }
     
     return response.data;
-  } catch (error) {
+    } catch (error) {
     console.error('❌ Admin login API error:', error.response?.data || error.message);
     const errorData = error.response?.data || { error: 'Admin login failed' };
     throw new Error(errorData.error || 'Admin authentication failed');
-  }
+    }
 };
 export const logoutUser = authAPI.logout;
 export { fetchCSRFToken };
+
+export const getDishById = async (dishId) => {
+  const { data } = await api.get(`/dishes/${dishId}/`);
+  return data;
+};
+
+export const createReview = async (dishId, reviewData) => {
+  const { data } = await api.post(`/dishes/${dishId}/reviews/`, reviewData);
+  return data;
+};
+
+// Admin API calls
+export const getAdminDashboardStats = () => api.get('/admin/dashboard/');
 
  

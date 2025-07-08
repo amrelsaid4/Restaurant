@@ -46,7 +46,6 @@ const AdminDishes = () => {
         getDishes(),
         getCategories()
       ]);
-      // Handle paginated response from DRF
       const dishesArray = dishesData.results ? dishesData.results : (Array.isArray(dishesData) ? dishesData : []);
       const categoriesArray = categoriesData.results ? categoriesData.results : (Array.isArray(categoriesData) ? categoriesData : []);
       setDishes(dishesArray);
@@ -61,7 +60,9 @@ const AdminDishes = () => {
   };
 
   const handleConfirm = async () => {
+    if (modalState.onConfirm) {
     await modalState.onConfirm();
+    }
     setModalState({ isOpen: false, title: '', message: '', onConfirm: () => {} });
   };
 
@@ -74,13 +75,13 @@ const AdminDishes = () => {
     if (file) {
       setFormData({...formData, image: file});
       
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
+    setImagePreview(null);
   };
 
   const removeImage = () => {
@@ -93,25 +94,29 @@ const AdminDishes = () => {
     
     const action = async () => {
       try {
-        // Create FormData for file upload
         const submitData = new FormData();
-        submitData.append('name', formData.name);
-        submitData.append('description', formData.description);
-        submitData.append('price', parseFloat(formData.price));
-        submitData.append('category_id', parseInt(formData.category_id, 10));
-        submitData.append('preparation_time', parseInt(formData.preparation_time, 10) || 0);
-        submitData.append('ingredients', formData.ingredients);
-        submitData.append('calories', parseInt(formData.calories, 10) || 0);
-        submitData.append('is_spicy', formData.is_spicy);
-        submitData.append('is_vegetarian', formData.is_vegetarian);
-        submitData.append('is_available', formData.is_available);
         
-        // Add image if selected
-        if (formData.image) {
+        // Append all fields except the image
+        Object.keys(formData).forEach(key => {
+          if (key !== 'image' && key !== 'category_id') {
+            submitData.append(key, formData[key]);
+          }
+        });
+
+        // Special handling for category_id
+        if (formData.category_id) {
+        submitData.append('category_id', parseInt(formData.category_id, 10));
+        }
+        
+        // Handle image update only if a new file is selected
+        if (formData.image instanceof File) {
           submitData.append('image', formData.image);
         }
 
         if (editingDish) {
+          // For updates, we use PATCH to send only changed fields.
+          // Note: `updateDish` should ideally be a PATCH request for this to work perfectly with FormData.
+          // Assuming `updateDish` handles FormData correctly with PUT/PATCH.
           await updateDish(editingDish.id, submitData);
           showSuccess('Dish has been updated successfully!', 'Updated!');
         } else {
@@ -121,7 +126,10 @@ const AdminDishes = () => {
         resetForm();
         await loadData();
       } catch (error) {
-        showError(`Failed to save dish: ${error.message}`, 'Save Failed');
+        const errorMessage = error.response?.data 
+          ? Object.values(error.response.data).join(' ') 
+          : error.message;
+        showError(`Failed to save dish: ${errorMessage}`, 'Save Failed');
       }
     };
 
@@ -167,7 +175,6 @@ const AdminDishes = () => {
       is_available: dish.is_available,
       image: null
     });
-    // Set existing image as preview if available
     setImagePreview(dish.image || null);
     setShowAddForm(true);
   };
@@ -198,12 +205,16 @@ const AdminDishes = () => {
     const action = async () => {
       try {
         await patchDish(dishId, { is_available: !dish.is_available });
-        setDishes(dishes.map(d =>
+        // Optimistic UI update
+        const updatedDishes = dishes.map(d =>
           d.id === dishId ? { ...d, is_available: !d.is_available } : d
-        ));
-        showSuccess('Dish availability updated!');
+        );
+        setDishes(updatedDishes);
+        showSuccess('Dish availability updated successfully!');
       } catch (error) {
         showError('Failed to update availability.');
+        // Revert UI on error
+        loadData();
       }
     };
     
@@ -217,9 +228,8 @@ const AdminDishes = () => {
 
   if (loading) {
     return (
-      <div className="loading">
-        <div className="spinner"></div>
-        <p>Loading dishes...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
@@ -235,104 +245,129 @@ const AdminDishes = () => {
         <p>{modalState.message}</p>
       </ConfirmModal>
 
-      <div className="admin-layout">
-        {/* Admin Sidebar */}
-        <div className="admin-sidebar">
-          <div style={{ padding: '0 2rem' }}>
-            <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              Admin Panel
-            </h3>
-            
-            <nav className="admin-nav">
-              <Link to="/admin/dashboard" className="admin-nav-link">
+      <div className="min-h-screen bg-gray-50">
+        {/* Admin Navigation */}
+        <nav className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex items-center">
+                <Link to="/" className="text-2xl font-bold text-orange-600">
+                  Restaurant Admin
+                </Link>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link 
+                  to="/admin/dashboard" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
                 Dashboard
               </Link>
-              <Link to="/admin/orders" className="admin-nav-link">
+                <Link 
+                  to="/admin/orders" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
                 Orders
               </Link>
-              <Link to="/admin/dishes" className="admin-nav-link active">
-                Dishes
+                <Link 
+                  to="/admin/dishes" 
+                  className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
+                >
+                  Menu
               </Link>
-              <Link to="/admin/categories" className="admin-nav-link">
+                <Link 
+                  to="/admin/categories" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
                 Categories
               </Link>
-              <Link to="/admin/customers" className="admin-nav-link">
+                <Link 
+                  to="/admin/customers" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
                 Customers
               </Link>
-              <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-                Back to Website
+                <Link 
+                  to="/" 
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  View Website
               </Link>
-            </nav>
+              </div>
+            </div>
           </div>
-        </div>
+        </nav>
 
-        {/* Main Content */}
-        <div className="admin-content">
-          <div className="admin-header" style={{ marginBottom: '2rem' }}>
-            <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary-orange)' }}>
-              Dish Management
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Menu Management
             </h1>
-            <p style={{ color: 'var(--medium-gray)', fontSize: '1.1rem' }}>
+              <p className="text-gray-600 mt-2">
               Add, edit and manage restaurant dishes
             </p>
           </div>
-
-          {/* Add Button */}
-          <div style={{ marginBottom: '2rem' }}>
             <button 
-              className="btn btn-primary"
+              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                showAddForm 
+                  ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                  : 'bg-orange-600 hover:bg-orange-700 text-white'
+              }`}
               onClick={() => setShowAddForm(!showAddForm)}
             >
-              {showAddForm ? '❌ Cancel' : '➕ Add New Dish'}
+              {showAddForm ? 'Cancel' : 'Add New Dish'}
             </button>
           </div>
 
           {/* Add/Edit Form */}
           {showAddForm && (
-            <div className="card" style={{ marginBottom: '2rem' }}>
-              <div className="card-body">
-                <h3 style={{ marginBottom: '1.5rem' }}>
-                  {editingDish ? '✏️ Edit Dish' : '➕ Add New Dish'}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                {editingDish ? 'Edit Dish' : 'Add New Dish'}
                 </h3>
                 
                 <form onSubmit={handleSubmit}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                         Dish Name *
                       </label>
                       <input
                         type="text"
+                      name="name"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
-                        style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                         Price ($) *
                       </label>
                       <input
                         type="number"
+                      name="price"
                         step="0.01"
                         value={formData.price}
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
                         required
-                        style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                         Category *
                       </label>
                       <select
+                      name="category_id"
                         value={formData.category_id}
                         onChange={(e) => setFormData({...formData, category_id: e.target.value})}
                         required
-                        style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       >
                         <option value="">Select Category</option>
                         {categories.map(category => (
@@ -344,375 +379,225 @@ const AdminDishes = () => {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                         Preparation Time (minutes)
                       </label>
                       <input
                         type="number"
+                      name="preparation_time"
                         value={formData.preparation_time}
                         onChange={(e) => setFormData({...formData, preparation_time: e.target.value})}
-                        style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                        Calories
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.calories}
-                        onChange={(e) => setFormData({...formData, calories: e.target.value})}
-                        style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                       Description
                     </label>
                     <textarea
+                    name="description"
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
                       rows="3"
-                      style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                      Ingredients
-                    </label>
-                    <textarea
-                      value={formData.ingredients}
-                      onChange={(e) => setFormData({...formData, ingredients: e.target.value})}
-                      rows="2"
-                      placeholder="List ingredients separated by commas"
-                      style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '8px' }}
-                    />
-                  </div>
-
-                  {/* Image Upload Section */}
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '1rem', fontWeight: '600', fontSize: '1.1rem' }}>
-                      📷 Dish Image
+                {/* Image Upload */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Dish Image
                     </label>
                     
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '1.5rem', 
-                      alignItems: 'flex-start',
-                      flexWrap: 'wrap'
-                    }}>
-                      {/* Image Preview */}
-                      <div style={{ 
-                        minWidth: '200px',
-                        textAlign: 'center'
-                      }}>
-                        {imagePreview ? (
-                          <div style={{ 
-                            position: 'relative', 
-                            display: 'inline-block',
-                            borderRadius: '12px',
-                            overflow: 'hidden',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                          }}>
+                  <div className="flex gap-6">
+                    {imagePreview && (
+                      <div className="relative">
                             <img 
                               src={imagePreview} 
-                              alt="Dish Preview" 
-                              style={{ 
-                                width: '200px', 
-                                height: '200px', 
-                                objectFit: 'cover',
-                                display: 'block'
-                              }} 
-                            />
-                            <div style={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              background: 'linear-gradient(45deg, transparent 60%, rgba(0,0,0,0.1))',
-                              pointerEvents: 'none'
-                            }} />
+                          alt="Preview" 
+                          className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                        />
                             <button
                               type="button"
                               onClick={removeImage}
-                              style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                background: 'rgba(220, 53, 69, 0.9)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '50%',
-                                width: '32px',
-                                height: '32px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'all 0.2s ease',
-                                backdropFilter: 'blur(4px)'
-                              }}
-                              onMouseOver={(e) => e.target.style.background = 'rgba(220, 53, 69, 1)'}
-                              onMouseOut={(e) => e.target.style.background = 'rgba(220, 53, 69, 0.9)'}
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ) : (
-                          <div style={{
-                            width: '200px',
-                            height: '200px',
-                            border: '2px dashed #ddd',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#f8f9fa',
-                            color: '#6c757d',
-                            fontSize: '0.9rem'
-                          }}>
-                            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🖼️</div>
-                            <div>No image selected</div>
-                            <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Upload to preview</div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Upload Controls */}
-                      <div style={{ flex: 1, minWidth: '300px' }}>
-                        <div style={{
-                          border: '2px dashed var(--primary-orange)',
-                          borderRadius: '12px',
-                          padding: '2rem',
-                          textAlign: 'center',
-                          backgroundColor: 'rgba(255, 107, 53, 0.05)',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          position: 'relative'
-                        }}
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.1)';
-                          e.currentTarget.style.borderColor = 'var(--primary-red)';
-                        }}
-                        onDragLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
-                          e.currentTarget.style.borderColor = 'var(--primary-orange)';
-                        }}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
-                          e.currentTarget.style.borderColor = 'var(--primary-orange)';
-                          const files = e.dataTransfer.files;
-                          if (files.length > 0) {
-                            const file = files[0];
-                            if (file.type.startsWith('image/')) {
-                              handleImageChange({ target: { files: [file] } });
-                            }
-                          }
-                        }}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
                         >
+                          ×
+                            </button>
+                      </div>
+                    )}
+
+                    <div className="flex-1">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors">
                           <input
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
-                            style={{ 
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              width: '100%',
-                              height: '100%',
-                              opacity: 0,
-                              cursor: 'pointer'
-                            }}
-                          />
-                          
-                          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📤</div>
-                          <h4 style={{ 
-                            color: 'var(--primary-orange)', 
-                            marginBottom: '0.5rem',
-                            fontSize: '1.2rem'
-                          }}>
-                            Upload Dish Image
-                          </h4>
-                          <p style={{ 
-                            color: 'var(--medium-gray)', 
-                            marginBottom: '1rem',
-                            fontSize: '0.95rem'
-                          }}>
-                            Drag & drop your image here, or click to browse
-                          </p>
-                          
-                          <div style={{
-                            display: 'inline-block',
-                            background: 'var(--primary-orange)',
-                            color: 'white',
-                            padding: '0.75rem 1.5rem',
-                            borderRadius: '8px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            pointerEvents: 'none'
-                          }}>
-                            📁 Choose File
+                          className="hidden"
+                          id="dish-image"
+                        />
+                        <label htmlFor="dish-image" className="cursor-pointer">
+                          <div className="text-gray-400 mb-2">
+                            <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
                           </div>
-                        </div>
-                        
-                        <div style={{ 
-                          marginTop: '1rem',
-                          padding: '1rem',
-                          backgroundColor: '#f8f9fa',
-                          borderRadius: '8px',
-                          border: '1px solid #e9ecef'
-                        }}>
-                          <h5 style={{ 
-                            color: 'var(--dark-charcoal)', 
-                            marginBottom: '0.5rem',
-                            fontSize: '0.9rem'
-                          }}>
-                            📋 Upload Guidelines
-                          </h5>
-                          <ul style={{ 
-                            margin: 0, 
-                            paddingLeft: '1.2rem',
-                            color: 'var(--medium-gray)',
-                            fontSize: '0.8rem',
-                            lineHeight: '1.4'
-                          }}>
-                            <li>Supported formats: <strong>JPG, PNG, GIF</strong></li>
-                            <li>Maximum file size: <strong>5MB</strong></li>
-                            <li>Recommended size: <strong>800x800px</strong></li>
-                            <li>Square images work best for display</li>
-                          </ul>
-                        </div>
+                          <p className="text-sm text-gray-600">
+                            Click to upload or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            PNG, JPG, GIF up to 5MB
+                          </p>
+                        </label>
+                      </div>
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <div className="flex gap-6 mb-6">
+                  <label className="flex items-center">
                       <input
                         type="checkbox"
+                      name="is_vegetarian"
                         checked={formData.is_vegetarian}
                         onChange={(e) => setFormData({...formData, is_vegetarian: e.target.checked})}
+                      className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
-                      🌱 Vegetarian
+                    <span className="ml-2 text-sm text-gray-700">Vegetarian</span>
                     </label>
 
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <label className="flex items-center">
                       <input
                         type="checkbox"
+                      name="is_spicy"
                         checked={formData.is_spicy}
                         onChange={(e) => setFormData({...formData, is_spicy: e.target.checked})}
+                      className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
-                      🌶️ Spicy
+                    <span className="ml-2 text-sm text-gray-700">Spicy</span>
                     </label>
 
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <label className="flex items-center">
                       <input
                         type="checkbox"
+                      name="is_available"
                         checked={formData.is_available}
                         onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
+                      className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
-                      ✅ Available
+                    <span className="ml-2 text-sm text-gray-700">Available</span>
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button type="submit" className="btn btn-primary">
-                      {editingDish ? '💾 Update Dish' : '➕ Add Dish'}
+                <div className="flex gap-4">
+                  <button 
+                    type="submit" 
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    {editingDish ? 'Update Dish' : 'Add Dish'}
                     </button>
-                    <button type="button" className="btn btn-secondary" onClick={resetForm}>
-                      ❌ Cancel
+                  <button 
+                    type="button" 
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors" 
+                    onClick={resetForm}
+                  >
+                    Cancel
                     </button>
                   </div>
                 </form>
-              </div>
             </div>
           )}
 
           {/* Dishes List */}
-          <div style={{ display: 'grid', gap: '1.5rem' }}>
+          <div className="space-y-6">
             {dishes.map(dish => (
-              <div key={dish.id} className="card">
-                <div className="card-body">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'start' }}>
+              <div key={dish.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex flex-col lg:flex-row gap-6">
+                  {/* Dish Image */}
+                  <div className="lg:w-48">
+                    <img 
+                      src={dish.image && dish.image.startsWith('http') 
+                        ? dish.image 
+                        : dish.image 
+                        ? `http://127.0.0.1:8000${dish.image}` 
+                        : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=480&q=80'
+                      }
+                      alt={dish.name}
+                      className="w-full h-32 lg:h-40 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=480&q=80';
+                      }}
+                    />
+                  </div>
+
+                  {/* Dish Info */}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h3 style={{ marginBottom: '0.5rem', color: 'var(--dark-charcoal)' }}>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-1">
                         {dish.name}
                       </h3>
-                      <p style={{ color: 'var(--medium-gray)', marginBottom: '1rem' }}>
+                        <p className="text-gray-600 mb-3">
                         {dish.description}
                       </p>
-                      
-                      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                        <span style={{ background: 'var(--light-background)', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          📂 {dish.category.name}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-orange-600 mb-1">
+                          ${dish.price}
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          dish.is_available 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {dish.is_available ? 'Available' : 'Unavailable'}
                         </span>
-                        <span style={{ background: 'var(--success-green)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          💰 ${dish.price}
-                        </span>
-                        <span style={{ background: 'var(--info-blue)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          ⏱️ {dish.preparation_time} min
-                        </span>
-                        {dish.calories && (
-                          <span style={{ background: 'var(--warning-orange)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                            🔥 {dish.calories} cal
-                          </span>
-                        )}
+                      </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                        {dish.category.name}
+                      </span>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                        {dish.preparation_time} min
+                      </span>
                         {dish.is_vegetarian && (
-                          <span style={{ background: 'var(--success-green)', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '10px', fontSize: '0.8rem' }}>
-                            🌱 Vegetarian
+                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                          Vegetarian
                           </span>
                         )}
                         {dish.is_spicy && (
-                          <span style={{ background: 'var(--danger-red)', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '10px', fontSize: '0.8rem' }}>
-                            🌶️ Spicy
-                          </span>
-                        )}
-                        <span style={{ 
-                          background: dish.is_available ? 'var(--success-green)' : 'var(--medium-gray)', 
-                          color: 'white', 
-                          padding: '0.2rem 0.6rem', 
-                          borderRadius: '10px', 
-                          fontSize: '0.8rem' 
-                        }}>
-                          {dish.is_available ? '✅ Available' : '❌ Unavailable'}
+                        <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+                          Spicy
                         </span>
-                      </div>
+                      )}
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <div className="flex gap-3">
                       <button 
-                        className="btn btn-sm btn-secondary"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                         onClick={() => handleEdit(dish)}
                       >
-                        ✏️ Edit
+                        Edit
                       </button>
                       <button 
-                        className="btn btn-sm"
-                        style={{ 
-                          background: dish.is_available ? 'var(--warning-orange)' : 'var(--success-green)',
-                          color: 'white'
-                        }}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          dish.is_available 
+                            ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
+                            : 'bg-green-600 hover:bg-green-700 text-white'
+                        }`}
                         onClick={() => toggleAvailability(dish.id)}
                       >
-                        {dish.is_available ? '🚫 Disable' : '✅ Enable'}
+                        {dish.is_available ? 'Disable' : 'Enable'}
                       </button>
                       <button 
-                        className="btn btn-sm btn-danger"
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                         onClick={() => handleDelete(dish.id)}
                       >
-                        🗑️ Delete
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -722,9 +607,10 @@ const AdminDishes = () => {
           </div>
 
           {dishes.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--medium-gray)' }}>
-              <h3>No dishes found</h3>
-              <p>Start by adding your first dish!</p>
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">🍽️</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No dishes found</h3>
+              <p className="text-gray-600">Start by adding your first dish!</p>
             </div>
           )}
         </div>

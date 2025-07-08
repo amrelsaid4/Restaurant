@@ -80,11 +80,11 @@ export const AuthProvider = ({ children }) => {
                     isAuthenticated: true,
                     isAdmin: data.is_admin,
                     user: userData,
-                    loading: false,
+                loading: false,
                     error: null,
                     initialized: true
-                };
-                
+            };
+            
                 updateAuthState(newAuthState);
                 
                 // Save to localStorage if we have session data
@@ -222,7 +222,7 @@ export const AuthProvider = ({ children }) => {
                     console.log('📋 No stored session, checking server...');
                     // No stored session, check server anyway
                     await checkAuthStatus();
-                }
+                    }
                 
                 console.log('✅ Auth initialization complete');
             } catch (error) {

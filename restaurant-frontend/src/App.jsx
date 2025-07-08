@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 // Import Providers
 import { AuthProvider } from './contexts/AuthContext';
@@ -18,7 +19,6 @@ import Checkout from './pages/Checkout/Checkout';
 import CheckoutTest from './pages/Checkout/CheckoutTest';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import VerifyPhone from './pages/VerifyPhone';
 import Profile from './pages/Profile/Profile';
 import Orders from './pages/Orders';
 import OrderSuccess from './pages/OrderSuccess';
@@ -36,8 +36,9 @@ import { PageLoader } from './components/ui/LoadingSpinner';
 import { useAuth } from './contexts/AuthContext';
 import AlertModal from './components/AlertModal';
 import Navbar from './components/layout/Navbar';
-import Footer from './components/Footer';
-import Toast from './components/Toast';
+import Footer from './components/Footer/Footer';
+import About from './pages/About/About';
+import Contact from './pages/Contact/Contact';
 
 /**
  * Protected Route Component for Private Pages
@@ -60,21 +61,43 @@ const PrivateRoute = ({ children, adminOnly }) => {
   return children;
 };
 
-/**
- * Main App Component
- * - Router setup
- * - Notifications setup
- * - Apply new system
- */
+
 function App() {
   return (
     <AuthProvider>
       <AlertProvider>
-        <CartProvider>
+          <CartProvider>
             <Router>
               <div className="App min-h-screen bg-gray-50">
                 <Navbar />
-                <Toast />
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: '#363636',
+                      color: '#fff',
+                      fontSize: '14px',
+                      fontFamily: 'Inter, sans-serif',
+                      direction: 'ltr'
+                    },
+                    success: {
+                      style: {
+                        background: '#10B981',
+                      },
+                    },
+                    error: {
+                      style: {
+                        background: '#EF4444',
+                      },
+                    },
+                    loading: {
+                      style: {
+                        background: '#3B82F6',
+                      },
+                    }
+                  }}
+                />
                 
                 {/* Alert Modal */}
                 <AlertModal />
@@ -91,6 +114,8 @@ function App() {
                     <Route path="checkout-test" element={<CheckoutTest />} />
                     <Route path="order-success" element={<OrderSuccess />} />
                     <Route path="order-cancelled" element={<OrderCancelled />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="contact" element={<Contact />} />
                     <Route path="profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
                     <Route path="orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
                     
@@ -107,7 +132,6 @@ function App() {
                   {/* Login and Register pages (without Layout) */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/verify-phone" element={<VerifyPhone />} />
                   
                   {/* Redirect for non-existent pages */}
                   <Route path="*" element={<Navigate to="/" />} />

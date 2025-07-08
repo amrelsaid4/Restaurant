@@ -168,242 +168,259 @@ const AdminCategories = () => {
         <p>{modalState.message}</p>
       </ConfirmModal>
 
-      <div className="admin-layout">
-        {/* Admin Sidebar */}
-        <div className="admin-sidebar">
-          <div style={{ padding: '0 2rem' }}>
-            <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              Admin Panel
-            </h3>
-            
-            <nav className="admin-nav">
-              <Link to="/admin/dashboard" className="admin-nav-link">
-                📊 Dashboard
+      <div className="min-h-screen bg-gray-50">
+        {/* Admin Navigation */}
+        <nav className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex items-center">
+                <Link to="/" className="text-2xl font-bold text-orange-600">
+                  Restaurant Admin
+                </Link>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link 
+                  to="/admin/dashboard" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Dashboard
               </Link>
-              <Link to="/admin/orders" className="admin-nav-link">
-                📋 Orders
+                <Link 
+                  to="/admin/orders" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Orders
               </Link>
-              <Link to="/admin/dishes" className="admin-nav-link">
-                🍕 Dishes
+                <Link 
+                  to="/admin/dishes" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Menu
               </Link>
-              <Link to="/admin/categories" className="admin-nav-link active">
-                📂 Categories
+                <Link 
+                  to="/admin/categories" 
+                  className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
+                >
+                  Categories
               </Link>
-              <Link to="/admin/customers" className="admin-nav-link">
-                👥 Customers
+                <Link 
+                  to="/admin/customers" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Customers
               </Link>
-              <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-                🏠 Back to Website
+                <Link 
+                  to="/" 
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  View Website
               </Link>
-            </nav>
+              </div>
+            </div>
           </div>
-        </div>
+        </nav>
 
-        {/* Main Content */}
-        <div className="admin-content">
-          <div className="admin-header" style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
               <div>
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary-orange)' }}>
-                  📂 Category Management
+              <h1 className="text-3xl font-bold text-gray-900">
+                Category Management
                 </h1>
-                <p style={{ color: 'var(--medium-gray)', fontSize: '1.1rem' }}>
+              <p className="text-gray-600 mt-2">
                   Organize and manage menu categories
                 </p>
               </div>
               <button 
-                className="btn btn-primary"
+              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                showAddForm 
+                  ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                  : 'bg-orange-600 hover:bg-orange-700 text-white'
+              }`}
                 onClick={() => setShowAddForm(!showAddForm)}
               >
-                {showAddForm ? '❌ Cancel' : '➕ Add New Category'}
+              {showAddForm ? 'Cancel' : 'Add New Category'}
               </button>
-            </div>
           </div>
 
-          {/* Stats */}
-          <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: '2rem' }}>
-            <div className="stat-card">
-              <div className="stat-value">{categories.length}</div>
-              <div className="stat-label">Total Categories</div>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="text-3xl font-bold text-gray-900">{categories.length}</div>
+              <div className="text-sm text-gray-600 mt-1">Total Categories</div>
             </div>
             
-            <div className="stat-card" style={{ borderLeftColor: 'var(--success-green)' }}>
-              <div className="stat-value" style={{ color: 'var(--success-green)' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="text-3xl font-bold text-green-600">
                 {categories.filter(c => c.is_active).length}
               </div>
-              <div className="stat-label">Active Categories</div>
+              <div className="text-sm text-gray-600 mt-1">Active Categories</div>
             </div>
             
-            <div className="stat-card" style={{ borderLeftColor: 'var(--info-blue)' }}>
-              <div className="stat-value" style={{ color: 'var(--info-blue)' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="text-3xl font-bold text-blue-600">
                 {categories.reduce((sum, c) => sum + (c.dishes_count || 0), 0)}
               </div>
-              <div className="stat-label">Total Dishes</div>
+              <div className="text-sm text-gray-600 mt-1">Total Dishes</div>
             </div>
 
-            <div className="stat-card" style={{ borderLeftColor: 'var(--warning-orange)' }}>
-              <div className="stat-value" style={{ color: 'var(--warning-orange)' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="text-3xl font-bold text-orange-600">
                 {categories.length > 0 ? Math.round(categories.reduce((sum, c) => sum + (c.dishes_count || 0), 0) / categories.length) : 0}
               </div>
-              <div className="stat-label">Average Dishes</div>
+              <div className="text-sm text-gray-600 mt-1">Average Dishes</div>
             </div>
           </div>
 
           {/* Add/Edit Form */}
           {showAddForm && (
-            <div className="card" style={{ marginBottom: '2rem' }}>
-              <div className="card-header">
-                <h3>{editingCategory ? '✏️ Edit Category' : '➕ Add New Category'}</h3>
-              </div>
-              <div className="card-body">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                {editingCategory ? 'Edit Category' : 'Add New Category'}
+              </h3>
+              
                 <form onSubmit={handleSubmit}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
-                    <div className="form-group">
-                      <label className="form-label">Category Name *</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category Name *
+                    </label>
                       <input
                         type="text"
-                        className="form-control"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
                         placeholder="Example: Pizza, Burgers, Beverages..."
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Description *</label>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description *
+                  </label>
                     <textarea
-                      className="form-control"
-                      rows="3"
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
                       required
+                    rows="3"
                       placeholder="Brief description about this category..."
-                    ></textarea>
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  />
                   </div>
 
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div className="mb-6">
+                  <label className="flex items-center">
                       <input
                         type="checkbox"
                         checked={formData.is_active}
                         onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                      className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
-                      ✅ Active category (visible to customers)
+                    <span className="ml-2 text-sm text-gray-700">Active category (visible to customers)</span>
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button type="submit" className="btn btn-primary">
-                      {editingCategory ? '💾 Update' : '➕ Add'}
+                <div className="flex gap-4">
+                  <button 
+                    type="submit" 
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    {editingCategory ? 'Update Category' : 'Add Category'}
                     </button>
-                    <button type="button" className="btn btn-secondary" onClick={resetForm}>
-                      ❌ Cancel
+                  <button 
+                    type="button" 
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors" 
+                    onClick={resetForm}
+                  >
+                    Cancel
                     </button>
                   </div>
                 </form>
-              </div>
             </div>
           )}
 
           {/* Categories Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map(category => (
-              <div key={category.id} className="card">
-                <div className="card-body">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                    <div style={{ flex: 1 }}>
-                      <h3 style={{ marginBottom: '0.5rem', color: 'var(--dark-charcoal)' }}>
-                        📂 {category.name}
+              <div key={category.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {category.name}
                       </h3>
-                      <p style={{ color: 'var(--medium-gray)', fontSize: '0.9rem', marginBottom: '1rem', lineHeight: '1.5' }}>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                         {category.description}
                       </p>
                     </div>
                     
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ 
-                        background: category.is_active ? 'var(--success-green)' : 'var(--danger-red)',
-                        color: 'white',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '10px',
-                        fontSize: '0.8rem',
-                        fontWeight: '600'
-                      }}>
-                        {category.is_active ? '✅ Active' : '❌ Inactive'}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    category.is_active 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {category.is_active ? 'Active' : 'Inactive'}
                       </span>
-                    </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                    <span className="badge" style={{ background: 'var(--primary-orange)', color: 'white' }}>
-                      🍽️ {category.dishes_count || 0} dishes
+                <div className="flex gap-2 mb-4">
+                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                    {category.dishes_count || 0} dishes
                     </span>
-                    <span className="badge" style={{ background: 'var(--info-blue)', color: 'white' }}>
-                      📅 {new Date(category.created_at).toLocaleDateString('en-US')}
+                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                    {new Date(category.created_at).toLocaleDateString('en-US')}
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--primary-orange)' }}>
-                      {category.name} Category
-                    </div>
-                    
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div className="flex gap-2">
                       <button 
-                        className="btn btn-secondary btn-sm"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                         onClick={() => handleEdit(category)}
                       >
-                        ✏️
+                    Edit
                       </button>
                       <button 
-                        className={`btn btn-sm ${category.is_active ? 'btn-warning' : 'btn-success'}`}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      category.is_active 
+                        ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
+                        : 'bg-green-600 hover:bg-green-700 text-white'
+                    }`}
                         onClick={() => toggleActive(category.id)}
                       >
-                        {category.is_active ? '🚫' : '✅'}
+                    {category.is_active ? 'Disable' : 'Enable'}
                       </button>
                       <button 
-                        className="btn btn-danger btn-sm"
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => handleDelete(category.id)}
                         disabled={(category.dishes_count || 0) > 0}
                         title={(category.dishes_count || 0) > 0 ? 'Cannot delete category with dishes' : 'Delete category'}
                       >
-                        🗑️
+                    Delete
                       </button>
                     </div>
-                  </div>
 
                   {(category.dishes_count || 0) > 0 && (
-                    <div style={{ 
-                      marginTop: '1rem', 
-                      padding: '0.75rem', 
-                      background: 'var(--secondary-cream)', 
-                      borderRadius: 'var(--border-radius)',
-                      fontSize: '0.9rem',
-                      color: 'var(--medium-gray)'
-                    }}>
-                      💡 This category contains {category.dishes_count || 0} dishes. To delete it, you must delete the dishes first.
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-yellow-800 text-sm">
+                      This category contains {category.dishes_count || 0} dishes. To delete it, you must delete the dishes first.
+                    </p>
                     </div>
                   )}
-                </div>
               </div>
             ))}
           </div>
 
           {categories.length === 0 && (
-            <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-              <h3 style={{ color: 'var(--medium-gray)', marginBottom: '1rem' }}>
-                📂 No Categories Found
-              </h3>
-              <p style={{ color: 'var(--medium-gray)', marginBottom: '2rem' }}>
-                Start by adding your first category to organize the menu
-              </p>
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">📂</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No categories found</h3>
+              <p className="text-gray-600 mb-4">Start by adding your first category to organize the menu</p>
               <button 
-                className="btn btn-primary"
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 onClick={() => setShowAddForm(true)}
               >
-                ➕ Add New Category
+                Add New Category
               </button>
             </div>
           )}

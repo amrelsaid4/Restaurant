@@ -51,143 +51,124 @@ const AdminCustomers = () => {
   }
 
   return (
-    <div className="admin-layout">
-      {/* Admin Sidebar */}
-      <div className="admin-sidebar">
-        <div style={{ padding: '0 2rem' }}>
-          <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-            Admin Panel
-          </h3>
-          
-          <nav className="admin-nav">
-            <Link to="/admin/dashboard" className="admin-nav-link">
-              📊 Dashboard
+    <div className="min-h-screen bg-gray-50">
+      {/* Admin Navigation */}
+      <nav className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link to="/" className="text-2xl font-bold text-orange-600">
+                Restaurant Admin
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/admin/dashboard" 
+                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+              >
+                Dashboard
             </Link>
-            <Link to="/admin/orders" className="admin-nav-link">
-              📋 Orders
+              <Link 
+                to="/admin/orders" 
+                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+              >
+                Orders
             </Link>
-            <Link to="/admin/dishes" className="admin-nav-link">
-              🍕 Dishes
+              <Link 
+                to="/admin/dishes" 
+                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+              >
+                Menu
             </Link>
-            <Link to="/admin/categories" className="admin-nav-link">
-              📂 Categories
+              <Link 
+                to="/admin/categories" 
+                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+              >
+                Categories
             </Link>
-            <Link to="/admin/customers" className="admin-nav-link active">
-              👥 Customers
+              <Link 
+                to="/admin/customers" 
+                className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
+              >
+                Customers
             </Link>
-            <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-              🏠 Back to Website
+              <Link 
+                to="/" 
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
+              >
+                View Website
             </Link>
-          </nav>
+            </div>
+          </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Main Content */}
-      <div className="admin-content">
-        <div className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary-orange)' }}>
-            👥 Customer Management
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Customer Management
           </h1>
-          <p style={{ color: 'var(--medium-gray)', fontSize: '1.1rem' }}>
+          <p className="text-gray-600 mt-2">
             Review and manage customer database
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: '2rem' }}>
-          <div className="stat-card">
-            <div className="stat-value">{customers.length}</div>
-            <div className="stat-label">Total Customers</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="text-3xl font-bold text-gray-900">{customers.length}</div>
+            <div className="text-sm text-gray-600 mt-1">Total Customers</div>
           </div>
           
-          <div className="stat-card" style={{ borderLeftColor: 'var(--success-green)' }}>
-            <div className="stat-value" style={{ color: 'var(--success-green)' }}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="text-3xl font-bold text-green-600">
               {customers.filter(c => c.orders_count > 0).length}
             </div>
-            <div className="stat-label">Active Customers</div>
+            <div className="text-sm text-gray-600 mt-1">Active Customers</div>
           </div>
           
-          <div className="stat-card" style={{ borderLeftColor: 'var(--primary-gold)' }}>
-            <div className="stat-value" style={{ color: 'var(--primary-gold)' }}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="text-3xl font-bold text-yellow-600">
               {customers.filter(c => c.total_spent >= 1000).length}
             </div>
-            <div className="stat-label">Gold Customers</div>
+            <div className="text-sm text-gray-600 mt-1">Gold Customers</div>
           </div>
 
-          <div className="stat-card" style={{ borderLeftColor: 'var(--info-blue)' }}>
-            <div className="stat-value" style={{ color: 'var(--info-blue)' }}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="text-3xl font-bold text-blue-600">
               ${(customers.reduce((sum, c) => sum + c.total_spent, 0) / customers.length).toFixed(0)}
             </div>
-            <div className="stat-label">Average Spending</div>
+            <div className="text-sm text-gray-600 mt-1">Average Spending</div>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="card" style={{ marginBottom: '2rem' }}>
-          <div className="card-body">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">🔍 Search Customers</label>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Search Customers
+          </label>
               <input
                 type="text"
-                className="form-control"
                 placeholder="Search by name, email, or phone number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               />
-            </div>
-          </div>
         </div>
 
-        {/* Customers Table */}
-        <div className="card">
-          <div className="card-header">
-            <h3>📋 Customer List ({filteredCustomers.length})</h3>
-          </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ 
-              width: '100%', 
-              borderCollapse: 'collapse',
-              fontSize: '0.9rem'
-            }}>
-              <thead>
-                <tr style={{ 
-                  background: 'var(--light-gray)',
-                  borderBottom: '2px solid var(--primary-orange)'
-                }}>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '700' }}>Customer</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '700' }}>Level</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '700' }}>Orders</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '700' }}>Total Spent</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '700' }}>Registration Date</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '700' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+        {/* Customers List */}
+        <div className="space-y-4">
                 {filteredCustomers.map((customer, index) => {
                   const customerLevel = getCustomerLevel(customer.total_spent);
                   return (
-                    <tr key={customer.id} style={{ 
-                      borderBottom: '1px solid #eee',
-                      background: index % 2 === 0 ? 'var(--white)' : 'var(--light-gray)'
-                    }}>
-                      <td style={{ padding: '1rem' }}>
-                        <div>
-                          <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+              <div key={customer.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">
                             {customer.user.first_name} {customer.user.last_name}
-                          </div>
-                          <div style={{ color: 'var(--medium-gray)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
-                            📧 {customer.user.email}
-                          </div>
-                          <div style={{ color: 'var(--medium-gray)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
-                            📱 {customer.phone}
-                          </div>
-                          <div style={{ color: 'var(--medium-gray)', fontSize: '0.8rem' }}>
-                            📍 {customer.address}
-                          </div>
-                        </div>
-                      </td>
-                      
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
+                      </h3>
                         <span style={{
                           background: customerLevel.color,
                           color: 'white',
@@ -199,70 +180,73 @@ const AdminCustomers = () => {
                         }}>
                           {customerLevel.level}
                         </span>
-                      </td>
+                    </div>
                       
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ 
-                          fontWeight: '700', 
-                          color: 'var(--primary-orange)',
-                          fontSize: '1.1rem'
-                        }}>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Email</span>
+                        <p className="font-medium text-gray-900">{customer.user.email}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Phone</span>
+                        <p className="font-medium text-gray-900">{customer.phone}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Registration</span>
+                        <p className="font-medium text-gray-900">
+                          {new Date(customer.created_at).toLocaleDateString('en-US')}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-sm text-gray-500">Address</span>
+                      <p className="text-gray-700">{customer.address}</p>
+                    </div>
+                  </div>
+
+                  <div className="lg:w-64">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600">
                           {customer.orders_count}
                         </div>
-                        <div style={{ color: 'var(--medium-gray)', fontSize: '0.8rem' }}>
-                          orders
+                        <div className="text-sm text-gray-500">Orders</div>
                         </div>
-                      </td>
-                      
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ 
-                          fontWeight: '700', 
-                          color: 'var(--success-green)',
-                          fontSize: '1.1rem'
-                        }}>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
                           ${customer.total_spent}
                         </div>
-                        <div style={{ color: 'var(--medium-gray)', fontSize: '0.8rem' }}>
-                          total
+                        <div className="text-sm text-gray-500">Total Spent</div>
                         </div>
-                      </td>
-                      
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ color: 'var(--medium-gray)', fontSize: '0.9rem' }}>
-                          {new Date(customer.created_at).toLocaleDateString('en-US')}
                         </div>
-                      </td>
                       
-                      <td style={{ padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                    <div className="flex gap-2">
                           <button 
-                            className="btn btn-secondary btn-sm"
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                             onClick={() => showInfo(`Viewing details for ${customer.user.first_name} ${customer.user.last_name}`, 'Customer Details')}
                           >
-                            👁️ View
+                        View
                           </button>
                           <button 
-                            className="btn btn-primary btn-sm"
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                             onClick={() => showInfo(`Message sent to ${customer.user.email}`, 'Message Sent')}
                           >
-                            ✉️ Message
+                        Message
                           </button>
                         </div>
-                      </td>
-                    </tr>
+                  </div>
+                </div>
+              </div>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
         </div>
 
         {filteredCustomers.length === 0 && (
-          <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-            <h3 style={{ color: 'var(--medium-gray)', marginBottom: '1rem' }}>
-              👥 No Results Found
-            </h3>
-            <p style={{ color: 'var(--medium-gray)' }}>
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">👥</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No customers found</h3>
+            <p className="text-gray-600">
               {searchTerm ? `No results found for: "${searchTerm}"` : 'No customers registered yet'}
             </p>
           </div>

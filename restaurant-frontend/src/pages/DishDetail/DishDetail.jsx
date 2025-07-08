@@ -5,13 +5,14 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
 import toast from 'react-hot-toast';
+import { getDishById, createReview } from '../../services/api';
 
 const DishDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { user, isAuthenticated } = useAuth();
-  const { showAlert } = useAlert();
+  const { showAlert, showSuccess, showError } = useAlert();
 
   // States
   const [dish, setDish] = useState(null);
@@ -35,42 +36,20 @@ const DishDetail = () => {
   const fetchDishDetails = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/`);
-      if (!response.ok) {
-        throw new Error('Dish not found');
-      }
-      const data = await response.json();
-      setDish(data);
+      const dishData = await getDishById(id);
+      setDish(dishData);
+      setReviews(dishData.reviews || []);
     } catch (err) {
       setError(err.message);
-      showAlert('Failed to load dish details', 'error');
+      showError('Failed to load dish details.');
     } finally {
       setLoading(false);
     }
-  }, [id, showAlert]);
-
-  // Fetch reviews - إضافة error handling للـ reviews API
-  const fetchReviews = useCallback(async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/reviews/`);
-      if (response.ok) {
-        const data = await response.json();
-        setReviews(Array.isArray(data) ? data : data.results || []);
-      } else if (response.status === 404) {
-        // Reviews API not implemented yet
-        setReviews([]);
-      } else {
-        throw new Error('Failed to fetch reviews');
-      }
-    } catch (err) {
-      setReviews([]);
-    }
-  }, [id]);
+  }, [id, showError]);
 
   useEffect(() => {
     fetchDishDetails();
-    fetchReviews();
-  }, [fetchDishDetails, fetchReviews]);
+  }, [fetchDishDetails]);
 
   // Handle add to cart
   const handleAddToCart = useCallback(() => {
@@ -94,47 +73,28 @@ const DishDetail = () => {
   const handleSubmitReview = useCallback(async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('Please login to submit a review');
-      navigate('/login');
+      showError('You must be logged in to write a review.', 'Login Required');
       return;
     }
-
-    setSubmittingReview(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/dishes/${id}/reviews/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // إضافة auth header إذا كان متوفر
-        },
-        body: JSON.stringify({
-          rating: newReview.rating,
-          comment: newReview.comment.trim()
-        })
-      });
-
-      if (response.ok) {
-        toast.success('Review submitted successfully! 🌟');
-        setShowReviewForm(false);
-        setNewReview({ rating: 5, comment: '' });
-        fetchReviews(); // Refresh reviews
-        fetchDishDetails(); // Refresh dish data for updated rating
-      } else if (response.status === 404) {
-        // Reviews API not implemented
-        toast.success('Review feature coming soon! Thanks for your feedback.');
-        setShowReviewForm(false);
-        setNewReview({ rating: 5, comment: '' });
-      } else {
-        throw new Error('Failed to submit review');
-      }
-    } catch (err) {
-      toast.success('Review feature coming soon! Thanks for your feedback.');
+      const reviewData = {
+        dish_id: id,
+        rating: newReview.rating,
+        comment: newReview.comment,
+      };
+      const createdReview = await createReview(id, reviewData);
+      setReviews([createdReview, ...reviews]);
+      showSuccess('Thank you for your review!', 'Review Submitted');
       setShowReviewForm(false);
       setNewReview({ rating: 5, comment: '' });
-    } finally {
-      setSubmittingReview(false);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        showError('Your session has expired. Please log in again to submit a review.', 'Authentication Error');
+      } else {
+        showError('Failed to submit review. Please try again.', 'Submission Failed');
+      }
     }
-  }, [id, isAuthenticated, newReview, navigate, fetchReviews, fetchDishDetails]);
+  }, [id, isAuthenticated, newReview, reviews, showError]);
 
   // Render stars utility function
   const renderStars = (rating) => {
@@ -246,90 +206,43 @@ const DishDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Image Gallery */}
-          <div className="space-y-4">
+          {/* Dish Image */}
             <motion.div 
-              className="relative h-96 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl overflow-hidden"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <AnimatePresence mode="wait">
-                {dishImages.length > 0 ? (
-                  <motion.img
-                    key={selectedImage}
-                    src={dishImages[selectedImage]?.startsWith('http') ? dishImages[selectedImage] : `http://127.0.0.1:8000${dishImages[selectedImage]}`}
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+              <div className="relative">
+                <img 
+                  src={dish.image && dish.image.startsWith('http') 
+                    ? dish.image 
+                    : dish.image 
+                    ? `http://127.0.0.1:8000${dish.image}` 
+                    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                  }
                     alt={dish.name}
-                    className="w-full h-full object-cover"
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
+                  className="w-full h-[400px] lg:h-[500px] object-cover"
                     onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                    e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
                     }}
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-8xl opacity-50">🍽️</span>
+                
+                {/* Price Badge */}
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">
+                  ${parseFloat(dish.price).toFixed(2)}
+                </div>
+                
+                {/* Availability Badge */}
+                {dish.is_available === false && (
+                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full font-medium text-sm">
+                    Unavailable
                   </div>
                 )}
-              </AnimatePresence>
-              
-              {/* Navigation arrows */}
-              {dishImages.length > 1 && (
-                <>
-                  <motion.button
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all"
-                    onClick={() => setSelectedImage((prev) => (prev - 1 + dishImages.length) % dishImages.length)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    ←
-                  </motion.button>
-                  <motion.button
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70 transition-all"
-                    onClick={() => setSelectedImage((prev) => (prev + 1) % dishImages.length)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    →
-                  </motion.button>
-                </>
-              )}
+              </div>
+            </div>
             </motion.div>
-
-            {/* Thumbnail Gallery */}
-            {dishImages.length > 1 && (
-              <motion.div 
-                className="grid grid-cols-4 gap-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                {dishImages.map((image, index) => (
-                  <motion.button
-                    key={index}
-                    className={`relative h-20 rounded-lg overflow-hidden transition-all ${
-                      selectedImage === index ? 'ring-2 ring-orange-500' : 'hover:opacity-80'
-                    }`}
-                    onClick={() => setSelectedImage(index)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <img
-                      src={image?.startsWith('http') ? image : `http://127.0.0.1:8000${image}`}
-                      alt={`${dish.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80';
-                      }}
-                    />
-                  </motion.button>
-                ))}
-              </motion.div>
-            )}
-          </div>
 
           {/* Details Section */}
           <motion.div 

@@ -2,10 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import axios from 'axios';
 
 const Home = () => {
   const { user } = useAuth();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [specialDishes, setSpecialDishes] = useState([]);
+  const [loadingDishes, setLoadingDishes] = useState(true);
+  const [homepageStats, setHomepageStats] = useState({
+    total_customers: 0,
+    dishes_served_today: 0,
+    menu_items: 0,
+    average_rating: 0
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
 
   // Hero background images
   const heroImages = [
@@ -14,6 +24,65 @@ const Home = () => {
     'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1970&q=80',
     'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1965&q=80'
   ];
+
+  // Fetch popular dishes
+  useEffect(() => {
+    const fetchPopularDishes = async () => {
+      try {
+        setLoadingDishes(true);
+        const response = await axios.get('http://127.0.0.1:8000/api/dishes/popular/');
+        setSpecialDishes(response.data.slice(0, 3)); // Get only top 3 dishes
+      } catch (error) {
+        console.error('Error fetching popular dishes:', error);
+        // Fallback to static data if API fails
+        setSpecialDishes([
+          {
+            id: 1,
+            name: "Grilled Salmon",
+            price: "$24.99",
+            image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=387&q=80",
+            description: "Fresh Atlantic salmon with herbs and lemon"
+          },
+          {
+            id: 2,
+            name: "Beef Steak",
+            price: "$32.99",
+            image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+            description: "Premium cut beef with garlic butter"
+          },
+          {
+            id: 3,
+            name: "Pasta Carbonara",
+            price: "$18.99",
+            image: "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+            description: "Creamy pasta with bacon and parmesan"
+          }
+        ]);
+      } finally {
+        setLoadingDishes(false);
+      }
+    };
+
+    fetchPopularDishes();
+  }, []);
+
+  // Fetch homepage statistics
+  useEffect(() => {
+    const fetchHomepageStats = async () => {
+      try {
+        setLoadingStats(true);
+        const response = await axios.get('http://127.0.0.1:8000/api/homepage-stats/');
+        setHomepageStats(response.data);
+      } catch (error) {
+        console.error('Error fetching homepage stats:', error);
+        // Keep default values on error
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchHomepageStats();
+  }, []);
 
   // Change background image every 5 seconds
   useEffect(() => {
@@ -63,30 +132,6 @@ const Home = () => {
       icon: "⭐",
       title: "5-Star Quality",
       description: "Consistently rated 5 stars by our satisfied customers worldwide"
-    }
-  ];
-
-  const specialDishes = [
-    {
-      id: 1,
-      name: "Grilled Salmon",
-      price: "$24.99",
-      image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=387&q=80",
-      description: "Fresh Atlantic salmon with herbs and lemon"
-    },
-    {
-      id: 2,
-      name: "Beef Steak",
-      price: "$32.99",
-      image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
-      description: "Premium cut beef with garlic butter"
-    },
-    {
-      id: 3,
-      name: "Pasta Carbonara",
-      price: "$18.99",
-      image: "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
-      description: "Creamy pasta with bacon and parmesan"
     }
   ];
 
@@ -228,41 +273,69 @@ const Home = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {specialDishes.map((dish, index) => (
-              <motion.div
-                key={dish.id}
-                className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="relative overflow-hidden">
-                  <img 
-                    src={dish.image} 
-                    alt={dish.name}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full font-semibold">
-                    {dish.price}
+            {loadingDishes ? (
+              // Loading skeleton
+              [...Array(3)].map((_, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <div className="h-48 bg-gray-300 animate-pulse"></div>
+                  <div className="p-6">
+                    <div className="h-6 bg-gray-300 rounded animate-pulse mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded animate-pulse mb-4"></div>
+                    <div className="h-10 bg-gray-300 rounded animate-pulse"></div>
                   </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{dish.name}</h3>
-                  <p className="text-gray-600 mb-4">{dish.description}</p>
-                  <Link to="/menu">
-                    <motion.button
-                      className="w-full px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors duration-300"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      View in Menu
-                    </motion.button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            ) : (
+              specialDishes.map((dish, index) => (
+                <motion.div
+                  key={dish.id}
+                  className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="relative overflow-hidden">
+                    <img 
+                      src={dish.image && dish.image.startsWith('http') 
+                        ? dish.image 
+                        : dish.image 
+                        ? `http://127.0.0.1:8000${dish.image}` 
+                        : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=480&q=80'
+                      } 
+                      alt={dish.name}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=480&q=80';
+                      }}
+                    />
+                    <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full font-semibold">
+                      ${typeof dish.price === 'number' ? dish.price.toFixed(2) : dish.price}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{dish.name}</h3>
+                    <p className="text-gray-600 mb-4">{dish.description}</p>
+                    <Link to="/menu">
+                      <motion.button
+                        className="w-full px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors duration-300"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        View in Menu
+                      </motion.button>
+                    </Link>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -305,24 +378,56 @@ const Home = () => {
       <section className="py-16 bg-orange-600">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { number: "10K+", label: "Happy Customers" },
-              { number: "500+", label: "Dishes Served Daily" },
-              { number: "50+", label: "Menu Items" },
-              { number: "4.9", label: "Average Rating" }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                className="text-center text-white"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.number}</div>
-                <div className="text-orange-100">{stat.label}</div>
-              </motion.div>
-            ))}
+            {loadingStats ? (
+              // Loading skeletons for stats
+              [...Array(4)].map((_, index) => (
+                <motion.div
+                  key={index}
+                  className="text-center text-white"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <div className="text-4xl md:text-5xl font-bold mb-2">
+                    <div className="h-12 bg-orange-500 rounded animate-pulse"></div>
+                  </div>
+                  <div className="text-orange-100">
+                    <div className="h-4 bg-orange-500 rounded animate-pulse"></div>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              [
+                { 
+                  number: homepageStats.total_customers > 1000 ? `${Math.floor(homepageStats.total_customers / 1000)}K+` : `${homepageStats.total_customers}+`, 
+                  label: "Happy Customers" 
+                },
+                { 
+                  number: `${homepageStats.dishes_served_today}+`, 
+                  label: "Dishes Served Today" 
+                },
+                { 
+                  number: `${homepageStats.menu_items}+`, 
+                  label: "Menu Items" 
+                },
+                { 
+                  number: homepageStats.average_rating.toFixed(1), 
+                  label: "Average Rating" 
+                }
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  className="text-center text-white"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <div className="text-4xl md:text-5xl font-bold mb-2">{stat.number}</div>
+                  <div className="text-orange-100">{stat.label}</div>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>

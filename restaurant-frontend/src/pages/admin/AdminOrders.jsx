@@ -25,7 +25,6 @@ const AdminOrders = () => {
     setLoading(true);
     try {
       const data = await getOrders();
-      // Handle paginated response from DRF
       const ordersArray = data.results ? data.results : (Array.isArray(data) ? data : []);
       setOrders(ordersArray);
     } catch (error) {
@@ -47,10 +46,7 @@ const AdminOrders = () => {
 
   const updateOrderStatus = (orderId, newStatus) => {
     const order = orders.find(o => o.id === orderId);
-    if (!order) return;
-    
-    // Prevent showing modal if status is the same
-    if (order.status === newStatus) return;
+    if (!order || order.status === newStatus) return;
 
     const action = async () => {
       try {
@@ -74,26 +70,26 @@ const AdminOrders = () => {
 
   const getStatusLabel = (status) => {
     const labels = {
-      pending: '⏳ Pending',
-      confirmed: '✅ Confirmed',
-      preparing: '👨‍🍳 Preparing',
-      ready: '🍽️ Ready',
-      delivered: '🚚 Delivered',
-      cancelled: '❌ Cancelled'
+      pending: 'Pending',
+      confirmed: 'Confirmed',
+      preparing: 'Preparing',
+      ready: 'Ready',
+      delivered: 'Delivered',
+      cancelled: 'Cancelled'
     };
     return labels[status] || status;
   };
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: 'var(--warning-orange)',
-      confirmed: 'var(--info-blue)',
-      preparing: 'var(--primary-orange)',
-      ready: 'var(--success-green)',
-      delivered: 'var(--primary-green)',
-      cancelled: 'var(--danger-red)'
+      pending: 'bg-yellow-100 text-yellow-800',
+      confirmed: 'bg-blue-100 text-blue-800',
+      preparing: 'bg-orange-100 text-orange-800',
+      ready: 'bg-purple-100 text-purple-800',
+      delivered: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800'
     };
-    return colors[status] || 'var(--medium-gray)';
+    return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
   const filteredOrders = filter === 'all' 
@@ -102,9 +98,8 @@ const AdminOrders = () => {
 
   if (loading) {
     return (
-      <div className="loading">
-        <div className="spinner"></div>
-        <p>Loading orders...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
@@ -119,65 +114,85 @@ const AdminOrders = () => {
       >
         <p>{modalState.message}</p>
       </ConfirmModal>
-      <div className="admin-layout">
-        {/* Admin Sidebar */}
-        <div className="admin-sidebar">
-          <div style={{ padding: '0 2rem' }}>
-            <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-              🛡️ Admin Panel
-            </h3>
-            
-            <nav className="admin-nav">
-              <Link to="/admin/dashboard" className="admin-nav-link">
-                📊 Dashboard
-              </Link>
-              <Link to="/admin/orders" className="admin-nav-link active">
-                📋 Orders
-              </Link>
-              <Link to="/admin/dishes" className="admin-nav-link">
-                🍕 Dishes
-              </Link>
-              <Link to="/admin/categories" className="admin-nav-link">
-                📂 Categories
-              </Link>
-              <Link to="/admin/customers" className="admin-nav-link">
-                👥 Customers
-              </Link>
-              <Link to="/" className="admin-nav-link" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '2rem' }}>
-                🏠 Back to Website
-              </Link>
-            </nav>
-          </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="admin-content">
-          <div className="admin-header" style={{ marginBottom: '2rem' }}>
-            <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary-orange)' }}>
-              📋 Order Management
+      <div className="min-h-screen bg-gray-50">
+        {/* Admin Navigation */}
+        <nav className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex items-center">
+                <Link to="/" className="text-2xl font-bold text-orange-600">
+                  Restaurant Admin
+                </Link>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link 
+                  to="/admin/dashboard" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Dashboard
+              </Link>
+                <Link 
+                  to="/admin/orders" 
+                  className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
+                >
+                  Orders
+              </Link>
+                <Link 
+                  to="/admin/dishes" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Menu
+              </Link>
+                <Link 
+                  to="/admin/categories" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Categories
+              </Link>
+                <Link 
+                  to="/admin/customers" 
+                  className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
+                >
+                  Customers
+              </Link>
+                <Link 
+                  to="/" 
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  View Website
+              </Link>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Order Management
             </h1>
-            <p style={{ color: 'var(--medium-gray)', fontSize: '1.1rem' }}>
+            <p className="text-gray-600 mt-2">
               Review and manage all customer orders
             </p>
           </div>
 
           {/* Filter Buttons */}
-          <div style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-3">
               {['all', 'pending', 'preparing', 'ready', 'delivered'].map(status => (
                 <button
                   key={status}
-                  className={`btn ${filter === status ? 'btn-primary' : 'btn-secondary'}`}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    filter === status 
+                      ? 'bg-orange-600 text-white' 
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
                   onClick={() => setFilter(status)}
                 >
-                  {status === 'all' ? '🔄 All Orders' : getStatusLabel(status)}
-                  <span style={{ 
-                    marginLeft: '0.5rem',
-                    background: 'rgba(255,255,255,0.2)',
-                    padding: '0.2rem 0.5rem',
-                    borderRadius: '10px',
-                    fontSize: '0.8rem'
-                  }}>
+                  {status === 'all' ? 'All Orders' : getStatusLabel(status)}
+                  <span className="ml-2 px-2 py-1 rounded-full text-xs bg-opacity-20 bg-gray-900">
                     {status === 'all' ? orders.length : orders.filter(o => o.status === status).length}
                   </span>
                 </button>
@@ -186,99 +201,85 @@ const AdminOrders = () => {
           </div>
 
           {/* Orders List */}
-          <div style={{ display: 'grid', gap: '1.5rem' }}>
+          <div className="space-y-4">
             {filteredOrders.map(order => (
-              <div key={order.id} className="card">
-                <div className="card-body">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'start' }}>
-                    <div>
-                      <h3 style={{ marginBottom: '0.5rem', color: 'var(--dark-charcoal)' }}>
+              <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         Order #{order.id}
                       </h3>
-                      <p style={{ color: 'var(--medium-gray)', marginBottom: '1rem' }}>
-                        Customer: {order.customer.user.first_name} {order.customer.user.last_name}
-                      </p>
-                      
-                      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                        <span style={{ background: 'var(--light-background)', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          📅 {new Date(order.order_date).toLocaleDateString()}
-                        </span>
-                        <span style={{ background: 'var(--info-blue)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          📦 {order.items.length} items
-                        </span>
-                        <span style={{ background: 'var(--success-green)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '15px', fontSize: '0.9rem' }}>
-                          💰 ${parseFloat(order.total_amount).toFixed(2)}
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                        {getStatusLabel(order.status)}
                         </span>
                       </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <span className="text-sm text-gray-500">Customer</span>
+                        <p className="font-medium text-gray-900">
+                          {order.customer.user.first_name} {order.customer.user.last_name}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Date</span>
+                        <p className="font-medium text-gray-900">
+                          {new Date(order.order_date).toLocaleDateString('en-US')}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Total</span>
+                        <p className="font-semibold text-gray-900">
+                          ${parseFloat(order.total_amount).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
 
                       {/* Order Items */}
-                      <div style={{ marginBottom: '1rem' }}>
-                        <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: 'var(--dark-charcoal)' }}>Items:</h4>
-                        <div style={{ background: 'var(--light-background)', padding: '1rem', borderRadius: 'var(--border-radius)' }}>
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                      <h4 className="font-medium text-gray-900 mb-2">
+                        Items ({order.items.length})
+                      </h4>
+                      <div className="space-y-2">
                           {order.items.map((item, index) => (
-                            <div key={index} style={{ 
-                              display: 'flex', 
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              padding: '0.5rem 0',
-                              borderBottom: index < order.items.length - 1 ? '1px solid #ddd' : 'none'
-                            }}>
-                              <span style={{ fontWeight: '500' }}>{item.dish.name}</span>
-                              <span style={{ color: 'var(--primary-orange)', fontWeight: '600' }}>Qty: {item.quantity}</span>
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="text-gray-700">{item.dish.name}</span>
+                            <span className="text-gray-600 font-medium">Qty: {item.quantity}</span>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       {order.special_instructions && (
-                        <div style={{ 
-                          marginTop: '1rem', 
-                          padding: '0.75rem', 
-                          background: 'var(--secondary-cream)', 
-                          borderRadius: 'var(--border-radius)',
-                          fontSize: '0.9rem',
-                          color: 'var(--medium-gray)'
-                        }}>
-                          💬 Special Instructions: {order.special_instructions}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <span className="text-sm font-medium text-blue-800">Special Instructions:</span>
+                        <p className="text-blue-700 mt-1">{order.special_instructions}</p>
                         </div>
                       )}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-                      <div 
-                        style={{ 
-                          padding: '0.5rem 1rem',
-                          borderRadius: '25px',
-                          background: getStatusColor(order.status),
-                          color: 'white',
-                          fontSize: '0.9rem',
-                          fontWeight: '500',
-                          minWidth: '120px',
-                          textAlign: 'center'
-                        }}
-                      >
-                        {getStatusLabel(order.status)}
-                      </div>
-                      
+                  {/* Status Update */}
+                  <div className="lg:w-48">
                       {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Update Status
+                        </label>
                         <select 
                           value={order.status}
                           onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                          className="btn btn-sm btn-secondary"
-                          style={{ 
-                            minWidth: '120px',
-                            textAlign: 'center'
-                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                         >
-                          <option value="pending">⏳ Pending</option>
-                          <option value="confirmed">✅ Confirmed</option>
-                          <option value="preparing">👨‍🍳 Preparing</option>
-                          <option value="ready">🍽️ Ready</option>
-                          <option value="delivered">🚚 Delivered</option>
-                          <option value="cancelled">❌ Cancelled</option>
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="preparing">Preparing</option>
+                          <option value="ready">Ready</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
                         </select>
+                      </div>
                       )}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -286,9 +287,15 @@ const AdminOrders = () => {
           </div>
 
           {filteredOrders.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--medium-gray)' }}>
-              <h3>No orders found</h3>
-              <p>There are no orders matching the current filter.</p>
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">📋</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No orders found</h3>
+              <p className="text-gray-600">
+                {filter === 'all' 
+                  ? 'No orders have been placed yet.' 
+                  : `No orders found with status: ${getStatusLabel(filter)}`
+                }
+              </p>
             </div>
           )}
         </div>

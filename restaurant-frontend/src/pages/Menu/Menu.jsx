@@ -88,16 +88,16 @@ const DishCard = memo(({ dish, onAddToCart }) => {
 
         {/* Rating */}
         {dish.average_rating && (
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="flex">
-              {renderStars(dish.average_rating || 0)}
-            </div>
-            {dish.rating_count > 0 && (
-              <span className="text-sm text-gray-500">
-                ({dish.rating_count})
-              </span>
-            )}
+        <div className="flex items-center space-x-2 mb-4">
+          <div className="flex">
+            {renderStars(dish.average_rating || 0)}
           </div>
+          {dish.rating_count > 0 && (
+            <span className="text-sm text-gray-500">
+                ({dish.rating_count})
+            </span>
+          )}
+        </div>
         )}
 
         {/* Action Buttons */}
@@ -166,7 +166,7 @@ const Menu = () => {
         case 'name':
         default:
           return a.name.localeCompare(b.name);
-      }
+    }
     });
 
     return filtered;
