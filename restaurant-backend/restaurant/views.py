@@ -29,8 +29,9 @@ from .serializers import (
 from .filters import DishFilter, CategoryFilter, OrderFilter, DishRatingFilter
 from .utils import (
     get_popular_dishes, send_order_notifications, send_stock_alert,
-    calculate_daily_analytics, invalidate_dish_cache
+    calculate_daily_analytics, invalidate_dish_cache, send_notification_to_admins
 )
+from django.db.models import Count, Avg
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -106,6 +107,43 @@ class DishViewSet(viewsets.ReadOnlyModelViewSet):
         ratings = DishRating.objects.filter(dish=dish)
         serializer = DishRatingSerializer(ratings, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get', 'post'])
+    def reviews(self, request, pk=None):
+        """Handle dish reviews - same as ratings but for frontend compatibility"""
+        dish = self.get_object()
+        
+        if request.method == 'GET':
+            ratings = DishRating.objects.filter(dish=dish).order_by('-created_at')
+            serializer = DishRatingSerializer(ratings, many=True)
+            return Response(serializer.data)
+        
+        elif request.method == 'POST':
+            # Check if user is authenticated
+            if not request.user.is_authenticated:
+                return Response({'error': 'Authentication required'}, status=401)
+            
+            # Get or create customer for the user
+            try:
+                customer = request.user.customer
+            except Customer.DoesNotExist:
+                customer = Customer.objects.create(
+                    user=request.user,
+                    phone='',
+                    address=''
+                )
+            
+            # Create the review
+            data = request.data.copy()
+            data['dish'] = dish.id
+            data['customer'] = customer.id
+            
+            serializer = DishRatingSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=201)
+            else:
+                return Response(serializer.errors, status=400)
 
 class RestaurantViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Restaurant.objects.filter(is_active=True)
@@ -401,31 +439,64 @@ def register_user(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
-    """Get current user profile with recent orders"""
-    
+    """
+    Fetches the extended user profile including stats.
+    """
+    user = request.user
     try:
-        customer = request.user.customer
+        customer = user.customer
     except Customer.DoesNotExist:
-        # Create customer if it doesn't exist
-        customer = Customer.objects.create(
-            user=request.user,
-            phone='',
-            address=''
-        )
+        return Response({'error': 'Customer profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get user stats
+    total_orders = Order.objects.filter(customer=customer).count()
+    avg_rating = DishRating.objects.filter(customer=customer).aggregate(Avg('rating'))['rating__avg']
     
-    # Get customer data
-    customer_serializer = CustomerSerializer(customer)
-    customer_data = customer_serializer.data
-    
-    # Get recent orders (last 10)
-    recent_orders = Order.objects.filter(customer=customer).order_by('-order_date')[:10]
-    orders_serializer = OrderSerializer(recent_orders, many=True)
-    
-    # Combine data
-    profile_data = customer_data.copy()
-    profile_data['orders'] = orders_serializer.data
+    # VIP status logic (example: > 10 orders)
+    is_vip = total_orders > 10
+
+    serializer = UserSerializer(user)
+    profile_data = serializer.data
+    profile_data.update({
+        'phone': customer.phone,
+        'address': customer.address,
+        'stats': {
+            'total_orders': total_orders,
+            'avg_rating': round(avg_rating, 1) if avg_rating else 0,
+            'is_vip': is_vip,
+        }
+    })
     
     return Response(profile_data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+    """Update user profile (name, phone, address)"""
+    user = request.user
+    try:
+        customer = user.customer
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=404)
+
+    # Update User model
+    user.first_name = request.data.get('first_name', user.first_name)
+    user.last_name = request.data.get('last_name', user.last_name)
+    user.save()
+
+    # Update Customer model
+    customer.phone = request.data.get('phone', customer.phone)
+    customer.address = request.data.get('address', customer.address)
+    customer.save()
+
+    # Return updated data
+    user_serializer = UserSerializer(user)
+    customer_serializer = CustomerSerializer(customer)
+    
+    response_data = user_serializer.data
+    response_data.update(customer_serializer.data)
+
+    return Response(response_data)
 
 # ========================================
 # 🎛️ ADMIN DASHBOARD API
@@ -439,13 +510,37 @@ def admin_dashboard_stats(request):
     from django.utils import timezone
     from datetime import timedelta
     
-
+    now = timezone.now()
+    today = now.date()
+    yesterday = today - timedelta(days=1)
+    week_ago = now - timedelta(days=7)
+    
+    # Today's stats
+    today_orders = Order.objects.filter(order_date__date=today).count()
+    today_revenue = Order.objects.filter(
+        order_date__date=today, 
+        payment_status='paid'
+    ).aggregate(total=Sum('total_amount'))['total'] or 0
+    
+    # Yesterday's stats for comparison
+    yesterday_orders = Order.objects.filter(order_date__date=yesterday).count()
+    yesterday_revenue = Order.objects.filter(
+        order_date__date=yesterday, 
+        payment_status='paid'
+    ).aggregate(total=Sum('total_amount'))['total'] or 0
+    
+    # Calculate percentage changes
+    orders_change = ((today_orders - yesterday_orders) / max(yesterday_orders, 1)) * 100 if yesterday_orders else 0
+    revenue_change = ((today_revenue - yesterday_revenue) / max(yesterday_revenue, 1)) * 100 if yesterday_revenue else 0
     
     # Basic counts
     total_orders = Order.objects.count()
     total_customers = Customer.objects.count()
     total_dishes = Dish.objects.count()
     total_categories = Category.objects.count()
+    active_customers = Customer.objects.filter(
+        user__last_login__gte=week_ago
+    ).count()
     
     # Revenue stats
     total_revenue = Order.objects.filter(payment_status='paid').aggregate(
@@ -453,7 +548,6 @@ def admin_dashboard_stats(request):
     )['total'] or 0
     
     # Recent stats (last 7 days)
-    week_ago = timezone.now() - timedelta(days=7)
     recent_orders = Order.objects.filter(order_date__gte=week_ago).count()
     recent_revenue = Order.objects.filter(
         order_date__gte=week_ago, 
@@ -471,6 +565,13 @@ def admin_dashboard_stats(request):
     # Average rating
     avg_rating = DishRating.objects.aggregate(avg=Avg('rating'))['avg'] or 0
     
+    # Additional analytics
+    pending_orders = Order.objects.filter(status='pending').count()
+    delivered_orders = Order.objects.filter(status='delivered').count()
+    avg_order_value = Order.objects.filter(payment_status='paid').aggregate(
+        avg=Avg('total_amount')
+    )['avg'] or 0
+    
     return Response({
         'overview': {
             'total_orders': total_orders,
@@ -480,12 +581,58 @@ def admin_dashboard_stats(request):
             'total_revenue': float(total_revenue),
             'average_rating': round(float(avg_rating), 2)
         },
+        'today_stats': {
+            'today_orders': today_orders,
+            'today_revenue': float(today_revenue),
+            'yesterday_orders': yesterday_orders,
+            'yesterday_revenue': float(yesterday_revenue),
+            'orders_change': round(float(orders_change), 1),
+            'revenue_change': round(float(revenue_change), 1)
+        },
         'recent_stats': {
             'recent_orders': recent_orders,
-            'recent_revenue': float(recent_revenue)
+            'recent_revenue': float(recent_revenue),
+            'active_customers': active_customers,
+            'pending_orders': pending_orders
+        },
+        'performance': {
+            'delivered_orders': delivered_orders,
+            'average_order_value': round(float(avg_order_value), 2),
+            'completion_rate': round((delivered_orders / max(total_orders, 1)) * 100, 1)
         },
         'order_statuses': list(order_statuses),
         'top_dishes': list(top_dishes)
+    })
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def homepage_stats(request):
+    """Get homepage statistics for main landing page"""
+    from django.db.models import Count, Sum, Avg
+    from django.utils import timezone
+    from datetime import timedelta
+    
+    # Total customers count
+    total_customers = Customer.objects.count()
+    
+    # Today's dishes served (total order items for today)
+    today = timezone.now().date()
+    dishes_served_today = OrderItem.objects.filter(
+        order__order_date__date=today,
+        order__status__in=['confirmed', 'preparing', 'ready', 'delivered']
+    ).aggregate(total=Sum('quantity'))['total'] or 0
+    
+    # Total menu items available
+    menu_items = Dish.objects.filter(is_available=True).count()
+    
+    # Average rating across all dishes
+    avg_rating = DishRating.objects.aggregate(avg=Avg('rating'))['avg'] or 0
+    
+    return Response({
+        'total_customers': total_customers,
+        'dishes_served_today': dishes_served_today,
+        'menu_items': menu_items,
+        'average_rating': round(float(avg_rating), 1)
     })
 
 @api_view(['GET'])
@@ -1190,78 +1337,17 @@ def stripe_success(request):
         session = stripe.checkout.Session.retrieve(session_id)
         
         if session.payment_status == 'paid':
+            order, message = _create_order_from_stripe_session(session)
             
-            
-            # Get metadata
-            metadata = session.metadata
-            customer_id = metadata.get('customer_id')
-            delivery_address = metadata.get('delivery_address', '')
-            special_instructions = metadata.get('special_instructions', '')
-            items_json = metadata.get('items', '[]')
-            total_amount = float(metadata.get('total_amount', 0))
-            
-            try:
-                items = json.loads(items_json)
-            except:
-                items = []
-            
-            # Get customer
-            if customer_id:
-                try:
-                    customer = Customer.objects.get(id=customer_id)
-                    
-                    # Check if order already exists
-                    existing_order = Order.objects.filter(
-                        customer=customer,
-                        total_amount=total_amount,
-                        payment_status='paid'
-                    ).order_by('-order_date').first()
-                    
-                    if not existing_order:
-                        # Create order
-                        order = Order.objects.create(
-                            customer=customer,
-                            total_amount=total_amount,
-                            delivery_address=delivery_address,
-                            special_instructions=special_instructions,
-                            status='confirmed',
-                            payment_status='paid'
-                        )
-                        
-                        # Create order items
-                        for item_data in items:
-                            try:
-                                dish = Dish.objects.get(id=item_data['dish_id'])
-                                OrderItem.objects.create(
-                                    order=order,
-                                    dish=dish,
-                                    quantity=item_data['quantity'],
-                                    price=dish.price,
-                                    special_instructions=item_data.get('special_instructions', '')
-                                )
-                            except Dish.DoesNotExist:
-                                continue
-                        
-                        
-                        
-                        return Response({
-                            'success': True,
-                            'order_id': order.id,
-                            'message': 'Payment successful! Your order has been confirmed.',
-                            'total_amount': total_amount
-                        })
-                    else:
-                        return Response({
-                            'success': True,
-                            'order_id': existing_order.id,
-                            'message': 'Order already exists for this payment.',
-                            'total_amount': total_amount
-                        })
-                        
-                except Customer.DoesNotExist:
-                    return Response({'error': 'Customer not found'}, status=404)
+            if order:
+                return Response({
+                    'success': True,
+                    'order_id': order.id,
+                    'message': message,
+                    'total_amount': order.total_amount
+                })
             else:
-                return Response({'error': 'Customer information missing'}, status=400)
+                return Response({'error': message}, status=400)
         else:
             return Response({'error': 'Payment not completed'}, status=400)
             
@@ -1325,64 +1411,8 @@ def stripe_webhook(request):
     try:
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']
-            logger.info(f"Checkout completed: {session['id']}")
+            _create_order_from_stripe_session(session)
             
-            # Get metadata
-            metadata = session.get('metadata', {})
-            customer_id = metadata.get('customer_id')
-            delivery_address = metadata.get('delivery_address', '')
-            special_instructions = metadata.get('special_instructions', '')
-            items_json = metadata.get('items', '[]')
-            total_amount = float(metadata.get('total_amount', 0))
-            
-            try:
-                items = json.loads(items_json)
-            except:
-                items = []
-            
-            if customer_id:
-                try:
-                    customer = Customer.objects.get(id=customer_id)
-                    
-                    # Check if order already exists
-                    existing_order = Order.objects.filter(
-                        customer=customer,
-                        total_amount=total_amount,
-                        payment_status='paid'
-                    ).order_by('-order_date').first()
-                    
-                    if not existing_order:
-                        # Create order
-                        order = Order.objects.create(
-                            customer=customer,
-                            total_amount=total_amount,
-                            delivery_address=delivery_address,
-                            special_instructions=special_instructions,
-                            status='confirmed',
-                            payment_status='paid'
-                        )
-                        
-                        # Create order items
-                        for item_data in items:
-                            try:
-                                dish = Dish.objects.get(id=item_data['dish_id'])
-                                OrderItem.objects.create(
-                                    order=order,
-                                    dish=dish,
-                                    quantity=item_data['quantity'],
-                                    price=dish.price,
-                                    special_instructions=item_data.get('special_instructions', '')
-                                )
-                            except Dish.DoesNotExist:
-                                continue
-                        
-                        logger.info(f"Order created via webhook: #{order.id}")
-                    else:
-                        logger.info("Order already exists for this payment")
-                        
-                except Customer.DoesNotExist:
-                    logger.error(f"Customer not found: {customer_id}")
-                    
         elif event['type'] == 'checkout.session.expired':
             session = event['data']['object']
             logger.info(f"Checkout session expired: {session['id']}")
@@ -1397,3 +1427,88 @@ def stripe_webhook(request):
         return Response({'error': str(e)}, status=400)
     
     return Response({'status': 'success'})
+
+def _create_order_from_stripe_session(session):
+    """
+    Helper function to create an order from a Stripe session object.
+    This avoids code duplication between webhook and success view.
+    """
+    metadata = session.get('metadata', {})
+    customer_id = metadata.get('customer_id')
+    delivery_address = metadata.get('delivery_address', '')
+    special_instructions = metadata.get('special_instructions', '')
+    items_json = metadata.get('items', '[]')
+    total_amount = float(metadata.get('total_amount', 0))
+
+    try:
+        items = json.loads(items_json)
+    except json.JSONDecodeError:
+        items = []
+
+    if not customer_id:
+        logger.error("No customer_id in Stripe session metadata")
+        return None, "Customer information missing"
+
+    try:
+        customer = Customer.objects.get(id=customer_id)
+    except Customer.DoesNotExist:
+        logger.error(f"Customer not found for customer_id: {customer_id}")
+        return None, "Customer not found"
+
+    # Check if order already exists
+    existing_order = Order.objects.filter(
+        customer=customer,
+        total_amount=total_amount,
+        payment_status='paid'
+    ).order_by('-order_date').first()
+
+    if existing_order:
+        logger.info(f"Order #{existing_order.id} already exists for this payment.")
+        return existing_order, "Order already created"
+
+    # Create the order
+    order = Order.objects.create(
+        customer=customer,
+        total_amount=total_amount,
+        delivery_address=delivery_address,
+        special_instructions=special_instructions,
+        status='pending',  # As requested by user
+        payment_status='paid'
+    )
+
+    # Create order items
+    for item_data in items:
+        try:
+            dish = Dish.objects.get(id=item_data['dish_id'])
+            OrderItem.objects.create(
+                order=order,
+                dish=dish,
+                quantity=item_data['quantity'],
+                price=dish.price,
+                special_instructions=item_data.get('special_instructions', '')
+            )
+        except Dish.DoesNotExist:
+            logger.warning(f"Dish with id {item_data.get('dish_id')} not found during order creation.")
+            continue
+    
+    logger.info(f"Order #{order.id} created successfully for customer {customer.user.username}.")
+    
+    # Send notifications
+    try:
+        # To customer
+        Notification.objects.create(
+            user=customer.user,
+            title="Order Received",
+            message=f"Your order #{order.id} has been received and is now pending confirmation. Total: ${order.total_amount}",
+            notification_type='order_placed'
+        )
+        # To admins
+        send_notification_to_admins(
+            title="New Order Alert",
+            message=f"A new order #{order.id} has been placed by {customer.user.username} for ${order.total_amount}.",
+            notification_type='order_placed'
+        )
+    except Exception as e:
+        logger.error(f"Failed to send notifications for order #{order.id}: {e}")
+
+    return order, "Order created successfully"

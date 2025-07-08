@@ -114,6 +114,17 @@ def send_stock_alert(dish):
                 notification_type="stock_low"
             )
 
+def send_notification_to_admins(title, message, notification_type):
+    """Helper to send a notification to all staff users."""
+    admin_users = User.objects.filter(is_staff=True)
+    for admin in admin_users:
+        create_notification(
+            user=admin,
+            title=title,
+            message=message,
+            notification_type=notification_type
+        )
+
 # ===== ANALYTICS UTILITIES =====
 
 def calculate_daily_analytics(date=None):
@@ -256,7 +267,7 @@ def validate_order_items(items):
         except Dish.DoesNotExist:
             errors.append(f"Dish with id {dish_id} does not exist")
     
-    return errors
+    return errors 
 
 class SessionDebugMiddleware(MiddlewareMixin):
     """Debug middleware for session handling"""

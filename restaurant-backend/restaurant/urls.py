@@ -51,6 +51,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/restaurant-info/', views.restaurant_info, name='restaurant-info'),
     path('api/menu-overview/', views.menu_overview, name='menu-overview'),
+    path('api/homepage-stats/', views.homepage_stats, name='homepage-stats'),
     path('api/register/', views.register_user, name='register'),
     path('api/login/', views.customer_login, name='customer-login'),
     path('api/logout/', views.user_logout, name='user-logout'),
