@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
+import { authAPI } from '@/services/api';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
@@ -16,19 +17,39 @@ const Profile = () => {
     phone: '',
     address: ''
   });
+  const [stats, setStats] = useState({
+    total_orders: 0,
+    avg_rating: 0,
+    is_vip: false,
+  });
   const [loading, setLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address: user.address || ''
-      });
-    }
-  }, [user]);
+    const fetchProfileData = async () => {
+      if (user) {
+        try {
+          setStatsLoading(true);
+          const profileData = await authAPI.getUserProfile();
+          setFormData({
+            first_name: profileData.first_name || '',
+            last_name: profileData.last_name || '',
+            email: profileData.email || '',
+            phone: profileData.phone || '',
+            address: profileData.address || ''
+          });
+          if (profileData.stats) {
+            setStats(profileData.stats);
+          }
+        } catch (error) {
+          showAlert('Failed to load profile data.', 'error');
+        } finally {
+          setStatsLoading(false);
+        }
+      }
+    };
+    fetchProfileData();
+  }, [user, showAlert]);
 
   const handleChange = (e) => {
     setFormData({
@@ -168,16 +189,16 @@ const Profile = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <div className="bg-white bg-opacity-10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="text-2xl font-bold">12</div>
+                <div className="text-2xl font-bold">{statsLoading ? '...' : stats.total_orders}</div>
                 <div className="text-orange-100 text-sm">Total Orders</div>
               </div>
               <div className="bg-white bg-opacity-10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="text-2xl font-bold">★ 4.8</div>
+                <div className="text-2xl font-bold">★ {statsLoading ? '...' : stats.avg_rating}</div>
                 <div className="text-orange-100 text-sm">Avg Rating</div>
               </div>
               <div className="bg-white bg-opacity-10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="text-2xl font-bold">🏆</div>
-                <div className="text-orange-100 text-sm">VIP Member</div>
+                <div className="text-2xl font-bold">{stats.is_vip ? '🏆' : '👍'}</div>
+                <div className="text-orange-100 text-sm">{stats.is_vip ? 'VIP Member' : 'Valued Customer'}</div>
               </div>
             </motion.div>
           </div>

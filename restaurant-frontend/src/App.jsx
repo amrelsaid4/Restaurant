@@ -16,7 +16,6 @@ import Menu from './pages/Menu/Menu';
 import DishDetail from './pages/DishDetail/DishDetail';
 import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
-import CheckoutTest from './pages/Checkout/CheckoutTest';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Profile from './pages/Profile/Profile';
@@ -111,7 +110,6 @@ function App() {
                     <Route path="dish/:id" element={<DishDetail />} />
                     <Route path="cart" element={<Cart />} />
                     <Route path="checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
-                    <Route path="checkout-test" element={<CheckoutTest />} />
                     <Route path="order-success" element={<OrderSuccess />} />
                     <Route path="order-cancelled" element={<OrderCancelled />} />
                     <Route path="about" element={<About />} />

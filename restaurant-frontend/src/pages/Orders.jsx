@@ -189,7 +189,7 @@ const Orders = () => {
                         justifyContent: 'space-between',
                         marginBottom: '0.5rem'
                       }}>
-                        <span>{item.dish_name || item.dish} x {item.quantity}</span>
+                        <span>{(item.dish_name || item.dish?.name)} x {item.quantity}</span>
                         <span>${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}

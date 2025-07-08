@@ -352,13 +352,11 @@ export const logoutUser = authAPI.logout;
 export { fetchCSRFToken };
 
 export const getDishById = async (dishId) => {
-  const { data } = await api.get(`/dishes/${dishId}/`);
-  return data;
+    return makeAuthenticatedRequest('GET', `/api/dishes/${dishId}/`);
 };
 
 export const createReview = async (dishId, reviewData) => {
-  const { data } = await api.post(`/dishes/${dishId}/reviews/`, reviewData);
-  return data;
+    return makeAuthenticatedRequest('POST', `/api/dishes/${dishId}/reviews/`, reviewData);
 };
 
 // Admin API calls

@@ -151,7 +151,7 @@ const DishDetail = () => {
         >
           <div className="text-6xl mb-4">😕</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Dish not found</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <p className="text-gray-600 mb-6">{error.message || error}</p>
           <motion.button
             className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
             onClick={() => navigate('/menu')}

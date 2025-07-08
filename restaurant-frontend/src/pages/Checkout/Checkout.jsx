@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
 import toast from 'react-hot-toast';
+import { checkoutAPI } from '@/services/api';
 
 const Checkout = () => {
   const { cart, getTotalPrice, clearCart } = useCart();
@@ -22,18 +23,18 @@ const Checkout = () => {
     zipCode: '',
     phone: '',
     specialInstructions: '',
-    // Payment Info
-    paymentMethod: 'card',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: '',
-    // Billing Address
-    billingAddress: '',
-    billingCity: '',
-    billingZipCode: '',
-    sameAsDelivery: true
   });
+
+  const [checkoutData, setCheckoutData] = useState(null);
+
+  useEffect(() => {
+    const storedCheckoutData = sessionStorage.getItem('checkoutData');
+    if (!storedCheckoutData) {
+      navigate('/cart');
+      return;
+    }
+    setCheckoutData(JSON.parse(storedCheckoutData));
+  }, [navigate]);
 
   const subtotal = getTotalPrice();
   const deliveryFee = orderForm.deliveryType === 'delivery' ? (subtotal > 50 ? 0 : 5) : 0;
@@ -69,14 +70,6 @@ const Checkout = () => {
           }
         }
         return true;
-      case 2:
-        if (orderForm.paymentMethod === 'card') {
-          if (!orderForm.cardNumber || !orderForm.expiryDate || !orderForm.cvv || !orderForm.cardName) {
-            toast.error('Please fill in all card details');
-            return false;
-          }
-        }
-        return true;
       default:
         return true;
     }
@@ -88,31 +81,28 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      // Simulate order submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const orderData = {
-        items: cart,
-        delivery: orderForm,
-        total: total,
-        user: user?.id
+      const orderPayload = {
+        items: checkoutData.items,
+        delivery_address: `${orderForm.address}, ${orderForm.city}, ${orderForm.zipCode}`,
+        special_instructions: orderForm.specialInstructions,
       };
 
-      // In a real app, you'd send this to your backend
-      clearCart();
-      toast.success('Order placed successfully! 🎉');
-      navigate('/order-confirmation');
+      const response = await checkoutAPI.createCheckoutSession(orderPayload);
+      
+      sessionStorage.setItem('stripe_session_id', response.session_id);
+      sessionStorage.setItem('checkout_total', response.total_amount.toString());
+
+      window.location.href = response.checkout_url;
+
     } catch (error) {
-      toast.error('Failed to place order. Please try again.');
-    } finally {
+      toast.error(error.message || 'Failed to start checkout. Please try again.');
       setLoading(false);
     }
   };
 
   const steps = [
     { id: 1, title: 'Delivery', icon: '🚚' },
-    { id: 2, title: 'Payment', icon: '💳' },
-    { id: 3, title: 'Review', icon: '✅' }
+    { id: 2, title: 'Review', icon: '✅' }
   ];
 
   const containerVariants = {
@@ -302,246 +292,95 @@ const Checkout = () => {
                         animate={{ opacity: 1, height: 'auto' }}
                         transition={{ duration: 0.3 }}
                       >
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Street Address *
-                          </label>
-                          <input
-                            type="text"
-                            name="address"
-                            value={orderForm.address}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                            placeholder="123 Main Street"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                          {/* Address */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              City *
+                            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                              Address
                             </label>
-                            <input
-                              type="text"
-                              name="city"
-                              value={orderForm.city}
-                              onChange={handleInputChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                              placeholder="New York"
-                              required
+                            <input 
+                              type="text" 
+                              id="address" 
+                              name="address" 
+                              value={orderForm.address} 
+                              onChange={handleInputChange} 
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
+                              placeholder="123 Main St"
                             />
                           </div>
+
+                          {/* City */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              ZIP Code *
+                            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                              City
                             </label>
-                            <input
-                              type="text"
-                              name="zipCode"
-                              value={orderForm.zipCode}
-                              onChange={handleInputChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                              placeholder="10001"
-                              required
+                            <input 
+                              type="text" 
+                              id="city" 
+                              name="city" 
+                              value={orderForm.city} 
+                              onChange={handleInputChange} 
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
+                              placeholder="Anytown"
                             />
                           </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Phone Number *
-                          </label>
-                          <input
-                            type="tel"
-                            name="phone"
-                            value={orderForm.phone}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                            placeholder="(555) 123-4567"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Special Instructions
-                          </label>
-                          <textarea
-                            name="specialInstructions"
-                            value={orderForm.specialInstructions}
-                            onChange={handleInputChange}
-                            rows={3}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                            placeholder="Any special delivery instructions..."
-                          />
+
+                          {/* Zip Code */}
+                          <div>
+                            <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-2">
+                              Zip Code
+                            </label>
+                            <input 
+                              type="text" 
+                              id="zipCode" 
+                              name="zipCode" 
+                              value={orderForm.zipCode} 
+                              onChange={handleInputChange} 
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
+                              placeholder="12345"
+                            />
+                          </div>
+                          
+                          {/* Phone */}
+                          <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                              Phone Number
+                            </label>
+                            <input 
+                              type="tel" 
+                              id="phone" 
+                              name="phone" 
+                              value={orderForm.phone} 
+                              onChange={handleInputChange} 
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
+                              placeholder="(123) 456-7890"
+                            />
+                          </div>
                         </div>
                       </motion.div>
                     )}
 
-                    <div className="flex justify-end mt-6">
-                      <motion.button
-                        type="button"
-                        className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
-                        onClick={() => handleStepChange(2)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        Continue to Payment →
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Step 2: Payment Info */}
-                {currentStep === 2 && (
-                  <motion.div
-                    key="payment"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Information</h2>
-                    
-                    {/* Payment Method */}
+                    {/* Special Instructions */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Payment Method
+                      <label htmlFor="specialInstructions" className="block text-sm font-medium text-gray-700 mb-2">
+                        Special Instructions (optional)
                       </label>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <motion.button
-                          type="button"
-                          className={`p-4 border-2 rounded-lg transition-all ${
-                            orderForm.paymentMethod === 'card'
-                              ? 'border-orange-600 bg-orange-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => setOrderForm(prev => ({ ...prev, paymentMethod: 'card' }))}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <div className="text-2xl mb-2">💳</div>
-                          <div className="font-medium">Credit Card</div>
-                        </motion.button>
-                        
-                        <motion.button
-                          type="button"
-                          className={`p-4 border-2 rounded-lg transition-all ${
-                            orderForm.paymentMethod === 'paypal'
-                              ? 'border-orange-600 bg-orange-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => setOrderForm(prev => ({ ...prev, paymentMethod: 'paypal' }))}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <div className="text-2xl mb-2">🅿️</div>
-                          <div className="font-medium">PayPal</div>
-                        </motion.button>
-                        
-                        <motion.button
-                          type="button"
-                          className={`p-4 border-2 rounded-lg transition-all ${
-                            orderForm.paymentMethod === 'cash'
-                              ? 'border-orange-600 bg-orange-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => setOrderForm(prev => ({ ...prev, paymentMethod: 'cash' }))}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <div className="text-2xl mb-2">💰</div>
-                          <div className="font-medium">Cash</div>
-                        </motion.button>
-                      </div>
+                      <textarea
+                        id="specialInstructions"
+                        name="specialInstructions"
+                        rows="3"
+                        value={orderForm.specialInstructions}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
+                        placeholder="e.g., leave at the front door"
+                      ></textarea>
                     </div>
 
-                    {/* Card Details */}
-                    {orderForm.paymentMethod === 'card' && (
-                      <motion.div 
-                        className="space-y-4"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Card Number *
-                          </label>
-                          <input
-                            type="text"
-                            name="cardNumber"
-                            value={orderForm.cardNumber}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                            placeholder="1234 5678 9012 3456"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Expiry Date *
-                            </label>
-                            <input
-                              type="text"
-                              name="expiryDate"
-                              value={orderForm.expiryDate}
-                              onChange={handleInputChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                              placeholder="MM/YY"
-                              required
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              CVV *
-                            </label>
-                            <input
-                              type="text"
-                              name="cvv"
-                              value={orderForm.cvv}
-                              onChange={handleInputChange}
-                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                              placeholder="123"
-                              required
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Cardholder Name *
-                          </label>
-                          <input
-                            type="text"
-                            name="cardName"
-                            value={orderForm.cardName}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                            placeholder="John Doe"
-                            required
-                          />
-                        </div>
-                      </motion.div>
-                    )}
-
-                    <div className="flex justify-between mt-6">
+                    <div className="flex justify-end">
                       <motion.button
                         type="button"
-                        className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors"
-                        onClick={() => handleStepChange(1)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        ← Back
-                      </motion.button>
-                      <motion.button
-                        type="button"
-                        className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
-                        onClick={() => handleStepChange(3)}
+                        className="px-8 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg font-medium hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl"
+                        onClick={() => handleStepChange(2)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -551,8 +390,8 @@ const Checkout = () => {
                   </motion.div>
                 )}
 
-                {/* Step 3: Review Order */}
-                {currentStep === 3 && (
+                {/* Step 2: Review & Place Order */}
+                {currentStep === 2 && (
                   <motion.div
                     key="review"
                     initial={{ opacity: 0, x: 20 }}
@@ -608,7 +447,7 @@ const Checkout = () => {
                       <h3 className="font-semibold text-gray-900 mb-4">Payment Method</h3>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Method:</span>
-                        <span className="font-medium capitalize">{orderForm.paymentMethod}</span>
+                        <span className="font-medium capitalize">Secure Stripe Checkout</span>
                       </div>
                     </div>
 
@@ -616,7 +455,7 @@ const Checkout = () => {
                       <motion.button
                         type="button"
                         className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors"
-                        onClick={() => handleStepChange(2)}
+                        onClick={() => handleStepChange(1)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -640,7 +479,7 @@ const Checkout = () => {
                             <span>Processing...</span>
                           </div>
                         ) : (
-                          '🛒 Place Order'
+                          'Proceed to Payment 🚀'
                         )}
                       </motion.button>
                     </div>

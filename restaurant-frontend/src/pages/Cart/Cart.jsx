@@ -59,7 +59,19 @@ const Cart = () => {
       navigate('/login');
       return;
     }
+
+    const checkoutData = {
+      items: cartItems.map(item => ({
+        dish_id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        special_instructions: item.special_instructions || ''
+      })),
+      total: subtotal
+    };
     
+    sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
     navigate('/checkout');
   };
 
