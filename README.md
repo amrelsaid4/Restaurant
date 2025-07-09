@@ -58,10 +58,6 @@ npm run dev
 - **Admin Panel**: http://127.0.0.1:8000/admin
 - **API Documentation**: http://127.0.0.1:8000/api/docs
 
-## Default Admin Access
-
-- Username: `admin`
-- Password: `admin123`
 
 ## Contributing
 
