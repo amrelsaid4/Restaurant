@@ -181,6 +181,7 @@ export const menuAPI = {
     const queryString = new URLSearchParams(params).toString();
     return makeAuthenticatedRequest('GET', `/api/dishes/${queryString ? '?' + queryString : ''}`);
   },
+  getMostOrderedDishes: () => makeAuthenticatedRequest('GET', '/api/dishes/most_ordered/'),
   getDish: (id) => makeAuthenticatedRequest('GET', `/api/dishes/${id}/`),
   getDishRatings: (dishId) => makeAuthenticatedRequest('GET', `/api/dishes/${dishId}/ratings/`)
 };
@@ -217,7 +218,8 @@ export const ratingsAPI = {
 // Restaurant API
 export const restaurantAPI = {
   getInfo: () => makeAuthenticatedRequest('GET', '/api/restaurant-info/'),
-  getMenuOverview: () => makeAuthenticatedRequest('GET', '/api/menu-overview/')
+  getMenuOverview: () => makeAuthenticatedRequest('GET', '/api/menu-overview/'),
+  getHomepageStats: () => makeAuthenticatedRequest('GET', '/api/homepage-stats/')
 };
 
 // Checkout API
@@ -239,7 +241,9 @@ export const adminAPI = {
   // Dishes
   getDishes: () => makeAuthenticatedRequest('GET', '/api/admin/dishes/'),
   createDish: (dishData) => makeAuthenticatedRequest('POST', '/api/admin/dishes/', dishData),
-  updateDish: (dishId, dishData) => makeAuthenticatedRequest('PUT', `/api/admin/dishes/${dishId}/`, dishData),
+  updateDish: (dishId, dishData) => makeAuthenticatedRequest('PATCH', `/api/admin/dishes/${dishId}/`, dishData),
+  patchDish: (dishId, dishData) => makeAuthenticatedRequest('PATCH', `/api/admin/dishes/${dishId}/`, dishData),
+  setDishAvailability: (dishId, isAvailable) => makeAuthenticatedRequest('PATCH', `/api/admin/dishes/${dishId}/set-availability/`, { is_available: isAvailable }),
   deleteDish: (dishId) => makeAuthenticatedRequest('DELETE', `/api/admin/dishes/${dishId}/`),
   
   // Categories
@@ -305,7 +309,8 @@ export const updateOrderStatus = adminAPI.updateOrderStatus;
 export const getDishes = adminAPI.getDishes;
 export const createDish = adminAPI.createDish;
 export const updateDish = adminAPI.updateDish;
-export const patchDish = adminAPI.updateDish; // alias for updateDish
+export const patchDish = adminAPI.patchDish;
+export const setDishAvailability = adminAPI.setDishAvailability;
 export const deleteDish = adminAPI.deleteDish;
 export const getCategories = adminAPI.getCategories;
 export const createCategory = adminAPI.createCategory;

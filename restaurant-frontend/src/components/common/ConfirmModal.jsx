@@ -6,8 +6,8 @@ const ConfirmModal = ({
   isOpen, 
   onClose, 
   onConfirm, 
-  title = 'Confirm Action',
-  message = 'Are you sure you want to proceed?',
+  title,
+  children,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   variant = 'danger' // danger, warning, info
@@ -71,14 +71,7 @@ const ConfirmModal = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-50 overflow-y-auto"
-          variants={overlayVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          <div className="min-h-screen px-4 text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
               onClick={onClose}
@@ -88,12 +81,8 @@ const ConfirmModal = ({
               exit="exit"
             />
             
-            <span className="inline-block h-screen align-middle" aria-hidden="true">
-              &#8203;
-            </span>
-            
             <motion.div
-              className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
+            className="relative w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
@@ -110,14 +99,16 @@ const ConfirmModal = ({
               </div>
               
               {/* Title */}
+            {title && (
               <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
                 {title}
               </h3>
+            )}
               
               {/* Message */}
-              <p className="text-gray-600 text-center mb-6">
-                {message}
-              </p>
+            <div className="text-gray-600 text-center mb-6">
+              {children}
+            </div>
               
               {/* Actions */}
               <div className="flex space-x-3">
@@ -140,7 +131,6 @@ const ConfirmModal = ({
               </div>
             </motion.div>
           </div>
-        </motion.div>
       )}
     </AnimatePresence>
   );
