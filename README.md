@@ -32,7 +32,7 @@ A comprehensive restaurant management system built with Django REST Framework ba
 ### Backend Setup
 
 ```bash
-git clone https://github.com/your-username/Restaurant.git
+git clone https://github.com/amrelsaid4/Restaurant.git
 cd Restaurant/restaurant-backend
 
 python -m venv venv
