@@ -51,12 +51,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class DishSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    category_id = serializers.IntegerField(write_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), source='category', write_only=True
+    )
     average_rating = serializers.ReadOnlyField()
-    rating_count = serializers.SerializerMethodField()  # Changed from ratings_count
+    rating_count = serializers.SerializerMethodField()
     is_in_stock = serializers.ReadOnlyField()
     is_low_stock = serializers.ReadOnlyField()
-    image = serializers.SerializerMethodField()  # Custom field for full image URL
+    image = serializers.ImageField(max_length=None, use_url=True, required=False)
     
     class Meta:
         model = Dish
@@ -67,24 +69,34 @@ class DishSerializer(serializers.ModelSerializer):
             'is_vegetarian', 'average_rating', 'rating_count',
             'is_in_stock', 'is_low_stock', 'created_at', 'updated_at'
         ]
-    
-    def get_image(self, obj):
-        """Return full URL for image or None if no image"""
-        if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
-        return None
+        read_only_fields = ('slug',)
     
     def get_rating_count(self, obj):
-        # استخدام cache للأداء
         cache_key = f'dish_ratings_count_{obj.id}'
         count = cache.get(cache_key)
         if count is None:
             count = obj.dishrating_set.count()
             cache.set(cache_key, count, 300)  # 5 minutes
         return count
+
+    def to_representation(self, instance):
+        """Convert `image` to a full URL."""
+        representation = super().to_representation(instance)
+        if instance.image:
+            request = self.context.get('request')
+            if request:
+                representation['image'] = request.build_absolute_uri(instance.image.url)
+            else:
+                representation['image'] = instance.image.url
+        else:
+            representation['image'] = None # Ensure image is null if not set
+        return representation
+    
+    def update(self, instance, validated_data):
+        # Handle image update properly - only pop if it's not provided or is None
+        if 'image' in validated_data and validated_data['image'] is None:
+            validated_data.pop('image')
+        return super().update(instance, validated_data)
     
     def validate_price(self, value):
         if value <= 0:

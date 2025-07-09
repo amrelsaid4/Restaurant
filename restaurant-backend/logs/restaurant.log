@@ -6589,3 +6589,1942 @@ INFO 2025-07-08 08:26:33,982 basehttp 18692 14844 "OPTIONS /api/dishes/47/ HTTP/
 INFO 2025-07-08 08:26:33,982 basehttp 18692 18796 "OPTIONS /api/dishes/47/ HTTP/1.1" 200 0
 INFO 2025-07-08 08:26:34,013 basehttp 18692 11560 "GET /api/dishes/47/ HTTP/1.1" 200 771
 INFO 2025-07-08 08:26:34,026 basehttp 18692 11560 "GET /api/dishes/47/ HTTP/1.1" 200 771
+INFO 2025-07-08 08:26:42,775 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:26:42,802 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:26:42,803 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:26:42,833 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:27:16,768 views 18692 11560 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-08 08:27:16,768 views 18692 11560 Request headers: {'Content-Length': '195', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': 'hpq7a9djc1m7y63e6llespfo655auuld', 'X-Csrftoken': 'V0D9mxFJIiSnLihLWLUawv87y1V6oA5YQJxYzNEgZhf3wEnC3ZaPb0m0uTwpMs3X', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-08 08:27:16,768 views 18692 11560 Checkout data: items=1, address=Banha, Al-Qalyubia Governorate, Bahna, 13511
+INFO 2025-07-08 08:27:16,769 views 18692 11560 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-08 08:27:16,769 views 18692 11560 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-08 08:27:16,770 views 18692 11560 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-08 08:27:17,300 _util 18692 11560 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-08 08:27:18,282 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-08 08:27:18,288 views 18692 11560 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-08 08:27:18,290 basehttp 18692 11560 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 481
+INFO 2025-07-08 08:27:36,941 basehttp 18692 14844 "OPTIONS /api/stripe/success/?session_id=cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT HTTP/1.1" 200 0
+INFO 2025-07-08 08:27:36,941 basehttp 18692 18796 "OPTIONS /api/stripe/success/?session_id=cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT HTTP/1.1" 200 0
+INFO 2025-07-08 08:27:36,950 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:27:36,963 _util 18692 5308 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT
+INFO 2025-07-08 08:27:36,968 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:27:37,154 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:27:37,258 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:27:37,796 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT response_code=200
+INFO 2025-07-08 08:27:37,802 views 18692 5308 Order #39 already exists for this payment.
+INFO 2025-07-08 08:27:37,803 basehttp 18692 5308 "GET /api/stripe/success/?session_id=cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT HTTP/1.1" 200 85
+INFO 2025-07-08 08:27:37,814 _util 18692 5308 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT
+INFO 2025-07-08 08:27:38,053 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT response_code=200
+INFO 2025-07-08 08:27:38,057 views 18692 5308 Order #39 already exists for this payment.
+INFO 2025-07-08 08:27:38,060 basehttp 18692 5308 "GET /api/stripe/success/?session_id=cs_test_b1LMNWl2CwGTW3exQwb3tZunciBRmF5gPemow1ejDa781kK0OWpWRDL6rT HTTP/1.1" 200 85
+INFO 2025-07-08 08:27:41,192 views 18692 5308 Found 2 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:27:41,215 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 2978
+INFO 2025-07-08 08:27:41,221 views 18692 5308 Found 2 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:27:41,244 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 2978
+INFO 2025-07-08 08:27:51,155 basehttp 18692 5308 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:27:51,166 basehttp 18692 5308 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:27:54,391 views 18692 5308 Found 2 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:27:54,436 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 2978
+INFO 2025-07-08 08:27:54,442 views 18692 5308 Found 2 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:27:54,469 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 2978
+INFO 2025-07-08 08:27:57,957 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:27:57,985 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:27:57,989 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:27:58,024 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:28:06,234 views 18692 5308 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:06,235 views 18692 5308 Request headers: {'Content-Length': '156', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': 'hpq7a9djc1m7y63e6llespfo655auuld', 'X-Csrftoken': 'lDrG3pOkMmg5Oo2Aoa4ZG7VxwaPjURr6iglPlpPo89vae7HDV98or6LPc2JYY9Oa', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-08 08:28:06,235 views 18692 5308 Checkout data: items=1, address=, , 
+INFO 2025-07-08 08:28:06,235 views 18692 5308 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-08 08:28:06,236 views 18692 5308 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-08 08:28:06,238 views 18692 5308 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-08 08:28:06,240 _util 18692 5308 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-08 08:28:06,703 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-08 08:28:06,705 views 18692 5308 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-08 08:28:06,706 basehttp 18692 5308 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 482
+INFO 2025-07-08 08:28:17,707 basehttp 18692 18796 "OPTIONS /api/stripe/success/?session_id=cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 HTTP/1.1" 200 0
+INFO 2025-07-08 08:28:17,708 basehttp 18692 14844 "OPTIONS /api/stripe/success/?session_id=cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 HTTP/1.1" 200 0
+INFO 2025-07-08 08:28:17,731 _util 18692 11560 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392
+INFO 2025-07-08 08:28:17,731 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:28:17,750 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:28:17,919 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:28:17,980 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 response_code=200
+INFO 2025-07-08 08:28:17,987 models 18692 11560 Order saved: #None - Customer: Amr Elsayed - Total: $153.99
+INFO 2025-07-08 08:28:18,018 views 18692 11560 Order #41 created successfully for customer amrelsaid6288@gmail.com.
+INFO 2025-07-08 08:28:18,049 utils 18692 11560 Notification created for user amr: New Order Alert
+INFO 2025-07-08 08:28:18,049 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:28:18,057 utils 18692 11560 Notification created for user admin: New Order Alert
+INFO 2025-07-08 08:28:18,058 basehttp 18692 11560 "GET /api/stripe/success/?session_id=cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 HTTP/1.1" 200 91
+INFO 2025-07-08 08:28:18,067 _util 18692 11560 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392
+INFO 2025-07-08 08:28:18,302 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 response_code=200
+INFO 2025-07-08 08:28:18,310 views 18692 11560 Order #41 already exists for this payment.
+INFO 2025-07-08 08:28:18,317 basehttp 18692 11560 "GET /api/stripe/success/?session_id=cs_test_b1y2oxhqD6GhNY6RKElVOzBHY8QijdQT5lgfJSZxEgXZHOU7PeEA9xw392 HTTP/1.1" 200 86
+INFO 2025-07-08 08:28:23,086 views 18692 11560 Found 3 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:23,113 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 4433
+INFO 2025-07-08 08:28:23,119 views 18692 5308 Found 3 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:23,147 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 4433
+INFO 2025-07-08 08:28:30,559 basehttp 18692 18796 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:28:30,588 basehttp 18692 18796 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:28:30,590 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:28:30,634 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:28:37,069 views 18692 5308 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:37,069 views 18692 5308 Request headers: {'Content-Length': '156', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': 'hpq7a9djc1m7y63e6llespfo655auuld', 'X-Csrftoken': 'suUEg6871kh0GIXtNwr6evdKszz2DkKPWAxzCI6VlgPhZwr6bZDwzosdQ78WFw7Q', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-08 08:28:37,070 views 18692 5308 Checkout data: items=1, address=, , 
+INFO 2025-07-08 08:28:37,070 views 18692 5308 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-08 08:28:37,070 views 18692 5308 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-08 08:28:37,072 views 18692 5308 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-08 08:28:37,074 _util 18692 5308 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-08 08:28:37,523 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-08 08:28:37,525 views 18692 5308 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-08 08:28:37,526 basehttp 18692 5308 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 482
+INFO 2025-07-08 08:28:48,471 basehttp 18692 14844 "OPTIONS /api/stripe/success/?session_id=cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji HTTP/1.1" 200 0
+INFO 2025-07-08 08:28:48,475 basehttp 18692 18796 "OPTIONS /api/stripe/success/?session_id=cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji HTTP/1.1" 200 0
+INFO 2025-07-08 08:28:48,483 _util 18692 11560 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji
+INFO 2025-07-08 08:28:48,485 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:28:48,507 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:28:48,686 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:28:48,735 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji response_code=200
+INFO 2025-07-08 08:28:48,744 views 18692 11560 Order #41 already exists for this payment.
+INFO 2025-07-08 08:28:48,753 basehttp 18692 11560 "GET /api/stripe/success/?session_id=cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji HTTP/1.1" 200 86
+INFO 2025-07-08 08:28:48,771 _util 18692 11560 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji
+INFO 2025-07-08 08:28:48,790 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:28:49,024 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji response_code=200
+INFO 2025-07-08 08:28:49,038 views 18692 11560 Order #41 already exists for this payment.
+INFO 2025-07-08 08:28:49,042 basehttp 18692 11560 "GET /api/stripe/success/?session_id=cs_test_b1Us65qp6fPsLY0D1g3NqESNXRTlgmfYFkBetu8dTtktpKmSvbrf7ovVji HTTP/1.1" 200 86
+INFO 2025-07-08 08:28:52,157 views 18692 11560 Found 3 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:52,186 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 4433
+INFO 2025-07-08 08:28:52,197 views 18692 11560 Found 3 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:28:52,222 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 4433
+INFO 2025-07-08 08:29:01,403 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:29:01,428 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:29:01,435 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:29:01,467 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:29:12,460 views 18692 11560 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-08 08:29:12,460 views 18692 11560 Request headers: {'Content-Length': '440', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': 'hpq7a9djc1m7y63e6llespfo655auuld', 'X-Csrftoken': 'ctfqvKC0V225hTD5QS99D64ttZAfpPfWYNqIp6TqO6hRLVWDv5GqZ0964lVIELAv', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-08 08:29:12,460 views 18692 11560 Checkout data: items=4, address=, , 
+INFO 2025-07-08 08:29:12,461 views 18692 11560 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-08 08:29:12,461 views 18692 11560 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-08 08:29:12,462 views 18692 11560 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-08 08:29:12,466 _util 18692 11560 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-08 08:29:13,073 _util 18692 11560 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-08 08:29:13,076 views 18692 11560 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-08 08:29:13,077 basehttp 18692 11560 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 482
+INFO 2025-07-08 08:29:23,939 basehttp 18692 18796 "OPTIONS /api/stripe/success/?session_id=cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA HTTP/1.1" 200 0
+INFO 2025-07-08 08:29:23,940 basehttp 18692 14844 "OPTIONS /api/stripe/success/?session_id=cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA HTTP/1.1" 200 0
+INFO 2025-07-08 08:29:23,962 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:29:23,971 _util 18692 5308 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA
+INFO 2025-07-08 08:29:23,983 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:29:24,159 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:29:24,210 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA response_code=200
+INFO 2025-07-08 08:29:24,227 models 18692 5308 Order saved: #None - Customer: Amr Elsayed - Total: $373.99
+INFO 2025-07-08 08:29:24,286 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:29:24,288 views 18692 5308 Order #42 created successfully for customer amrelsaid6288@gmail.com.
+INFO 2025-07-08 08:29:24,309 utils 18692 5308 Notification created for user amr: New Order Alert
+INFO 2025-07-08 08:29:24,317 utils 18692 5308 Notification created for user admin: New Order Alert
+INFO 2025-07-08 08:29:24,318 basehttp 18692 5308 "GET /api/stripe/success/?session_id=cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA HTTP/1.1" 200 91
+INFO 2025-07-08 08:29:24,326 _util 18692 5308 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA
+INFO 2025-07-08 08:29:24,568 _util 18692 5308 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA response_code=200
+INFO 2025-07-08 08:29:24,582 views 18692 5308 Order #42 already exists for this payment.
+INFO 2025-07-08 08:29:24,586 basehttp 18692 5308 "GET /api/stripe/success/?session_id=cs_test_b1rOUpl8OYIFAUXUGdkPy9JNN6ISLtUOXgp6s8cr8Iia2T7Y7yVfHjlyiA HTTP/1.1" 200 86
+INFO 2025-07-08 08:29:27,026 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:29:27,063 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:29:27,073 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:29:27,108 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:30:09,810 basehttp 18692 5308 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:30:09,819 basehttp 18692 5308 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:30:15,690 basehttp 18692 14844 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:30:15,694 basehttp 18692 18796 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:30:15,699 basehttp 18692 14844 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:30:15,704 basehttp 18692 18796 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:32:27,805 basehttp 18692 17348 "GET /admin/restaurant/order/ HTTP/1.1" 200 66651
+INFO 2025-07-08 08:32:27,841 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:32:35,364 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:35,685 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:32:35,692 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:35,757 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:32:39,358 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:32:39,385 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:32:39,659 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:32:39,809 views 18692 11560 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:39,859 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:32:39,929 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:32:39,937 views 18692 11560 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:39,998 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 8529
+INFO 2025-07-08 08:32:48,486 models 18692 17348 Order saved: #40 - Customer: Amr Elsayed - Total: $113.99
+INFO 2025-07-08 08:32:48,505 basehttp 18692 17348 "POST /admin/restaurant/order/ HTTP/1.1" 302 0
+INFO 2025-07-08 08:32:48,601 basehttp 18692 17348 "GET /admin/restaurant/order/ HTTP/1.1" 200 66790
+INFO 2025-07-08 08:32:48,629 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:32:48,748 basehttp 18692 17348 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-07-08 08:32:53,082 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:32:53,107 basehttp 18692 11560 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:32:53,372 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:32:53,617 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:53,717 basehttp 18692 11560 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:32:53,719 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:32:53,724 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:32:53,792 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:33:12,998 models 18692 17348 Order saved: #42 - Customer: Amr Elsayed - Total: $373.99
+INFO 2025-07-08 08:33:13,001 models 18692 17348 Order saved: #41 - Customer: Amr Elsayed - Total: $153.99
+INFO 2025-07-08 08:33:13,018 basehttp 18692 17348 "POST /admin/restaurant/order/ HTTP/1.1" 302 0
+INFO 2025-07-08 08:33:13,113 basehttp 18692 17348 "GET /admin/restaurant/order/ HTTP/1.1" 200 66792
+INFO 2025-07-08 08:33:13,141 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:33:17,989 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:33:18,022 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:33:18,282 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:33:18,522 views 18692 11560 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:33:18,750 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:33:18,762 views 18692 11560 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:33:18,833 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:33:18,871 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:33:53,385 basehttp 18692 11560 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:33:53,393 basehttp 18692 11560 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:34:24,789 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:34:24,876 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:34:24,928 basehttp 18692 14844 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:34:25,060 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:34:26,760 basehttp 18692 11560 "GET /api/dishes/44/ HTTP/1.1" 200 771
+INFO 2025-07-08 08:34:26,832 basehttp 18692 11560 "GET /api/dishes/44/ HTTP/1.1" 200 771
+INFO 2025-07-08 08:35:37,216 basehttp 18692 18796 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:35:37,219 basehttp 18692 14844 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:35:37,785 basehttp 18692 18796 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:35:37,799 basehttp 18692 9668 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:35:45,146 basehttp 18692 18796 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:35:45,177 basehttp 18692 9668 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:35:45,608 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:35:45,617 basehttp 18692 19580 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:36:23,175 basehttp 18692 11560 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:36:23,736 basehttp 18692 5308 "GET /api/profile/ HTTP/1.1" 200 245
+INFO 2025-07-08 08:36:34,170 views 18692 5308 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:36:34,258 basehttp 18692 5308 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:36:34,734 views 18692 11560 Found 4 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 08:36:34,761 basehttp 18692 11560 "GET /api/orders/ HTTP/1.1" 200 8531
+INFO 2025-07-08 08:36:48,661 basehttp 18692 17348 "GET /admin/restaurant/adminprofile/ HTTP/1.1" 200 16438
+INFO 2025-07-08 08:36:48,701 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:36:51,834 basehttp 18692 17348 "GET /admin/restaurant/category/ HTTP/1.1" 200 19913
+INFO 2025-07-08 08:36:51,872 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:36:53,801 basehttp 18692 17348 "GET /admin/restaurant/customer/ HTTP/1.1" 200 19031
+INFO 2025-07-08 08:36:53,839 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:36:59,579 basehttp 18692 17348 "GET /admin/restaurant/dishrating/ HTTP/1.1" 200 17277
+INFO 2025-07-08 08:36:59,619 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:37:04,527 basehttp 18692 17348 "GET /admin/restaurant/dish/ HTTP/1.1" 200 30926
+INFO 2025-07-08 08:37:04,565 basehttp 18692 9532 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-07-08 08:37:04,569 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:37:06,196 basehttp 18692 17348 "GET /admin/restaurant/order/ HTTP/1.1" 200 66651
+INFO 2025-07-08 08:37:06,235 basehttp 18692 17348 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 08:40:04,754 basehttp 18692 19580 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:40:04,853 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:40:05,173 basehttp 18692 18796 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:40:05,358 basehttp 18692 9668 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:40:08,163 basehttp 18692 9668 "OPTIONS /api/dishes/49/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:40:08,169 basehttp 18692 18796 "OPTIONS /api/dishes/49/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:40:08,331 basehttp 18692 11560 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:40:08,350 basehttp 18692 5308 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:40:08,796 basehttp 18692 11560 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:40:08,817 basehttp 18692 17424 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:40:31,554 basehttp 18692 18796 "OPTIONS /api/add-rating/ HTTP/1.1" 200 0
+ERROR 2025-07-08 08:40:31,567 views 18692 17424 Error in add_rating: NOT NULL constraint failed: restaurant_dishrating.dish_id
+WARNING 2025-07-08 08:40:31,569 log 18692 17424 Bad Request: /api/add-rating/
+WARNING 2025-07-08 08:40:31,570 basehttp 18692 17424 "POST /api/add-rating/ HTTP/1.1" 400 69
+INFO 2025-07-08 08:40:32,189 basehttp 18692 17424 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:40:32,207 basehttp 18692 11560 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:40:36,181 basehttp 18692 11560 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:40:36,211 basehttp 18692 17424 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:41:33,298 basehttp 18692 17424 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:41:33,457 basehttp 18692 11560 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:41:35,148 basehttp 18692 11560 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:41:35,163 basehttp 18692 17424 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 3463
+INFO 2025-07-08 08:41:53,400 basehttp 18692 17424 "POST /api/add-rating/ HTTP/1.1" 201 73
+INFO 2025-07-08 08:41:54,003 basehttp 18692 17424 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:41:54,071 basehttp 18692 11560 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-08 08:41:55,655 basehttp 18692 11560 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:41:55,691 basehttp 18692 17424 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-08 08:42:12,473 basehttp 18692 5308 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:42:12,498 basehttp 18692 17424 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:42:12,563 basehttp 18692 11560 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-08 08:42:13,033 basehttp 18692 11456 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:42:13,035 basehttp 18692 17424 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-08 08:42:13,092 basehttp 18692 8432 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-08 08:42:13,162 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:42:13,814 basehttp 18692 5308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:42:15,277 basehttp 18692 9668 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:42:15,309 basehttp 18692 18796 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:42:15,839 basehttp 18692 19580 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:42:15,846 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12370
+INFO 2025-07-08 08:42:19,504 basehttp 18692 14844 "OPTIONS /api/dishes/44/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:42:19,504 basehttp 18692 19580 "OPTIONS /api/dishes/44/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:42:19,544 basehttp 18692 8432 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 08:42:19,545 basehttp 18692 5308 "GET /api/dishes/44/ HTTP/1.1" 200 771
+INFO 2025-07-08 08:42:20,078 basehttp 18692 11456 "GET /api/dishes/44/ HTTP/1.1" 200 771
+INFO 2025-07-08 08:42:20,086 basehttp 18692 5308 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 08:42:34,002 basehttp 18692 5308 "POST /api/add-rating/ HTTP/1.1" 201 73
+INFO 2025-07-08 08:42:34,645 basehttp 18692 5308 "GET /api/dishes/44/ HTTP/1.1" 200 773
+INFO 2025-07-08 08:42:34,659 basehttp 18692 11456 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 1166
+INFO 2025-07-08 08:42:36,129 basehttp 18692 11456 "GET /api/dishes/44/ HTTP/1.1" 200 773
+INFO 2025-07-08 08:42:36,138 basehttp 18692 5308 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 1166
+INFO 2025-07-08 08:42:43,419 basehttp 18692 19580 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:42:43,440 basehttp 18692 14844 "GET /api/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 08:42:44,009 basehttp 18692 18796 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:42:44,036 basehttp 18692 9668 "GET /api/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 08:43:31,220 basehttp 18692 7632 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:43:31,221 utils 18692 3268 Popular dishes cached: 10 items
+INFO 2025-07-08 08:43:31,222 basehttp 18692 3268 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:43:31,805 basehttp 18692 18408 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:43:31,805 basehttp 18692 3268 "GET /api/dishes/popular/ HTTP/1.1" 200 637
+INFO 2025-07-08 08:48:31,221 basehttp 18692 3268 "OPTIONS /api/dishes/?ordering=-average_rating&page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 08:48:31,222 basehttp 18692 18408 "OPTIONS /api/dishes/?ordering=-average_rating&page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 08:48:31,231 basehttp 18692 18724 "GET /api/csrf-token/ HTTP/1.1" 200 81
+ERROR 2025-07-08 08:48:31,607 log 18692 21772 Internal Server Error: /api/dishes/
+Traceback (most recent call last):
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\mixins.py", line 38, in list
+    queryset = self.filter_queryset(self.get_queryset())
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\generics.py", line 154, in filter_queryset
+    queryset = backend().filter_queryset(self.request, queryset, self)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\filters.py", line 327, in filter_queryset
+    return queryset.order_by(*ordering)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\query.py", line 1722, in order_by
+    obj.query.add_ordering(*field_names)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\sql\query.py", line 2291, in add_ordering
+    self.names_to_path(item.split(LOOKUP_SEP), self.model._meta)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1805, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'average_rating' into field. Choices are: calories, category, category_id, created_at, description, dishrating, id, image, ingredients, is_available, is_spicy, is_vegetarian, low_stock_threshold, name, orderitem, preparation_time, price, slug, stock_quantity, updated_at
+ERROR 2025-07-08 08:48:31,629 basehttp 18692 21772 "GET /api/dishes/?ordering=-average_rating&page_size=3 HTTP/1.1" 500 145828
+INFO 2025-07-08 08:48:31,836 basehttp 18692 18724 "GET /api/csrf-token/ HTTP/1.1" 200 81
+ERROR 2025-07-08 08:48:31,985 log 18692 9196 Internal Server Error: /api/dishes/
+Traceback (most recent call last):
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\mixins.py", line 38, in list
+    queryset = self.filter_queryset(self.get_queryset())
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\generics.py", line 154, in filter_queryset
+    queryset = backend().filter_queryset(self.request, queryset, self)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\filters.py", line 327, in filter_queryset
+    return queryset.order_by(*ordering)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\query.py", line 1722, in order_by
+    obj.query.add_ordering(*field_names)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\sql\query.py", line 2291, in add_ordering
+    self.names_to_path(item.split(LOOKUP_SEP), self.model._meta)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1805, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'average_rating' into field. Choices are: calories, category, category_id, created_at, description, dishrating, id, image, ingredients, is_available, is_spicy, is_vegetarian, low_stock_threshold, name, orderitem, preparation_time, price, slug, stock_quantity, updated_at
+ERROR 2025-07-08 08:48:32,007 basehttp 18692 9196 "GET /api/dishes/?ordering=-average_rating&page_size=3 HTTP/1.1" 500 145828
+INFO 2025-07-08 08:48:32,133 basehttp 18692 21788 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:48:32,584 basehttp 18692 18724 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:50:29,521 basehttp 18692 18408 "OPTIONS /api/dishes/?page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 08:50:29,524 basehttp 18692 3268 "OPTIONS /api/dishes/?page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 08:50:29,537 basehttp 18692 9196 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:50:30,103 basehttp 18692 21772 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:50:30,139 basehttp 18692 18724 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:50:30,310 basehttp 18692 9196 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:50:30,858 basehttp 18692 9196 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:50:30,920 basehttp 18692 21788 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:54:51,455 basehttp 18692 21788 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:54:51,476 basehttp 18692 9196 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:54:52,075 basehttp 18692 18724 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:54:52,161 basehttp 18692 21772 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:54:52,645 basehttp 18692 21788 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:54:52,927 basehttp 18692 21772 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:55:01,904 basehttp 18692 18408 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-08 08:55:01,904 basehttp 18692 3268 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:55:01,910 basehttp 18692 14536 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-08 08:55:01,929 basehttp 18692 18408 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:55:02,036 basehttp 18692 21772 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:55:02,042 basehttp 18692 21788 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:55:02,505 basehttp 18692 18724 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:55:02,526 basehttp 18692 9196 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:56:20,211 basehttp 18692 9196 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:56:20,267 basehttp 18692 18724 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:44,139 basehttp 18692 18408 "OPTIONS /api/dishes/?page_size=6 HTTP/1.1" 200 0
+INFO 2025-07-08 08:56:44,139 basehttp 18692 14536 "OPTIONS /api/dishes/?page_size=6 HTTP/1.1" 200 0
+INFO 2025-07-08 08:56:44,185 basehttp 18692 18724 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:45,143 basehttp 18692 9196 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:52,873 basehttp 18692 18724 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:56:52,904 basehttp 18692 9196 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:53,419 basehttp 18692 21772 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 08:56:53,429 basehttp 18692 21788 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:56,477 basehttp 18692 21788 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:56:57,310 basehttp 18692 21772 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:58:06,914 basehttp 18692 21788 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:58:06,948 basehttp 18692 21772 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:58:07,218 basehttp 18692 21772 - Broken pipe from ('127.0.0.1', 63642)
+INFO 2025-07-08 08:58:11,883 basehttp 18692 9196 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:58:12,051 basehttp 18692 21788 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:58:12,737 basehttp 18692 9196 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:58:13,253 basehttp 18692 18724 "GET /api/dishes/?page_size=6 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:58:13,697 basehttp 18692 10852 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:58:14,195 basehttp 18692 18724 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:59:11,722 basehttp 18692 14536 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:59:11,734 basehttp 18692 18408 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-08 08:59:11,755 basehttp 18692 10852 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:59:12,037 basehttp 18692 9196 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:59:12,120 basehttp 18692 18724 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:59:12,342 basehttp 18692 10852 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 08:59:12,380 basehttp 18692 7780 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 08:59:12,486 basehttp 18692 21788 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 08:59:12,618 basehttp 18692 9196 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 08:59:13,105 basehttp 18692 9196 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 09:00:59,820 autoreload 18692 12456 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 09:01:05,821 autoreload 5888 15336 Watching for file changes with StatReloader
+INFO 2025-07-08 09:01:07,086 views 5888 15336 Stripe initialized successfully
+INFO 2025-07-08 09:02:05,320 basehttp 5888 12312 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 09:02:05,341 basehttp 5888 9104 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 09:02:05,917 basehttp 5888 1692 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 09:02:05,928 basehttp 5888 9104 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 09:02:06,275 basehttp 5888 22388 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:02:06,486 basehttp 5888 12312 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 09:02:06,895 basehttp 5888 12312 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 09:02:06,946 basehttp 5888 9744 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:02:23,434 basehttp 5888 12312 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:02:23,448 basehttp 5888 9744 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 09:02:23,944 basehttp 5888 1692 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:02:23,982 basehttp 5888 9104 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 09:03:05,501 basehttp 5888 9104 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 09:03:05,513 basehttp 5888 1692 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:03:06,105 basehttp 5888 12312 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 09:03:06,164 basehttp 5888 9104 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 09:03:15,709 basehttp 5888 9104 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-08 11:36:13,589 basehttp 5888 20732 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:36:13,595 basehttp 5888 12772 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:36:13,782 basehttp 5888 23008 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:36:14,173 basehttp 5888 20732 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:36:14,195 basehttp 5888 16296 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:36:14,241 basehttp 5888 12772 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-08 11:36:14,279 basehttp 5888 23008 "GET /media/dishes/BBQ_Chicken_Pizza_rrD7JKm.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:14,281 basehttp 5888 7048 "GET /media/dishes/Bacon_Burger_8zckWMl.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:14,349 basehttp 5888 11504 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:36:14,735 basehttp 5888 20732 "GET /media/dishes/Caesar_Salad_DFZXF0B.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:14,794 basehttp 5888 16296 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-08 11:36:14,920 basehttp 5888 7048 "GET /media/dishes/Chocolate_Cake_xDzi1W2.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:14,921 basehttp 5888 23008 "GET /media/dishes/Classic_Cheeseburger_CAgEIM1.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:15,313 basehttp 5888 20732 "GET /media/dishes/Cola_SKpCYTP.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:15,501 basehttp 5888 7048 "GET /media/dishes/Greek_Salad_qQnIvsl.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:15,507 basehttp 5888 23008 "GET /media/dishes/Mango_Smoothie_xIO9sHK.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:15,884 basehttp 5888 20732 "GET /media/dishes/Margherita_Pizza_6xuiRTs.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:16,076 basehttp 5888 7048 "GET /media/dishes/Penne_Arrabbiata_7yJZn5n.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:16,083 basehttp 5888 23008 "GET /media/dishes/Pepperoni_Pizza_OhqFXUL.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:16,466 basehttp 5888 20732 "GET /media/dishes/Tiramisu_PSk5qzQ.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:16,649 basehttp 5888 7048 "GET /media/dishes/Vanilla_Ice_Cream_6sDQqup.jpeg HTTP/1.1" 304 0
+INFO 2025-07-08 11:36:16,657 basehttp 5888 23008 "GET /media/dishes/Veggie_Burger_ea7CN9b.jpeg HTTP/1.1" 304 0
+ERROR 2025-07-08 11:43:32,678 log 5888 14932 Internal Server Error: /api/dishes/
+Traceback (most recent call last):
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\mixins.py", line 43, in list
+    return self.get_paginated_response(serializer.data)
+                                       ^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 797, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 251, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 716, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\fields.py", line 1870, in to_representation
+    return method(value)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py", line 38, in get_dishes_count
+    count = cache.get(cache_key)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 35, in get
+    with open(fname, "rb") as f:
+         ~~~~^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\CompuTouch\\Desktop\\django\\Restaurant\\restaurant-backend\\cache\\d1d0895ffd33f73e07f36e6a4d20588c.djcache'
+ERROR 2025-07-08 11:43:32,693 basehttp 5888 14932 "GET /api/dishes/?page_size=100 HTTP/1.1" 500 173599
+INFO 2025-07-08 11:43:32,695 basehttp 5888 20500 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:43:33,288 basehttp 5888 21388 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:43:33,309 basehttp 5888 13192 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:43:48,331 basehttp 5888 13192 "GET /api/dishes/39/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 11:43:48,338 basehttp 5888 14932 "GET /api/dishes/39/ HTTP/1.1" 200 807
+INFO 2025-07-08 11:43:48,909 basehttp 5888 21388 "GET /api/dishes/39/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 11:43:48,914 basehttp 5888 13192 "GET /api/dishes/39/ HTTP/1.1" 200 807
+INFO 2025-07-08 11:44:05,780 basehttp 5888 13192 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:44:06,350 basehttp 5888 17024 "OPTIONS /api/login/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:07,415 basehttp 5888 13192 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-08 11:44:07,427 basehttp 5888 17024 "OPTIONS /api/check-user-type/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:07,533 basehttp 5888 13192 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 11:44:08,480 basehttp 5888 17024 "OPTIONS /api/dishes/?page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:08,494 basehttp 5888 21132 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:08,497 basehttp 5888 17024 "OPTIONS /api/dishes/?page_size=3 HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:08,497 basehttp 5888 12548 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:08,531 basehttp 5888 21388 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:44:08,931 basehttp 5888 13192 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:44:09,116 basehttp 5888 20500 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:44:09,156 basehttp 5888 14932 "GET /api/dishes/?page_size=3 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:44:14,486 basehttp 5888 21132 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:14,487 basehttp 5888 12548 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:14,488 basehttp 5888 3936 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:14,488 basehttp 5888 17024 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:14,580 basehttp 5888 14932 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:44:14,612 basehttp 5888 20500 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:44:15,105 basehttp 5888 13192 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:44:15,113 basehttp 5888 21388 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 11:44:18,263 basehttp 5888 21132 "OPTIONS /api/dishes/45/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:18,264 basehttp 5888 3936 "OPTIONS /api/dishes/45/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:18,264 basehttp 5888 17024 "OPTIONS /api/dishes/45/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:18,265 basehttp 5888 12548 "OPTIONS /api/dishes/45/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:18,286 basehttp 5888 21388 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 11:44:18,289 basehttp 5888 13192 "GET /api/dishes/45/ HTTP/1.1" 200 763
+INFO 2025-07-08 11:44:18,843 basehttp 5888 20500 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 11:44:18,853 basehttp 5888 21388 "GET /api/dishes/45/ HTTP/1.1" 200 763
+INFO 2025-07-08 11:44:26,899 basehttp 5888 12548 "OPTIONS /api/add-rating/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:44:26,928 basehttp 5888 21388 "POST /api/add-rating/ HTTP/1.1" 201 73
+INFO 2025-07-08 11:44:27,547 basehttp 5888 21388 "GET /api/dishes/45/ HTTP/1.1" 200 765
+INFO 2025-07-08 11:44:27,559 basehttp 5888 20500 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 1153
+INFO 2025-07-08 11:44:29,061 basehttp 5888 20500 "GET /api/dishes/45/ HTTP/1.1" 200 765
+INFO 2025-07-08 11:44:29,073 basehttp 5888 21388 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 1153
+INFO 2025-07-08 11:45:10,337 basehttp 5888 12548 "OPTIONS /api/stripe/create-checkout-session/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:45:10,348 views 5888 21388 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-08 11:45:10,348 views 5888 21388 Request headers: {'Content-Length': '194', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': 'wyb3ts4m6vd88vrim1ojxnv2n9h3xnl2', 'X-Csrftoken': 'hRXTGx8sIIs2hjTsB3ZVnnugarr9QVwBNP2HCJukRoxmbzmQZLwHQ14AyR7AsP0O', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-08 11:45:10,361 views 5888 21388 Checkout data: items=1, address=Banha, Al-Qalyubia Governorate, Bahna, 13511
+INFO 2025-07-08 11:45:10,361 views 5888 21388 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-08 11:45:10,362 views 5888 21388 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-08 11:45:10,363 views 5888 21388 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-08 11:45:10,996 _util 5888 21388 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-08 11:45:12,009 _util 5888 21388 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-08 11:45:12,014 views 5888 21388 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-08 11:45:12,016 basehttp 5888 21388 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 482
+INFO 2025-07-08 11:45:39,850 basehttp 5888 3936 "OPTIONS /api/stripe/success/?session_id=cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs HTTP/1.1" 200 0
+INFO 2025-07-08 11:45:39,850 basehttp 5888 17024 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:45:39,850 basehttp 5888 12548 "OPTIONS /api/stripe/success/?session_id=cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs HTTP/1.1" 200 0
+INFO 2025-07-08 11:45:39,851 basehttp 5888 21132 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:45:39,858 _util 5888 21388 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs
+INFO 2025-07-08 11:45:39,861 basehttp 5888 20500 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:45:40,101 _util 5888 21388 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs response_code=200
+INFO 2025-07-08 11:45:40,111 models 5888 21388 Order saved: #None - Customer: Amr Elsayed - Total: $143.99
+INFO 2025-07-08 11:45:40,131 views 5888 21388 Order #43 created successfully for customer amrelsaid6288@gmail.com.
+INFO 2025-07-08 11:45:40,148 utils 5888 21388 Notification created for user amr: New Order Alert
+INFO 2025-07-08 11:45:40,157 utils 5888 21388 Notification created for user admin: New Order Alert
+INFO 2025-07-08 11:45:40,158 basehttp 5888 21388 "GET /api/stripe/success/?session_id=cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs HTTP/1.1" 200 91
+INFO 2025-07-08 11:45:40,425 _util 5888 13192 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs
+INFO 2025-07-08 11:45:40,435 basehttp 5888 21388 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:45:40,506 basehttp 5888 20500 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 11:45:41,087 basehttp 5888 21388 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 11:45:41,255 _util 5888 13192 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs response_code=200
+INFO 2025-07-08 11:45:41,258 views 5888 13192 Order #43 already exists for this payment.
+INFO 2025-07-08 11:45:41,259 basehttp 5888 13192 "GET /api/stripe/success/?session_id=cs_test_b1mnbOaPNP8O1QvFGCLNl76Y6IZDVwqq1iKRHTAFpV1SamWmh3gICPlTxs HTTP/1.1" 200 86
+INFO 2025-07-08 11:46:10,153 basehttp 5888 21132 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:46:10,153 basehttp 5888 17024 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:46:10,163 views 5888 21388 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:46:10,201 basehttp 5888 21388 "GET /api/orders/ HTTP/1.1" 200 9994
+INFO 2025-07-08 11:46:10,731 views 5888 13192 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:46:10,766 basehttp 5888 13192 "GET /api/orders/ HTTP/1.1" 200 9994
+INFO 2025-07-08 11:46:30,258 basehttp 5888 6280 "GET /admin/restaurant/order/ HTTP/1.1" 200 67834
+INFO 2025-07-08 11:46:30,306 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:46:38,866 models 5888 6280 Order saved: #43 - Customer: Amr Elsayed - Total: $143.99
+INFO 2025-07-08 11:46:38,886 basehttp 5888 6280 "POST /admin/restaurant/order/ HTTP/1.1" 302 0
+INFO 2025-07-08 11:46:38,984 basehttp 5888 6280 "GET /admin/restaurant/order/ HTTP/1.1" 200 67973
+INFO 2025-07-08 11:46:39,012 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:46:48,819 basehttp 5888 13192 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:46:49,397 basehttp 5888 21388 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:46:49,477 basehttp 5888 13192 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 11:46:50,032 views 5888 13192 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:46:50,097 basehttp 5888 13192 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-08 11:46:50,098 basehttp 5888 21388 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-08 11:46:50,597 views 5888 21388 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:46:50,678 basehttp 5888 21388 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-08 11:46:54,256 basehttp 5888 21132 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:46:54,256 basehttp 5888 17024 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:46:54,273 basehttp 5888 21388 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-08 11:46:54,859 basehttp 5888 13192 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-08 11:47:08,051 views 5888 13192 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:47:08,113 basehttp 5888 13192 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-08 11:47:08,623 views 5888 21388 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-08 11:47:08,663 basehttp 5888 21388 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-08 11:47:17,107 basehttp 5888 17024 "OPTIONS /api/logout/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:17,114 basehttp 5888 21388 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-08 11:47:25,598 basehttp 5888 21388 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:47:26,171 basehttp 5888 17024 "OPTIONS /api/admin/login/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:27,028 basehttp 5888 21388 "POST /api/admin/login/ HTTP/1.1" 200 254
+INFO 2025-07-08 11:47:27,136 basehttp 5888 21388 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 11:47:27,976 basehttp 5888 17024 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:47:28,420 basehttp 5888 21132 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:47:28,477 basehttp 5888 12548 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:47:28,660 basehttp 5888 3936 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:47:39,237 basehttp 5888 3936 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:39,238 basehttp 5888 12548 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:39,482 basehttp 5888 21388 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:47:39,955 basehttp 5888 13192 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:47:55,851 basehttp 5888 21132 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:55,851 basehttp 5888 12548 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:55,854 basehttp 5888 3936 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:55,854 basehttp 5888 17024 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:47:55,886 basehttp 5888 21388 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:47:55,914 basehttp 5888 13192 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 11:47:56,449 basehttp 5888 14932 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:47:56,465 basehttp 5888 20500 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 11:48:25,632 basehttp 5888 20500 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:48:26,192 basehttp 5888 14932 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 11:48:44,545 basehttp 5888 17024 "OPTIONS /api/admin/customers/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:48:44,545 basehttp 5888 12548 "OPTIONS /api/admin/customers/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:48:44,591 basehttp 5888 14932 "GET /api/admin/customers/ HTTP/1.1" 200 3962
+INFO 2025-07-08 11:48:45,154 basehttp 5888 20500 "GET /api/admin/customers/ HTTP/1.1" 200 3962
+INFO 2025-07-08 11:49:19,531 basehttp 5888 12548 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:49:19,943 basehttp 5888 17024 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:49:20,062 basehttp 5888 3936 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:49:20,268 basehttp 5888 21132 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:49:50,232 basehttp 5888 6280 "GET /admin/restaurant/dishrating/ HTTP/1.1" 200 18679
+INFO 2025-07-08 11:49:50,274 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:49:56,326 basehttp 5888 6280 "GET /admin/restaurant/customer/ HTTP/1.1" 200 19031
+INFO 2025-07-08 11:49:56,374 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:49:58,472 basehttp 5888 6280 "GET /admin/restaurant/category/ HTTP/1.1" 200 19913
+INFO 2025-07-08 11:49:58,524 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:49:59,140 basehttp 5888 6280 "GET /admin/restaurant/adminprofile/ HTTP/1.1" 200 16438
+INFO 2025-07-08 11:49:59,188 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:01,297 basehttp 5888 6280 "GET /admin/auth/user/ HTTP/1.1" 200 22898
+INFO 2025-07-08 11:50:01,342 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:05,010 basehttp 5888 6280 "GET /admin/auth/group/ HTTP/1.1" 200 13552
+INFO 2025-07-08 11:50:05,053 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:07,165 basehttp 5888 6280 "GET /admin/restaurant/dishrating/ HTTP/1.1" 200 18679
+INFO 2025-07-08 11:50:07,204 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:11,497 basehttp 5888 6280 "GET /admin/fcm_django/fcmdevice/ HTTP/1.1" 200 13350
+INFO 2025-07-08 11:50:11,546 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:16,867 basehttp 5888 6280 "GET /admin/fcm_django/fcmdevice/ HTTP/1.1" 200 13350
+INFO 2025-07-08 11:50:16,895 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:23,169 basehttp 5888 6280 "GET /admin/fcm_django/fcmdevice/add/ HTTP/1.1" 200 16491
+INFO 2025-07-08 11:50:23,204 basehttp 5888 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:50:23,332 basehttp 5888 8064 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-07-08 11:50:23,333 basehttp 5888 15760 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-07-08 11:50:28,826 basehttp 5888 15760 "GET /admin/restaurant/restaurant/ HTTP/1.1" 200 16387
+INFO 2025-07-08 11:50:28,883 basehttp 5888 15760 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 11:53:45,594 autoreload 5888 15336 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\utils.py changed, reloading.
+INFO 2025-07-08 11:53:57,808 autoreload 23312 1504 Watching for file changes with StatReloader
+INFO 2025-07-08 11:53:59,205 views 23312 1504 Stripe initialized successfully
+INFO 2025-07-08 11:54:35,983 basehttp 23312 6364 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:54:37,236 basehttp 23312 19648 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:54:37,561 autoreload 23312 1504 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 11:54:40,787 autoreload 8244 9732 Watching for file changes with StatReloader
+INFO 2025-07-08 11:54:42,218 views 8244 9732 Stripe initialized successfully
+INFO 2025-07-08 11:55:02,701 basehttp 8244 21736 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:55:03,260 basehttp 8244 21736 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 11:55:03,523 basehttp 8244 11108 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 11:55:04,092 basehttp 8244 21736 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 11:55:04,217 basehttp 8244 11108 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:55:04,649 basehttp 8244 21736 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:55:21,701 basehttp 8244 5520 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:55:21,701 basehttp 8244 19028 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-08 11:55:21,719 basehttp 8244 21736 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:55:21,735 basehttp 8244 11108 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 2390
+INFO 2025-07-08 11:55:22,357 basehttp 8244 21736 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-08 11:55:22,456 basehttp 8244 1784 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 2390
+INFO 2025-07-08 11:55:44,517 autoreload 14396 15732 Watching for file changes with StatReloader
+INFO 2025-07-08 11:55:45,933 views 14396 15732 Stripe initialized successfully
+INFO 2025-07-08 11:56:04,916 basehttp 8244 5520 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:56:05,204 basehttp 8244 19028 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:56:05,446 basehttp 8244 12944 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:56:05,629 basehttp 8244 20400 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:58:57,697 basehttp 8244 20400 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 11:58:57,867 basehttp 8244 12944 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 11:59:38,211 basehttp 8244 1784 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 11:59:38,422 basehttp 8244 21736 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:02:43,530 basehttp 8244 1784 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:02:43,566 basehttp 8244 21736 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 12:02:44,078 basehttp 8244 21852 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:02:44,095 basehttp 8244 18120 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 12:05:19,166 basehttp 8244 6500 "OPTIONS /api/admin/dishes/40/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:05:19,205 models 8244 21932 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-08 12:05:19,282 basehttp 8244 21932 "PUT /api/admin/dishes/40/ HTTP/1.1" 200 800
+INFO 2025-07-08 12:05:19,904 basehttp 8244 21872 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:05:20,113 basehttp 8244 21932 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 12:05:25,516 basehttp 8244 21932 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:05:25,805 basehttp 8244 21872 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:05:30,648 basehttp 8244 6500 "OPTIONS /api/admin/orders/42/update_status/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:05:30,678 models 8244 21872 Order saved: #42 - Customer: Amr Elsayed - Total: $373.99
+INFO 2025-07-08 12:05:30,704 basehttp 8244 21872 "PATCH /api/admin/orders/42/update_status/ HTTP/1.1" 200 47
+INFO 2025-07-08 12:05:38,897 basehttp 8244 21932 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:05:38,937 basehttp 8244 21872 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+INFO 2025-07-08 12:05:39,460 basehttp 8244 21348 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:05:39,477 basehttp 8244 12080 "GET /api/admin/dishes/ HTTP/1.1" 200 12374
+WARNING 2025-07-08 12:06:27,263 log 8244 12080 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:06:27,265 basehttp 8244 12080 "POST /api/admin/dishes/ HTTP/1.1" 400 45
+WARNING 2025-07-08 12:06:36,605 log 8244 12080 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:06:36,607 basehttp 8244 12080 "POST /api/admin/dishes/ HTTP/1.1" 400 45
+INFO 2025-07-08 12:07:42,549 autoreload 8244 9732 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\utils.py changed, reloading.
+INFO 2025-07-08 12:07:45,538 autoreload 22924 11336 Watching for file changes with StatReloader
+INFO 2025-07-08 12:07:46,480 views 22924 11336 Stripe initialized successfully
+WARNING 2025-07-08 12:08:37,821 log 22924 22952 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:08:37,824 basehttp 22924 22952 "POST /api/admin/dishes/ HTTP/1.1" 400 87
+WARNING 2025-07-08 12:08:47,390 log 22924 22952 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:08:47,391 basehttp 22924 22952 "POST /api/admin/dishes/ HTTP/1.1" 400 87
+WARNING 2025-07-08 12:10:01,282 log 22924 22952 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:10:01,285 basehttp 22924 22952 "POST /api/admin/dishes/ HTTP/1.1" 400 43
+WARNING 2025-07-08 12:10:11,262 log 22924 22952 Bad Request: /api/admin/dishes/
+WARNING 2025-07-08 12:10:11,263 basehttp 22924 22952 "POST /api/admin/dishes/ HTTP/1.1" 400 43
+INFO 2025-07-08 12:11:27,240 basehttp 22924 9320 "GET /admin/restaurant/order/ HTTP/1.1" 200 67834
+INFO 2025-07-08 12:11:27,300 basehttp 22924 9320 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 12:12:05,336 models 22924 22952 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:12:05,416 basehttp 22924 22952 "POST /api/admin/dishes/ HTTP/1.1" 201 640
+INFO 2025-07-08 12:12:06,138 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:12:06,292 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 13015
+INFO 2025-07-08 12:12:36,607 basehttp 22924 9668 "OPTIONS /api/admin/dishes/54/ HTTP/1.1" 200 0
+WARNING 2025-07-08 12:12:36,625 log 22924 22952 Bad Request: /api/admin/dishes/54/
+WARNING 2025-07-08 12:12:36,626 basehttp 22924 22952 "PUT /api/admin/dishes/54/ HTTP/1.1" 400 156
+INFO 2025-07-08 12:12:37,245 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:12:37,369 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 13015
+INFO 2025-07-08 12:14:18,996 basehttp 22924 9668 "OPTIONS /api/admin/dishes/50/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:14:19,035 models 22924 22952 Dish saved: Vanilla Ice Cream - Stock: 50
+INFO 2025-07-08 12:14:19,077 basehttp 22924 22952 "PUT /api/admin/dishes/50/ HTTP/1.1" 200 797
+INFO 2025-07-08 12:14:19,649 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:14:19,785 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 13015
+INFO 2025-07-08 12:14:38,417 basehttp 22924 9668 "OPTIONS /api/admin/dishes/53/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:14:38,458 basehttp 22924 22952 "DELETE /api/admin/dishes/53/ HTTP/1.1" 204 0
+INFO 2025-07-08 12:14:39,021 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:14:39,077 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:15:17,516 basehttp 22924 22952 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:15:18,086 basehttp 22924 15592 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:15:18,189 basehttp 22924 22952 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:15:18,772 basehttp 22924 5512 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:15:18,838 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:15:18,854 basehttp 22924 15592 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:15:19,302 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:15:19,346 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:15:41,437 basehttp 22924 19776 "GET /api/admin/customers/ HTTP/1.1" 200 3962
+INFO 2025-07-08 12:15:41,977 basehttp 22924 15592 "GET /api/admin/customers/ HTTP/1.1" 200 3962
+INFO 2025-07-08 12:15:56,199 basehttp 22924 15592 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:15:56,716 basehttp 22924 19776 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:16:41,614 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:16:41,638 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:16:42,157 basehttp 22924 22952 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:16:42,190 basehttp 22924 5512 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:16:45,417 basehttp 22924 22952 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:16:45,428 basehttp 22924 5512 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 12:16:45,956 basehttp 22924 19776 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:16:45,975 basehttp 22924 15592 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 12372
+INFO 2025-07-08 12:16:51,161 basehttp 22924 9668 "OPTIONS /api/dishes/54/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:16:51,176 basehttp 22924 4292 "OPTIONS /api/dishes/54/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:16:51,177 basehttp 22924 2976 "OPTIONS /api/dishes/54/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:16:51,177 basehttp 22924 9668 "OPTIONS /api/dishes/54/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:16:51,224 basehttp 22924 19776 "GET /api/dishes/54/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 12:16:51,225 basehttp 22924 15592 "GET /api/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:16:51,774 basehttp 22924 15592 "GET /api/dishes/54/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-08 12:16:51,774 basehttp 22924 5512 "GET /api/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:16:58,470 basehttp 22924 9668 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 12:16:58,758 basehttp 22924 2976 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 12:16:59,007 basehttp 22924 4292 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 12:16:59,179 basehttp 22924 17964 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 12:17:07,843 basehttp 22924 15592 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:17:08,146 basehttp 22924 5512 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:17:29,929 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:17:29,952 basehttp 22924 5512 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:17:30,482 basehttp 22924 19776 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:17:30,506 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:17:38,622 basehttp 22924 17964 "OPTIONS /api/admin/dishes/52/ HTTP/1.1" 200 0
+INFO 2025-07-08 12:17:38,642 models 22924 22952 Dish saved: test2 - Stock: 50
+INFO 2025-07-08 12:17:38,669 basehttp 22924 22952 "PATCH /api/admin/dishes/52/ HTTP/1.1" 200 644
+INFO 2025-07-08 12:17:44,439 models 22924 22952 Dish saved: test2 - Stock: 50
+INFO 2025-07-08 12:17:44,470 basehttp 22924 22952 "PATCH /api/admin/dishes/52/ HTTP/1.1" 200 643
+INFO 2025-07-08 12:20:13,684 basehttp 22924 22952 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:20:14,271 basehttp 22924 19776 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:20:14,459 basehttp 22924 22952 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:20:14,993 basehttp 22924 5512 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:20:15,138 basehttp 22924 22952 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:20:15,186 basehttp 22924 19776 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:20:15,528 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:20:15,545 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:20:18,042 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:20:18,073 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 641
+INFO 2025-07-08 12:20:20,781 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:20:20,823 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:20:32,666 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:20:32,704 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:20:33,279 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:20:33,367 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:21:35,692 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:21:35,724 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:21:36,300 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:21:36,342 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:21:56,425 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:21:56,466 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 640
+INFO 2025-07-08 12:21:57,037 basehttp 22924 15592 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:21:57,093 basehttp 22924 19776 "GET /api/admin/dishes/ HTTP/1.1" 200 12372
+INFO 2025-07-08 12:23:49,396 models 22924 19776 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:23:49,502 basehttp 22924 19776 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 641
+INFO 2025-07-08 12:23:52,416 basehttp 22924 15592 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:23:52,447 basehttp 22924 19776 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-08 12:23:52,692 basehttp 22924 5512 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:23:52,797 basehttp 22924 22952 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-08 12:23:58,512 basehttp 22924 10520 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 12:23:58,897 basehttp 22924 19496 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 12:23:58,963 basehttp 22924 10564 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-08 12:23:59,199 basehttp 22924 10520 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-08 12:24:02,892 basehttp 22924 22952 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:24:03,415 basehttp 22924 5512 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-08 12:24:09,030 autoreload 22924 11336 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 12:24:10,782 autoreload 19668 18760 Watching for file changes with StatReloader
+INFO 2025-07-08 12:24:11,795 views 19668 18760 Stripe initialized successfully
+INFO 2025-07-08 12:25:52,187 basehttp 19668 22608 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:25:52,221 basehttp 19668 16176 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 12:25:52,725 basehttp 19668 3132 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:25:52,761 basehttp 19668 12704 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 12:26:02,553 log 19668 12704 Unsupported Media Type: /api/admin/dishes/54/
+WARNING 2025-07-08 12:26:02,571 basehttp 19668 12704 "PATCH /api/admin/dishes/54/ HTTP/1.1" 415 68
+INFO 2025-07-08 12:27:23,068 autoreload 19668 18760 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 12:27:32,404 autoreload 7600 22468 Watching for file changes with StatReloader
+INFO 2025-07-08 12:27:34,570 views 7600 22468 Stripe initialized successfully
+INFO 2025-07-08 12:27:44,658 models 7600 14684 Dish saved: test3 - Stock: 0
+INFO 2025-07-08 12:27:44,711 basehttp 7600 14684 "PATCH /api/admin/dishes/54/ HTTP/1.1" 200 641
+INFO 2025-07-08 12:27:45,239 basehttp 7600 23188 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:27:45,297 basehttp 7600 14684 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 12:29:07,901 autoreload 7600 22468 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-08 12:29:09,931 autoreload 6372 14748 Watching for file changes with StatReloader
+INFO 2025-07-08 12:29:10,913 views 6372 14748 Stripe initialized successfully
+WARNING 2025-07-08 12:29:25,635 log 6372 19864 Bad Request: /api/admin/dishes/54/
+WARNING 2025-07-08 12:29:25,638 basehttp 6372 19864 "PATCH /api/admin/dishes/54/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:34:13,591 log 6372 19864 Bad Request: /api/admin/dishes/54/
+WARNING 2025-07-08 12:34:13,595 basehttp 6372 19864 "PATCH /api/admin/dishes/54/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:34:54,659 log 6372 19712 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:34:54,661 basehttp 6372 19712 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 12:36:44,298 autoreload 6372 14748 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-08 12:36:50,290 autoreload 16692 9188 Watching for file changes with StatReloader
+INFO 2025-07-08 12:36:51,341 views 16692 9188 Stripe initialized successfully
+WARNING 2025-07-08 12:37:03,628 log 16692 17688 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:37:03,631 basehttp 16692 17688 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:37:27,232 log 16692 17688 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:37:27,234 basehttp 16692 17688 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:38:55,501 log 16692 17688 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:38:55,503 basehttp 16692 17688 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 12:39:05,942 basehttp 16692 17688 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:39:06,519 basehttp 16692 17688 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:39:06,698 basehttp 16692 9988 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:39:07,418 basehttp 16692 17688 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:39:07,591 basehttp 16692 18308 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:39:07,943 basehttp 16692 9988 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 12:39:07,952 basehttp 16692 17688 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:39:08,284 basehttp 16692 18308 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 12:39:23,118 log 16692 18308 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:39:23,122 basehttp 16692 18308 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:42:22,420 log 16692 18308 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:42:22,424 basehttp 16692 18308 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:43:13,213 log 16692 18308 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:43:13,215 basehttp 16692 18308 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 12:46:21,771 basehttp 16692 18320 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:46:21,868 basehttp 16692 18308 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 12:47:27,311 basehttp 16692 18320 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:47:27,689 basehttp 16692 18308 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 12:47:47,990 log 16692 18308 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:47:47,992 basehttp 16692 18308 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 12:49:00,905 autoreload 16692 9188 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 12:49:06,770 autoreload 22348 12384 Watching for file changes with StatReloader
+INFO 2025-07-08 12:49:14,450 views 22348 12384 Stripe initialized successfully
+INFO 2025-07-08 12:50:09,739 basehttp 22348 1272 "GET /admin/restaurant/order/ HTTP/1.1" 200 67834
+INFO 2025-07-08 12:50:09,799 basehttp 22348 1272 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-08 12:54:51,509 basehttp 22348 14524 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:54:52,064 basehttp 22348 14524 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 12:54:52,154 basehttp 22348 15232 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:54:52,774 basehttp 22348 14524 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 12:54:52,819 basehttp 22348 14260 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:54:52,961 basehttp 22348 15232 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 12:54:53,333 basehttp 22348 11560 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 12:54:53,450 basehttp 22348 14524 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 12:55:20,202 log 22348 14524 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:55:20,209 basehttp 22348 14524 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 12:56:10,534 autoreload 22348 12384 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-08 12:56:16,625 autoreload 15400 7860 Watching for file changes with StatReloader
+INFO 2025-07-08 12:56:17,948 views 15400 7860 Stripe initialized successfully
+WARNING 2025-07-08 12:56:34,357 log 15400 22936 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:56:34,359 basehttp 15400 22936 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 12:58:02,080 log 15400 22936 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 12:58:02,083 basehttp 15400 22936 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:01:25,405 log 15400 22936 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:01:25,408 basehttp 15400 22936 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 13:04:09,680 basehttp 15400 22936 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 13:04:10,254 basehttp 15400 22936 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 13:04:10,315 basehttp 15400 22364 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 13:04:10,930 basehttp 15400 22364 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 13:04:10,965 basehttp 15400 11784 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 13:04:11,048 basehttp 15400 22936 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 13:04:11,475 basehttp 15400 1720 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 13:04:11,558 basehttp 15400 22364 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 13:04:36,013 log 15400 22364 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:04:36,016 basehttp 15400 22364 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:10:01,284 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:10:01,285 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:11:32,675 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:11:32,679 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:14:49,876 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:14:49,877 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:17:34,898 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:17:34,899 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-08 13:20:38,143 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:20:38,146 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 13:22:56,368 basehttp 15400 6476 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 13:22:56,941 basehttp 15400 6476 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-08 13:22:57,030 basehttp 15400 22964 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 13:22:57,698 basehttp 15400 6476 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-08 13:22:57,756 basehttp 15400 9456 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 13:22:57,860 basehttp 15400 22964 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-08 13:22:58,199 basehttp 15400 19432 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-08 13:22:58,350 basehttp 15400 6476 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-08 13:23:10,825 log 15400 6476 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-08 13:23:10,826 basehttp 15400 6476 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-08 13:24:47,973 autoreload 15400 7860 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 13:24:49,440 autoreload 18900 1676 Watching for file changes with StatReloader
+INFO 2025-07-08 13:31:57,754 autoreload 18900 1676 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-08 13:31:59,920 autoreload 14444 13700 Watching for file changes with StatReloader
+INFO 2025-07-09 02:52:16,555 autoreload 16096 12972 Watching for file changes with StatReloader
+INFO 2025-07-09 02:53:34,672 autoreload 16096 12972 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 02:53:44,446 autoreload 8320 13836 Watching for file changes with StatReloader
+INFO 2025-07-09 02:56:23,620 autoreload 8320 13836 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 02:56:34,735 autoreload 19364 18524 Watching for file changes with StatReloader
+INFO 2025-07-09 02:56:44,399 views 19364 18524 Stripe initialized successfully
+INFO 2025-07-09 02:56:50,055 autoreload 404 10060 Watching for file changes with StatReloader
+INFO 2025-07-09 02:56:54,194 views 404 10060 Stripe initialized successfully
+INFO 2025-07-09 02:57:07,662 basehttp 19364 14976 "GET /api/csrf-token/ HTTP/1.1" 200 81
+WARNING 2025-07-09 02:57:07,738 log 19364 8460 Not Found: /api/dishes/most_ordered/
+INFO 2025-07-09 02:57:07,765 basehttp 19364 14976 "GET /api/csrf-token/ HTTP/1.1" 200 81
+WARNING 2025-07-09 02:57:07,768 basehttp 19364 8460 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+WARNING 2025-07-09 02:57:07,809 log 19364 8460 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 02:57:07,822 basehttp 19364 8460 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 02:57:07,981 basehttp 19364 17752 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 02:57:08,029 basehttp 19364 17752 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 02:57:09,416 basehttp 19364 17752 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-09 02:57:09,903 basehttp 19364 17752 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-09 02:57:20,057 basehttp 19364 8460 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:57:20,205 basehttp 19364 8460 "GET /api/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:57:20,250 basehttp 19364 17752 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 02:57:20,776 basehttp 19364 8460 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 02:57:54,452 basehttp 19364 8460 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 02:57:54,480 basehttp 19364 3540 "OPTIONS /api/login/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:57:57,974 basehttp 19364 8460 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-09 02:57:58,011 basehttp 19364 3540 "OPTIONS /api/check-user-type/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:57:58,463 basehttp 19364 8460 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 02:57:59,784 basehttp 19364 3540 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:57:59,790 basehttp 19364 13604 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:57:59,801 basehttp 19364 3540 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:57:59,802 basehttp 19364 13420 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+WARNING 2025-07-09 02:57:59,855 log 19364 8460 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 02:57:59,861 basehttp 19364 8460 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 02:57:59,897 basehttp 19364 17752 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 02:57:59,928 log 19364 8460 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 02:57:59,939 basehttp 19364 8460 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 02:57:59,985 basehttp 19364 17752 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 02:58:22,967 basehttp 19364 13420 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:22,968 basehttp 19364 3540 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:23,005 basehttp 19364 17752 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-09 02:58:23,036 basehttp 19364 17752 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-09 02:58:29,331 basehttp 19364 3540 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:29,332 basehttp 19364 13420 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:29,379 views 19364 17752 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 02:58:29,616 basehttp 19364 17752 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-09 02:58:29,636 views 19364 17752 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 02:58:29,808 basehttp 19364 17752 "GET /api/orders/ HTTP/1.1" 200 9996
+INFO 2025-07-09 02:58:34,384 basehttp 19364 13420 "OPTIONS /api/logout/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:34,405 basehttp 19364 17752 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 02:58:43,171 basehttp 19364 17752 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 02:58:43,198 basehttp 19364 13420 "OPTIONS /api/admin/login/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:46,752 basehttp 19364 17752 "POST /api/admin/login/ HTTP/1.1" 200 254
+INFO 2025-07-09 02:58:47,205 basehttp 19364 17752 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 02:58:48,292 basehttp 19364 13420 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-09 02:58:48,524 basehttp 19364 13420 "GET /api/admin/dashboard/ HTTP/1.1" 200 920
+INFO 2025-07-09 02:58:49,957 basehttp 19364 3540 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 02:58:51,828 basehttp 19364 13420 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 02:58:58,294 basehttp 19364 13420 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:58,295 basehttp 19364 3540 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:58:59,376 basehttp 19364 17752 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 02:59:00,156 basehttp 19364 17752 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 02:59:01,471 basehttp 19364 3540 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:01,472 basehttp 19364 13420 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:01,474 basehttp 19364 13604 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:01,497 basehttp 19364 19788 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:01,627 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:59:01,763 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:59:01,928 basehttp 19364 8460 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-09 02:59:02,581 basehttp 19364 8460 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-09 02:59:21,664 basehttp 19364 19788 "OPTIONS /api/admin/dishes/52/ HTTP/1.1" 200 0
+WARNING 2025-07-09 02:59:21,705 log 19364 8460 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-09 02:59:21,709 basehttp 19364 8460 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-09 02:59:31,635 basehttp 19364 8460 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:59:31,714 basehttp 19364 8460 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 02:59:43,446 models 19364 8460 Category saved: test2
+INFO 2025-07-09 02:59:43,476 basehttp 19364 8460 "POST /api/admin/categories/ HTTP/1.1" 201 178
+INFO 2025-07-09 02:59:43,558 basehttp 19364 8460 "GET /api/admin/categories/ HTTP/1.1" 200 1942
+INFO 2025-07-09 02:59:54,408 basehttp 19364 19788 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:54,409 basehttp 19364 3540 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:54,409 basehttp 19364 13420 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:54,410 basehttp 19364 13604 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 02:59:54,646 basehttp 19364 17752 "GET /api/categories/ HTTP/1.1" 200 1942
+INFO 2025-07-09 02:59:54,792 basehttp 19364 8460 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 02:59:54,796 basehttp 19364 17752 "GET /api/categories/ HTTP/1.1" 200 1942
+INFO 2025-07-09 02:59:55,193 basehttp 19364 17752 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 03:00:08,768 basehttp 19364 13604 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 03:00:08,990 basehttp 19364 13604 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 03:00:10,212 basehttp 19364 13420 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 03:00:11,721 basehttp 19364 13420 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 03:00:12,322 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1942
+INFO 2025-07-09 03:00:12,381 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1942
+INFO 2025-07-09 03:00:17,569 basehttp 19364 13420 "OPTIONS /api/admin/categories/11/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:00:17,632 basehttp 19364 17752 "DELETE /api/admin/categories/11/ HTTP/1.1" 204 0
+INFO 2025-07-09 03:00:17,707 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1763
+INFO 2025-07-09 03:00:25,140 basehttp 19364 13420 "OPTIONS /api/admin/categories/10/ HTTP/1.1" 200 0
+WARNING 2025-07-09 03:00:25,171 log 19364 17752 Bad Request: /api/admin/categories/10/
+WARNING 2025-07-09 03:00:25,174 basehttp 19364 17752 "PUT /api/admin/categories/10/ HTTP/1.1" 400 36
+INFO 2025-07-09 03:00:52,944 models 19364 17752 Category saved: test
+INFO 2025-07-09 03:00:52,970 basehttp 19364 17752 "PUT /api/admin/categories/10/ HTTP/1.1" 200 176
+INFO 2025-07-09 03:00:53,058 basehttp 19364 17752 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:08,948 basehttp 19364 8460 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:08,999 basehttp 19364 8460 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:09,058 basehttp 19364 17752 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-09 03:02:09,353 basehttp 19364 17752 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-09 03:02:11,083 basehttp 19364 17752 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 03:02:11,854 basehttp 19364 17752 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 03:02:12,207 basehttp 19364 13420 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 03:02:12,345 basehttp 19364 13420 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 03:02:12,764 basehttp 19364 13604 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 03:02:13,641 basehttp 19364 13420 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41327
+INFO 2025-07-09 03:02:15,223 basehttp 19364 8460 "GET /api/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:15,572 basehttp 19364 8460 "GET /api/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:15,588 basehttp 19364 17752 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 03:02:15,740 basehttp 19364 17752 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+WARNING 2025-07-09 03:02:20,121 log 19364 17752 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:02:20,130 basehttp 19364 17752 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:02:20,142 basehttp 19364 8460 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 03:02:20,168 log 19364 17752 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:02:20,173 basehttp 19364 17752 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:02:20,191 basehttp 19364 8460 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:02:45,474 basehttp 19364 17752 "GET /api/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:46,071 basehttp 19364 17752 "GET /api/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:02:46,112 basehttp 19364 8460 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+INFO 2025-07-09 03:02:47,178 basehttp 19364 17752 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11731
+WARNING 2025-07-09 03:03:23,481 log 19364 17752 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:03:23,484 basehttp 19364 17752 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:03:23,498 basehttp 19364 8460 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 03:03:23,515 log 19364 17752 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:03:23,520 basehttp 19364 17752 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:03:23,531 basehttp 19364 8460 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:05:22,589 autoreload 19364 18524 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:05:23,182 autoreload 404 10060 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-09 03:05:37,748 autoreload 17044 21432 Watching for file changes with StatReloader
+INFO 2025-07-09 03:05:37,798 autoreload 8644 21728 Watching for file changes with StatReloader
+INFO 2025-07-09 03:07:30,601 autoreload 13980 14364 Watching for file changes with StatReloader
+INFO 2025-07-09 03:08:23,150 autoreload 13980 14364 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:08:23,338 autoreload 8644 21728 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:08:23,440 autoreload 17044 21432 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:08:33,386 autoreload 11540 8716 Watching for file changes with StatReloader
+INFO 2025-07-09 03:08:33,395 autoreload 16460 6960 Watching for file changes with StatReloader
+INFO 2025-07-09 03:08:33,410 autoreload 1768 13248 Watching for file changes with StatReloader
+INFO 2025-07-09 03:08:45,410 autoreload 16460 6960 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:08:45,512 autoreload 1768 13248 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:08:45,706 autoreload 11540 8716 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:09:07,181 autoreload 5036 8636 Watching for file changes with StatReloader
+INFO 2025-07-09 03:09:07,187 autoreload 11340 17124 Watching for file changes with StatReloader
+INFO 2025-07-09 03:09:07,484 autoreload 18096 16772 Watching for file changes with StatReloader
+INFO 2025-07-09 03:09:12,834 views 11340 17124 Stripe initialized successfully
+INFO 2025-07-09 03:09:12,837 views 5036 8636 Stripe initialized successfully
+INFO 2025-07-09 03:09:13,489 views 18096 16772 Stripe initialized successfully
+INFO 2025-07-09 03:09:17,983 autoreload 18096 16772 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-09 03:09:19,000 autoreload 5036 8636 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-09 03:09:19,017 autoreload 11340 17124 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\utils.py changed, reloading.
+INFO 2025-07-09 03:09:25,751 autoreload 6256 23116 Watching for file changes with StatReloader
+INFO 2025-07-09 03:09:25,911 autoreload 11444 19416 Watching for file changes with StatReloader
+INFO 2025-07-09 03:09:25,938 autoreload 13364 20544 Watching for file changes with StatReloader
+INFO 2025-07-09 03:31:07,817 autoreload 22000 4836 Watching for file changes with StatReloader
+INFO 2025-07-09 03:38:43,074 autoreload 15400 20000 Watching for file changes with StatReloader
+INFO 2025-07-09 03:44:14,279 autoreload 15400 20000 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:44:17,996 autoreload 14264 22308 Watching for file changes with StatReloader
+INFO 2025-07-09 03:44:31,606 autoreload 14264 22308 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:44:35,330 autoreload 10564 9732 Watching for file changes with StatReloader
+INFO 2025-07-09 03:44:36,545 views 10564 9732 Stripe initialized successfully
+INFO 2025-07-09 03:44:41,677 autoreload 10564 9732 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:44:45,426 autoreload 20504 9364 Watching for file changes with StatReloader
+INFO 2025-07-09 03:44:47,089 views 20504 9364 Stripe initialized successfully
+INFO 2025-07-09 03:45:01,482 autoreload 22796 16256 Watching for file changes with StatReloader
+INFO 2025-07-09 03:45:02,483 views 22796 16256 Stripe initialized successfully
+INFO 2025-07-09 03:47:36,295 autoreload 22796 16256 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:47:36,308 autoreload 20504 9364 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:47:44,419 autoreload 13676 11104 Watching for file changes with StatReloader
+INFO 2025-07-09 03:47:44,474 autoreload 21732 13024 Watching for file changes with StatReloader
+INFO 2025-07-09 03:47:47,371 views 13676 11104 Stripe initialized successfully
+INFO 2025-07-09 03:47:47,372 views 21732 13024 Stripe initialized successfully
+INFO 2025-07-09 03:47:51,005 basehttp 21732 13564 "HEAD /api/ HTTP/1.1" 200 0
+WARNING 2025-07-09 03:47:57,140 log 21732 11408 Method Not Allowed: /api/homepage-stats/
+WARNING 2025-07-09 03:47:57,143 basehttp 21732 11408 "HEAD /api/homepage-stats/ HTTP/1.1" 405 0
+INFO 2025-07-09 03:48:23,440 basehttp 21732 1392 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 03:48:26,966 basehttp 21732 1392 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-09 03:48:27,380 basehttp 21732 1392 "GET /api/check-user-type/ HTTP/1.1" 200 188
+WARNING 2025-07-09 03:48:28,687 log 21732 1392 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:48:28,713 basehttp 21732 1392 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:48:28,850 basehttp 21732 7864 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 03:48:29,234 log 21732 1392 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:48:29,237 basehttp 21732 1392 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:48:29,255 basehttp 21732 6200 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:49:13,814 basehttp 21732 19680 "GET /admin/ HTTP/1.1" 200 13673
+INFO 2025-07-09 03:49:14,465 basehttp 21732 7020 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-07-09 03:49:14,479 basehttp 21732 19680 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-07-09 03:49:14,537 basehttp 21732 22744 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-07-09 03:49:14,554 basehttp 21732 20812 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-07-09 03:49:14,568 basehttp 21732 9476 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-07-09 03:49:14,597 basehttp 21732 6280 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-07-09 03:49:14,693 basehttp 21732 20812 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-07-09 03:49:14,694 basehttp 21732 6280 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-07-09 03:49:14,699 basehttp 21732 9476 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+WARNING 2025-07-09 03:49:15,023 log 21732 9476 Not Found: /favicon.ico
+WARNING 2025-07-09 03:49:15,025 basehttp 21732 9476 "GET /favicon.ico HTTP/1.1" 404 9327
+INFO 2025-07-09 03:49:28,248 basehttp 21732 19224 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:49:34,488 basehttp 21732 17588 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:49:44,978 basehttp 21732 9476 "GET /admin/restaurant/customer/ HTTP/1.1" 200 19031
+INFO 2025-07-09 03:49:45,053 basehttp 21732 9476 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-07-09 03:49:45,057 basehttp 21732 19680 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-07-09 03:49:45,077 basehttp 21732 22744 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-07-09 03:49:45,092 basehttp 21732 7020 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-07-09 03:49:45,114 basehttp 21732 6280 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-09 03:49:45,121 basehttp 21732 19680 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-07-09 03:49:45,145 basehttp 21732 9476 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-07-09 03:49:45,168 basehttp 21732 22744 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-07-09 03:49:45,183 basehttp 21732 6280 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-07-09 03:49:45,245 basehttp 21732 20812 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-07-09 03:49:45,336 basehttp 21732 20812 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-07-09 03:49:45,437 basehttp 21732 7020 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-07-09 03:49:45,531 basehttp 21732 7020 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-07-09 03:49:52,493 basehttp 21732 7020 "GET /admin/auth/user/ HTTP/1.1" 200 22898
+INFO 2025-07-09 03:49:52,545 basehttp 21732 20812 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-07-09 03:49:52,546 basehttp 21732 6280 "GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+INFO 2025-07-09 03:49:52,557 basehttp 21732 7020 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-07-09 03:49:52,613 basehttp 21732 6280 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-07-09 03:49:52,621 basehttp 21732 7020 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-07-09 03:50:04,525 basehttp 21732 6200 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 03:50:16,124 autoreload 21732 13024 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-09 03:50:16,823 autoreload 13676 11104 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py changed, reloading.
+INFO 2025-07-09 03:50:22,908 autoreload 17164 16256 Watching for file changes with StatReloader
+INFO 2025-07-09 03:50:23,628 autoreload 12204 10700 Watching for file changes with StatReloader
+INFO 2025-07-09 03:50:25,574 views 17164 16256 Stripe initialized successfully
+INFO 2025-07-09 03:50:25,788 views 12204 10700 Stripe initialized successfully
+INFO 2025-07-09 03:50:36,270 basehttp 17164 10152 "OPTIONS /api/register/ HTTP/1.1" 200 0
+WARNING 2025-07-09 03:50:36,311 log 17164 10152 Bad Request: /api/register/
+WARNING 2025-07-09 03:50:36,314 basehttp 17164 10152 "POST /api/register/ HTTP/1.1" 400 35
+INFO 2025-07-09 03:50:41,487 basehttp 17164 12252 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:50:48,478 models 17164 20036 Category saved: Appetizers
+INFO 2025-07-09 03:50:48,581 basehttp 17164 20036 "PATCH /api/admin/categories/7/ HTTP/1.1" 200 214
+INFO 2025-07-09 03:50:54,515 models 17164 23420 Category saved: Appetizers
+INFO 2025-07-09 03:50:54,540 basehttp 17164 23420 "PATCH /api/admin/categories/7/ HTTP/1.1" 200 213
+INFO 2025-07-09 03:51:06,526 autoreload 17164 16256 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:06,814 autoreload 12204 10700 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:14,358 autoreload 12552 17092 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:14,525 autoreload 6372 12892 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:20,730 views 12552 17092 Stripe initialized successfully
+INFO 2025-07-09 03:51:20,740 views 6372 12892 Stripe initialized successfully
+INFO 2025-07-09 03:51:24,557 autoreload 12552 17092 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:24,558 autoreload 6372 12892 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:31,823 autoreload 22696 15344 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:31,842 autoreload 21056 12332 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:35,462 views 22696 15344 Stripe initialized successfully
+INFO 2025-07-09 03:51:35,483 views 21056 12332 Stripe initialized successfully
+INFO 2025-07-09 03:51:39,257 autoreload 22696 15344 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:39,318 autoreload 21056 12332 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:51:44,227 autoreload 3580 21536 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:44,359 autoreload 16484 14104 Watching for file changes with StatReloader
+INFO 2025-07-09 03:51:47,469 views 3580 21536 Stripe initialized successfully
+INFO 2025-07-09 03:51:47,519 views 16484 14104 Stripe initialized successfully
+INFO 2025-07-09 03:52:08,108 autoreload 3580 21536 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:52:08,208 autoreload 16484 14104 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:52:15,033 autoreload 21404 19608 Watching for file changes with StatReloader
+INFO 2025-07-09 03:52:15,081 autoreload 11860 23076 Watching for file changes with StatReloader
+INFO 2025-07-09 03:52:20,216 views 11860 23076 Stripe initialized successfully
+INFO 2025-07-09 03:52:20,276 views 21404 19608 Stripe initialized successfully
+INFO 2025-07-09 03:52:49,936 autoreload 11860 23076 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:52:49,963 autoreload 21404 19608 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 03:52:56,134 autoreload 21732 18876 Watching for file changes with StatReloader
+INFO 2025-07-09 03:52:56,134 autoreload 9260 21256 Watching for file changes with StatReloader
+INFO 2025-07-09 03:52:59,423 views 9260 21256 Stripe initialized successfully
+INFO 2025-07-09 03:52:59,442 views 21732 18876 Stripe initialized successfully
+WARNING 2025-07-09 03:53:24,911 log 9260 21920 Bad Request: /api/register/
+WARNING 2025-07-09 03:53:24,913 basehttp 9260 21920 "POST /api/register/ HTTP/1.1" 400 35
+INFO 2025-07-09 03:53:39,051 basehttp 9260 4684 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 03:53:40,724 basehttp 9260 4684 "POST /api/admin/login/ HTTP/1.1" 200 254
+INFO 2025-07-09 03:53:40,851 basehttp 9260 4684 "GET /api/check-user-type/ HTTP/1.1" 200 176
+WARNING 2025-07-09 03:53:41,627 log 9260 21920 Unauthorized: /api/admin/dashboard/
+WARNING 2025-07-09 03:53:41,633 log 9260 13176 Unauthorized: /api/admin/orders/
+WARNING 2025-07-09 03:53:41,636 basehttp 9260 21920 "GET /api/admin/dashboard/ HTTP/1.1" 401 58
+WARNING 2025-07-09 03:53:41,646 basehttp 9260 13176 "GET /api/admin/orders/?limit=5 HTTP/1.1" 401 58
+WARNING 2025-07-09 03:53:42,191 log 9260 21920 Unauthorized: /api/admin/dashboard/
+WARNING 2025-07-09 03:53:42,195 basehttp 9260 21920 "GET /api/admin/dashboard/ HTTP/1.1" 401 58
+WARNING 2025-07-09 03:53:42,198 log 9260 13176 Unauthorized: /api/admin/orders/
+WARNING 2025-07-09 03:53:42,200 basehttp 9260 13176 "GET /api/admin/orders/?limit=5 HTTP/1.1" 401 58
+INFO 2025-07-09 03:53:50,647 basehttp 9260 4684 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 03:53:51,210 basehttp 9260 6716 "GET /api/admin/orders/ HTTP/1.1" 200 41319
+INFO 2025-07-09 03:53:52,311 basehttp 9260 4684 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:53:52,367 basehttp 9260 6716 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+INFO 2025-07-09 03:53:52,871 basehttp 9260 20724 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:53:52,924 basehttp 9260 19812 "GET /api/admin/dishes/ HTTP/1.1" 200 12373
+WARNING 2025-07-09 03:54:05,288 log 9260 19812 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-09 03:54:05,291 basehttp 9260 19812 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-09 03:55:16,111 basehttp 9260 1112 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+INFO 2025-07-09 03:55:16,671 basehttp 9260 11544 "GET /api/admin/categories/ HTTP/1.1" 200 1761
+WARNING 2025-07-09 03:55:21,900 log 9260 11544 Bad Request: /api/admin/categories/10/
+WARNING 2025-07-09 03:55:21,901 basehttp 9260 11544 "PUT /api/admin/categories/10/ HTTP/1.1" 400 36
+INFO 2025-07-09 03:55:40,919 basehttp 9260 11544 "DELETE /api/admin/categories/10/ HTTP/1.1" 204 0
+INFO 2025-07-09 03:55:41,529 basehttp 9260 11544 "GET /api/admin/categories/ HTTP/1.1" 200 1584
+INFO 2025-07-09 03:55:52,552 basehttp 9260 8860 "OPTIONS /api/admin/categories/9/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:55:52,576 models 9260 11544 Category saved: Salad
+INFO 2025-07-09 03:55:52,659 basehttp 9260 11544 "PUT /api/admin/categories/9/ HTTP/1.1" 200 191
+INFO 2025-07-09 03:55:53,247 basehttp 9260 11544 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:55:56,924 basehttp 9260 1112 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:55:56,957 basehttp 9260 11544 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+INFO 2025-07-09 03:55:57,470 basehttp 9260 16624 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:55:57,506 basehttp 9260 7836 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+INFO 2025-07-09 03:56:00,662 basehttp 9260 8860 "OPTIONS /api/admin/dishes/40/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:00,686 models 9260 7836 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 03:56:00,718 basehttp 9260 7836 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 801
+INFO 2025-07-09 03:56:04,065 models 9260 7836 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 03:56:04,098 basehttp 9260 7836 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 800
+WARNING 2025-07-09 03:56:12,731 log 9260 8860 Unauthorized: /api/admin/dashboard/
+WARNING 2025-07-09 03:56:12,733 log 9260 3872 Unauthorized: /api/admin/orders/
+WARNING 2025-07-09 03:56:12,733 basehttp 9260 8860 "GET /api/admin/dashboard/ HTTP/1.1" 401 58
+WARNING 2025-07-09 03:56:12,734 basehttp 9260 3872 "GET /api/admin/orders/?limit=5 HTTP/1.1" 401 58
+WARNING 2025-07-09 03:56:13,298 log 9260 8860 Unauthorized: /api/admin/dashboard/
+WARNING 2025-07-09 03:56:13,299 basehttp 9260 8860 "GET /api/admin/dashboard/ HTTP/1.1" 401 58
+WARNING 2025-07-09 03:56:13,306 log 9260 3872 Unauthorized: /api/admin/orders/
+WARNING 2025-07-09 03:56:13,308 basehttp 9260 3872 "GET /api/admin/orders/?limit=5 HTTP/1.1" 401 58
+INFO 2025-07-09 03:56:17,029 basehttp 9260 16624 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:17,046 basehttp 9260 7836 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 03:56:17,591 basehttp 9260 11544 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:17,605 basehttp 9260 1112 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 03:56:20,998 basehttp 9260 3872 "OPTIONS /api/dishes/44/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:21,001 basehttp 9260 8860 "OPTIONS /api/dishes/44/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:21,017 basehttp 9260 3872 "OPTIONS /api/dishes/44/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:21,020 basehttp 9260 17960 "OPTIONS /api/dishes/44/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:21,061 basehttp 9260 1112 "GET /api/dishes/44/ HTTP/1.1" 200 758
+INFO 2025-07-09 03:56:21,074 basehttp 9260 11544 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 1151
+INFO 2025-07-09 03:56:21,619 basehttp 9260 7836 "GET /api/dishes/44/ HTTP/1.1" 200 758
+INFO 2025-07-09 03:56:21,624 basehttp 9260 1112 "GET /api/dishes/44/ratings/ HTTP/1.1" 200 1151
+INFO 2025-07-09 03:56:25,660 basehttp 9260 7836 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:25,678 basehttp 9260 1112 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 03:56:26,203 basehttp 9260 11544 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:26,221 basehttp 9260 16624 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 03:56:27,799 basehttp 9260 17960 "OPTIONS /api/dishes/49/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:27,800 basehttp 9260 3872 "OPTIONS /api/dishes/49/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:27,801 basehttp 9260 8860 "OPTIONS /api/dishes/49/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:27,801 basehttp 9260 22776 "OPTIONS /api/dishes/49/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 03:56:27,867 basehttp 9260 16624 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-09 03:56:27,925 basehttp 9260 11544 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-09 03:56:28,449 basehttp 9260 1112 "GET /api/dishes/49/ HTTP/1.1" 200 782
+INFO 2025-07-09 03:56:28,477 basehttp 9260 16624 "GET /api/dishes/49/ratings/ HTTP/1.1" 200 4635
+INFO 2025-07-09 03:56:32,397 basehttp 9260 1112 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:32,418 basehttp 9260 16624 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 03:56:32,973 basehttp 9260 11544 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 03:56:32,982 basehttp 9260 7836 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+WARNING 2025-07-09 03:56:35,853 log 9260 7836 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:56:35,855 basehttp 9260 7836 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:56:35,858 basehttp 9260 11544 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 03:56:36,448 log 9260 16624 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:56:36,459 basehttp 9260 16624 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:56:36,476 basehttp 9260 7836 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:58:05,608 basehttp 9260 7836 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 03:58:21,186 basehttp 9260 7836 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 03:58:22,736 basehttp 9260 7836 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-09 03:58:22,863 basehttp 9260 7836 "GET /api/check-user-type/ HTTP/1.1" 200 188
+WARNING 2025-07-09 03:58:23,757 log 9260 7836 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:58:23,766 basehttp 9260 7836 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:58:23,771 basehttp 9260 16624 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+WARNING 2025-07-09 03:58:24,311 log 9260 11544 Not Found: /api/dishes/most_ordered/
+WARNING 2025-07-09 03:58:24,313 basehttp 9260 11544 "GET /api/dishes/most_ordered/ HTTP/1.1" 404 23
+INFO 2025-07-09 03:58:24,326 basehttp 9260 7836 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 03:58:25,277 basehttp 9260 7836 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-09 03:58:25,830 basehttp 9260 11544 "GET /api/profile/ HTTP/1.1" 200 247
+INFO 2025-07-09 04:00:23,125 autoreload 9260 21256 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:00:23,218 autoreload 21732 18876 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:00:29,532 autoreload 11000 18820 Watching for file changes with StatReloader
+INFO 2025-07-09 04:00:29,546 autoreload 10756 20436 Watching for file changes with StatReloader
+INFO 2025-07-09 04:00:32,317 views 11000 18820 Stripe initialized successfully
+INFO 2025-07-09 04:00:32,318 views 10756 20436 Stripe initialized successfully
+WARNING 2025-07-09 04:00:41,923 log 11000 22360 Bad Request: /api/register/
+WARNING 2025-07-09 04:00:41,926 basehttp 11000 22360 "POST /api/register/ HTTP/1.1" 400 35
+INFO 2025-07-09 04:00:51,123 basehttp 11000 19160 "POST /api/register/ HTTP/1.1" 201 39
+INFO 2025-07-09 04:01:12,766 autoreload 10756 20436 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:01:12,943 autoreload 11000 18820 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:01:19,404 autoreload 20036 18088 Watching for file changes with StatReloader
+INFO 2025-07-09 04:01:19,512 autoreload 14800 1428 Watching for file changes with StatReloader
+INFO 2025-07-09 04:01:20,930 views 20036 18088 Stripe initialized successfully
+INFO 2025-07-09 04:01:20,983 views 14800 1428 Stripe initialized successfully
+INFO 2025-07-09 04:01:42,222 autoreload 20036 18088 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\models.py changed, reloading.
+INFO 2025-07-09 04:01:42,455 autoreload 14800 1428 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\models.py changed, reloading.
+INFO 2025-07-09 04:01:45,804 autoreload 18108 19696 Watching for file changes with StatReloader
+INFO 2025-07-09 04:01:45,832 autoreload 11480 2976 Watching for file changes with StatReloader
+INFO 2025-07-09 04:01:47,165 views 11480 2976 Stripe initialized successfully
+INFO 2025-07-09 04:01:47,168 views 18108 19696 Stripe initialized successfully
+INFO 2025-07-09 04:01:56,548 views 13584 19008 Stripe initialized successfully
+INFO 2025-07-09 04:02:12,087 views 21912 23500 Stripe initialized successfully
+INFO 2025-07-09 04:02:25,918 views 9856 16772 Stripe initialized successfully
+INFO 2025-07-09 04:02:32,599 views 16228 3172 Stripe initialized successfully
+INFO 2025-07-09 04:03:09,665 autoreload 11480 2976 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:03:09,797 autoreload 18108 19696 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:03:15,610 autoreload 14296 2028 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:15,629 autoreload 2808 11196 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:16,997 views 2808 11196 Stripe initialized successfully
+INFO 2025-07-09 04:03:16,998 views 14296 2028 Stripe initialized successfully
+INFO 2025-07-09 04:03:26,428 autoreload 2808 11196 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\urls.py changed, reloading.
+INFO 2025-07-09 04:03:26,477 autoreload 14296 2028 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\urls.py changed, reloading.
+INFO 2025-07-09 04:03:28,553 autoreload 17472 14544 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:28,600 autoreload 12072 1068 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:29,909 views 17472 14544 Stripe initialized successfully
+INFO 2025-07-09 04:03:29,962 views 12072 1068 Stripe initialized successfully
+INFO 2025-07-09 04:03:46,123 autoreload 17472 14544 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:03:46,375 autoreload 12072 1068 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:03:52,299 autoreload 20436 22408 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:52,392 autoreload 15684 18820 Watching for file changes with StatReloader
+INFO 2025-07-09 04:03:56,650 views 20436 22408 Stripe initialized successfully
+INFO 2025-07-09 04:03:56,722 views 15684 18820 Stripe initialized successfully
+INFO 2025-07-09 04:04:00,794 autoreload 20436 22408 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:00,845 autoreload 15684 18820 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:06,329 autoreload 21736 18260 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:06,338 autoreload 16320 23328 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:10,066 views 16320 23328 Stripe initialized successfully
+INFO 2025-07-09 04:04:10,077 views 21736 18260 Stripe initialized successfully
+INFO 2025-07-09 04:04:21,869 autoreload 16320 23328 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:21,942 autoreload 21736 18260 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:29,569 autoreload 11168 8952 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:29,592 autoreload 9084 11852 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:31,289 views 9084 11852 Stripe initialized successfully
+INFO 2025-07-09 04:04:31,306 views 11168 8952 Stripe initialized successfully
+INFO 2025-07-09 04:04:50,775 autoreload 9084 11852 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:51,907 autoreload 11168 8952 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:04:54,632 autoreload 9100 1700 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:55,038 autoreload 9928 3700 Watching for file changes with StatReloader
+INFO 2025-07-09 04:04:56,898 views 9100 1700 Stripe initialized successfully
+INFO 2025-07-09 04:04:57,540 views 9928 3700 Stripe initialized successfully
+INFO 2025-07-09 04:05:07,551 basehttp 9100 17800 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7899
+INFO 2025-07-09 04:05:15,275 basehttp 9100 20524 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 04:05:21,907 basehttp 9100 18372 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+ERROR 2025-07-09 04:05:30,273 views 9100 18108 Error sending verification code: get() returned more than one Customer -- it returned 4!
+ERROR 2025-07-09 04:05:30,277 log 9100 18108 Internal Server Error: /api/send-verification/
+ERROR 2025-07-09 04:05:30,281 basehttp 9100 18108 "POST /api/send-verification/ HTTP/1.1" 500 44
+INFO 2025-07-09 04:16:26,848 basehttp 9100 16828 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-09 04:16:26,848 basehttp 9100 15248 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-09 04:16:26,857 basehttp 9100 6760 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 04:16:27,438 basehttp 9100 6760 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 04:16:27,596 basehttp 9100 23308 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 04:16:28,119 basehttp 9100 6760 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 04:16:28,179 basehttp 9100 23308 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 04:16:28,764 basehttp 9100 6760 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 04:16:29,325 basehttp 9100 23308 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 04:16:39,729 views 9100 23308 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 04:16:39,998 basehttp 9100 23308 "GET /api/orders/ HTTP/1.1" 200 9951
+INFO 2025-07-09 04:16:40,304 views 9100 6760 Found 5 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 04:16:40,404 basehttp 9100 6760 "GET /api/orders/ HTTP/1.1" 200 9951
+INFO 2025-07-09 04:16:50,706 basehttp 9100 6760 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 04:16:51,286 basehttp 9100 23308 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 04:16:53,126 basehttp 9100 6760 "GET /api/categories/ HTTP/1.1" 200 1569
+ERROR 2025-07-09 04:16:53,407 log 9100 23308 Internal Server Error: /api/dishes/
+Traceback (most recent call last):
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\mixins.py", line 43, in list
+    return self.get_paginated_response(serializer.data)
+                                       ^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 797, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 251, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 716, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py", line 84, in to_representation
+    representation = super().to_representation(instance)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\fields.py", line 1870, in to_representation
+    return method(value)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py", line 38, in get_dishes_count
+    count = cache.get(cache_key)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 36, in get
+    if not self._is_expired(f):
+           ~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 154, in _is_expired
+    exp = pickle.load(f)
+PermissionError: [Errno 13] Permission denied
+ERROR 2025-07-09 04:16:53,420 basehttp 9100 23308 "GET /api/dishes/?page_size=100 HTTP/1.1" 500 178916
+INFO 2025-07-09 04:16:53,748 basehttp 9100 14160 "GET /api/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:16:53,796 basehttp 9100 12256 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11701
+INFO 2025-07-09 04:16:55,182 basehttp 9100 23308 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 04:16:56,022 basehttp 9100 12256 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 04:16:56,250 basehttp 9100 23308 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7899
+INFO 2025-07-09 04:16:56,611 basehttp 9100 14160 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 04:16:56,722 basehttp 9100 12256 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7899
+WARNING 2025-07-09 04:17:22,584 log 9100 15248 Bad Request: /api/register/
+WARNING 2025-07-09 04:17:22,585 basehttp 9100 15248 "POST /api/register/ HTTP/1.1" 400 72
+INFO 2025-07-09 04:17:41,369 basehttp 9100 12256 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 04:17:42,950 basehttp 9100 12256 "POST /api/admin/login/ HTTP/1.1" 200 254
+INFO 2025-07-09 04:17:43,153 basehttp 9100 12256 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 04:17:43,856 basehttp 9100 15248 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 04:17:44,212 basehttp 9100 16828 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41222
+INFO 2025-07-09 04:17:44,379 basehttp 9100 12264 "GET /api/admin/dashboard/ HTTP/1.1" 200 926
+INFO 2025-07-09 04:17:44,632 basehttp 9100 11336 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 41222
+INFO 2025-07-09 04:17:51,406 basehttp 9100 12256 "GET /api/admin/orders/ HTTP/1.1" 200 41214
+INFO 2025-07-09 04:17:51,917 basehttp 9100 14160 "GET /api/admin/orders/ HTTP/1.1" 200 41214
+INFO 2025-07-09 04:18:04,878 basehttp 9100 12256 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:04,931 basehttp 9100 14160 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+INFO 2025-07-09 04:18:05,448 basehttp 9100 23308 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:05,484 basehttp 9100 6760 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+INFO 2025-07-09 04:18:08,629 models 9100 6760 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 04:18:08,666 basehttp 9100 6760 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 801
+INFO 2025-07-09 04:18:11,855 models 9100 6760 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 04:18:11,892 basehttp 9100 6760 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 800
+INFO 2025-07-09 04:18:16,743 basehttp 9100 6760 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:17,306 basehttp 9100 23308 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:21,093 basehttp 9100 11336 "OPTIONS /api/admin/categories/5/ HTTP/1.1" 200 0
+WARNING 2025-07-09 04:18:21,113 log 9100 23308 Bad Request: /api/admin/categories/5/
+WARNING 2025-07-09 04:18:21,116 basehttp 9100 23308 "PUT /api/admin/categories/5/ HTTP/1.1" 400 36
+INFO 2025-07-09 04:18:26,096 basehttp 9100 6760 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:26,141 basehttp 9100 23308 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+INFO 2025-07-09 04:18:26,633 basehttp 9100 14160 "GET /api/admin/categories/ HTTP/1.1" 200 1569
+INFO 2025-07-09 04:18:26,689 basehttp 9100 12256 "GET /api/admin/dishes/ HTTP/1.1" 200 12343
+WARNING 2025-07-09 04:18:37,963 log 9100 12256 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-09 04:18:37,966 basehttp 9100 12256 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+WARNING 2025-07-09 04:22:42,798 log 9100 11380 Unauthorized: /api/admin/dishes/52/
+WARNING 2025-07-09 04:22:42,800 basehttp 9100 11380 "PATCH /api/admin/dishes/52/ HTTP/1.1" 401 58
+WARNING 2025-07-09 04:22:51,624 log 9100 17132 Unauthorized: /api/admin/dishes/52/
+WARNING 2025-07-09 04:22:51,625 basehttp 9100 17132 "GET /api/admin/dishes/52/ HTTP/1.1" 401 58
+INFO 2025-07-09 04:23:26,767 autoreload 9100 1700 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:23:26,928 autoreload 9928 3700 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:23:34,685 autoreload 12468 10168 Watching for file changes with StatReloader
+INFO 2025-07-09 04:23:34,691 autoreload 21828 10420 Watching for file changes with StatReloader
+INFO 2025-07-09 04:23:36,050 views 12468 10168 Stripe initialized successfully
+INFO 2025-07-09 04:23:36,051 views 21828 10420 Stripe initialized successfully
+WARNING 2025-07-09 04:23:45,646 log 12468 18808 Unauthorized: /api/admin/dishes/52/
+WARNING 2025-07-09 04:23:45,646 basehttp 12468 18808 "PATCH /api/admin/dishes/52/ HTTP/1.1" 401 58
+INFO 2025-07-09 04:23:57,253 autoreload 21828 10420 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:23:57,689 autoreload 12468 10168 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:24:00,470 autoreload 22508 5536 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:00,749 autoreload 8720 15528 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:01,721 views 22508 5536 Stripe initialized successfully
+INFO 2025-07-09 04:24:01,897 views 8720 15528 Stripe initialized successfully
+INFO 2025-07-09 04:24:07,000 autoreload 22508 5536 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:24:07,148 autoreload 8720 15528 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:24:09,977 autoreload 22348 14184 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:09,995 autoreload 20828 2404 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:11,266 views 22348 14184 Stripe initialized successfully
+INFO 2025-07-09 04:24:11,273 views 20828 2404 Stripe initialized successfully
+INFO 2025-07-09 04:24:15,471 models 22348 22388 Dish saved: test2 - Stock: 50
+INFO 2025-07-09 04:24:15,548 basehttp 22348 22388 "PATCH /api/admin/dishes/52/ HTTP/1.1" 200 643
+INFO 2025-07-09 04:24:22,325 models 22348 18280 Category saved: Updated Category
+INFO 2025-07-09 04:24:22,359 basehttp 22348 18280 "PATCH /api/admin/categories/5/ HTTP/1.1" 200 205
+INFO 2025-07-09 04:24:47,206 autoreload 22348 14184 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:24:48,106 autoreload 20828 2404 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 04:24:50,447 autoreload 20308 18192 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:50,696 autoreload 10584 17608 Watching for file changes with StatReloader
+INFO 2025-07-09 04:24:51,758 views 20308 18192 Stripe initialized successfully
+INFO 2025-07-09 04:24:51,955 views 10584 17608 Stripe initialized successfully
+WARNING 2025-07-09 04:25:01,957 log 20308 7056 Bad Request: /api/admin/dishes/52/
+WARNING 2025-07-09 04:25:01,959 basehttp 20308 7056 "PATCH /api/admin/dishes/52/ HTTP/1.1" 400 85
+INFO 2025-07-09 05:46:50,514 basehttp 10584 3372 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 05:46:51,064 basehttp 10584 3372 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 05:46:51,065 basehttp 10584 23172 "OPTIONS /api/check-user-type/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:46:51,181 basehttp 10584 21792 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 05:46:51,724 basehttp 10584 23172 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:46:51,737 basehttp 10584 5880 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:46:51,743 basehttp 10584 9304 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:46:51,786 basehttp 10584 23172 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:46:51,903 basehttp 10584 3372 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 05:46:51,954 basehttp 10584 12448 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:46:52,086 basehttp 10584 21792 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 05:46:52,357 basehttp 10584 3368 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:46:52,562 basehttp 10584 3372 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 05:47:02,466 basehttp 10584 3372 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:03,031 basehttp 10584 3368 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:14,891 basehttp 10584 3372 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:14,923 basehttp 10584 3368 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 05:47:15,436 basehttp 10584 21792 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:15,471 basehttp 10584 12448 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 05:47:18,086 basehttp 10584 23172 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:18,086 basehttp 10584 9304 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:18,318 basehttp 10584 12448 "GET /api/admin/orders/ HTTP/1.1" 200 41154
+INFO 2025-07-09 05:47:18,785 basehttp 10584 21792 "GET /api/admin/orders/ HTTP/1.1" 200 41154
+INFO 2025-07-09 05:47:21,684 basehttp 10584 9304 "OPTIONS /api/logout/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:21,689 basehttp 10584 21792 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 05:47:30,399 basehttp 10584 21792 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 05:47:30,977 basehttp 10584 9304 "OPTIONS /api/login/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:32,010 basehttp 10584 21792 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-09 05:47:32,147 basehttp 10584 21792 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 05:47:33,045 basehttp 10584 23172 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:33,047 basehttp 10584 9304 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:33,066 basehttp 10584 9304 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:33,097 basehttp 10584 21792 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 05:47:33,160 basehttp 10584 12448 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 05:47:33,712 basehttp 10584 3368 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 05:47:33,840 basehttp 10584 21792 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 05:47:37,126 basehttp 10584 23172 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:37,126 basehttp 10584 2900 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:37,126 basehttp 10584 9304 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:37,127 basehttp 10584 5880 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 05:47:37,206 basehttp 10584 21792 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:37,239 basehttp 10584 3368 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:47:37,715 basehttp 10584 12448 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:47:37,738 basehttp 10584 3372 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:48:07,571 basehttp 10584 3372 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 05:48:08,147 basehttp 10584 12448 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 05:48:08,231 basehttp 10584 3372 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 05:48:08,834 basehttp 10584 12448 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 05:48:09,648 basehttp 10584 3372 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:48:09,685 basehttp 10584 12448 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:48:10,195 basehttp 10584 21792 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:48:10,201 basehttp 10584 3368 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:48:58,587 basehttp 10584 9304 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:48:58,587 basehttp 10584 5880 "OPTIONS /api/profile/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:48:58,602 basehttp 10584 3368 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 05:48:59,209 basehttp 10584 21792 "GET /api/profile/ HTTP/1.1" 200 1165
+INFO 2025-07-09 05:49:01,894 basehttp 10584 3368 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:49:01,914 basehttp 10584 21792 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:49:02,453 basehttp 10584 12448 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 05:49:02,473 basehttp 10584 3372 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 05:49:04,928 basehttp 10584 5880 "OPTIONS /api/dishes/43/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:49:04,928 basehttp 10584 2900 "OPTIONS /api/dishes/43/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:49:04,929 basehttp 10584 9304 "OPTIONS /api/dishes/43/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:49:04,934 basehttp 10584 5880 "OPTIONS /api/dishes/43/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 05:49:04,983 basehttp 10584 12448 "GET /api/dishes/43/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 05:49:04,984 basehttp 10584 3372 "GET /api/dishes/43/ HTTP/1.1" 200 796
+INFO 2025-07-09 05:49:05,508 basehttp 10584 21792 "GET /api/dishes/43/ HTTP/1.1" 200 796
+INFO 2025-07-09 05:49:05,510 basehttp 10584 3372 "GET /api/dishes/43/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 05:49:33,527 autoreload 10584 17608 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 05:49:37,575 autoreload 16620 20908 Watching for file changes with StatReloader
+INFO 2025-07-09 10:05:17,949 autoreload 21280 22872 Watching for file changes with StatReloader
+INFO 2025-07-09 10:05:21,178 autoreload 21280 22872 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:05:29,983 autoreload 6876 1916 Watching for file changes with StatReloader
+INFO 2025-07-09 10:05:50,960 autoreload 6876 1916 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:05:56,174 autoreload 8364 14200 Watching for file changes with StatReloader
+INFO 2025-07-09 10:06:22,842 autoreload 8364 14200 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:06:28,886 autoreload 7652 16420 Watching for file changes with StatReloader
+INFO 2025-07-09 10:07:02,372 autoreload 7652 16420 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:07:08,900 autoreload 8592 2484 Watching for file changes with StatReloader
+INFO 2025-07-09 10:09:02,619 autoreload 8592 2484 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:09:16,579 autoreload 22208 21988 Watching for file changes with StatReloader
+INFO 2025-07-09 10:09:20,214 views 22208 21988 Stripe initialized successfully
+INFO 2025-07-09 10:09:35,427 autoreload 22208 21988 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:09:55,612 autoreload 5028 1880 Watching for file changes with StatReloader
+INFO 2025-07-09 10:10:01,925 views 5028 1880 Stripe initialized successfully
+INFO 2025-07-09 10:10:52,663 autoreload 5028 1880 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:10:56,395 autoreload 23020 18556 Watching for file changes with StatReloader
+INFO 2025-07-09 10:10:57,646 views 23020 18556 Stripe initialized successfully
+INFO 2025-07-09 10:11:31,236 basehttp 23020 19676 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:11:31,240 basehttp 23020 19676 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:11:31,259 basehttp 23020 1592 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 10:11:31,284 basehttp 23020 1592 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 10:11:31,639 basehttp 23020 1592 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-09 10:11:31,965 basehttp 23020 1592 "GET /api/check-user-type/ HTTP/1.1" 200 142
+INFO 2025-07-09 10:11:32,428 basehttp 23020 21316 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 10:11:33,113 basehttp 23020 21316 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 10:11:49,440 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:11:49,542 basehttp 23020 21316 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:11:49,565 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:11:49,703 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:12:33,200 basehttp 23020 19676 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:12:33,206 basehttp 23020 14712 "OPTIONS /api/login/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:34,273 basehttp 23020 19676 "POST /api/login/ HTTP/1.1" 200 264
+INFO 2025-07-09 10:12:34,281 basehttp 23020 14712 "OPTIONS /api/check-user-type/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:34,435 basehttp 23020 19676 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 10:12:34,936 basehttp 23020 14712 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:34,958 basehttp 23020 14712 "OPTIONS /api/dishes/most_ordered/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:34,959 basehttp 23020 14108 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:34,961 basehttp 23020 13644 "OPTIONS /api/homepage-stats/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:35,030 basehttp 23020 1592 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 10:12:35,108 basehttp 23020 1592 "GET /api/homepage-stats/ HTTP/1.1" 200 83
+INFO 2025-07-09 10:12:35,205 basehttp 23020 19676 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 10:12:35,385 basehttp 23020 19676 "GET /api/dishes/most_ordered/ HTTP/1.1" 200 7875
+INFO 2025-07-09 10:12:37,872 basehttp 23020 14108 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:37,873 basehttp 23020 13644 "OPTIONS /api/dishes/?page_size=100 HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:37,874 basehttp 23020 14712 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:37,876 basehttp 23020 14264 "OPTIONS /api/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:12:38,024 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:12:38,079 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:12:38,085 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:12:38,179 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:12:50,392 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:12:50,423 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:12:50,424 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:12:50,479 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:13:03,821 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:13:03,845 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:13:03,846 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:13:03,883 basehttp 23020 1592 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:13:08,695 basehttp 23020 14264 "OPTIONS /api/dishes/45/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:13:08,696 basehttp 23020 13644 "OPTIONS /api/dishes/45/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:13:08,697 basehttp 23020 14108 "OPTIONS /api/dishes/45/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:13:08,697 basehttp 23020 14712 "OPTIONS /api/dishes/45/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:13:08,744 basehttp 23020 1592 "GET /api/dishes/45/ HTTP/1.1" 200 750
+INFO 2025-07-09 10:13:08,765 basehttp 23020 19676 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 1138
+INFO 2025-07-09 10:13:08,774 basehttp 23020 1592 "GET /api/dishes/45/ HTTP/1.1" 200 750
+INFO 2025-07-09 10:13:08,812 basehttp 23020 19676 "GET /api/dishes/45/ratings/ HTTP/1.1" 200 1138
+INFO 2025-07-09 10:16:38,644 basehttp 23020 14108 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:38,644 basehttp 23020 14712 "OPTIONS /api/csrf-token/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:38,658 basehttp 23020 19676 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:16:38,678 basehttp 23020 19676 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:16:38,897 basehttp 23020 19676 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 10:16:39,166 basehttp 23020 19676 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 10:16:40,192 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+ERROR 2025-07-09 10:16:40,250 log 23020 19676 Internal Server Error: /api/dishes/
+Traceback (most recent call last):
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\mixins.py", line 43, in list
+    return self.get_paginated_response(serializer.data)
+                                       ^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 797, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 251, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 716, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py", line 84, in to_representation
+    representation = super().to_representation(instance)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\rest_framework\fields.py", line 1870, in to_representation
+    return method(value)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\serializers.py", line 38, in get_dishes_count
+    count = cache.get(cache_key)
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 36, in get
+    if not self._is_expired(f):
+           ~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 159, in _is_expired
+    self._delete(f.name)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\CompuTouch\Desktop\django\Restaurant\.venv\Lib\site-packages\django\core\cache\backends\filebased.py", line 86, in _delete
+    os.remove(fname)
+    ~~~~~~~~~^^^^^^^
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\CompuTouch\\Desktop\\django\\Restaurant\\restaurant-backend\\cache\\c42bd7222c3f1fd5e9aa7a7d8a0375b6.djcache'
+ERROR 2025-07-09 10:16:40,258 basehttp 23020 19676 "GET /api/dishes/?page_size=100 HTTP/1.1" 500 191859
+INFO 2025-07-09 10:16:40,389 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:16:40,444 basehttp 23020 21316 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:16:46,856 basehttp 23020 14712 "OPTIONS /api/dishes/41/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:46,856 basehttp 23020 14264 "OPTIONS /api/dishes/41/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:46,857 basehttp 23020 13644 "OPTIONS /api/dishes/41/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:46,857 basehttp 23020 14108 "OPTIONS /api/dishes/41/ratings/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:16:46,888 basehttp 23020 1592 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:16:46,912 basehttp 23020 21316 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:16:46,918 basehttp 23020 1592 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:16:46,955 basehttp 23020 21316 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:19:00,748 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:19:00,818 basehttp 23020 1592 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:19:00,818 basehttp 23020 21316 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:19:01,020 basehttp 23020 1592 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:19:11,529 basehttp 23020 1592 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:19:11,529 basehttp 23020 21316 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:19:11,576 basehttp 23020 21316 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:19:11,578 basehttp 23020 1592 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:19:29,603 basehttp 23020 21316 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:19:29,717 basehttp 23020 21316 "GET /api/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:19:29,724 basehttp 23020 1592 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:19:29,830 basehttp 23020 1592 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11665
+INFO 2025-07-09 10:19:32,819 basehttp 23020 21316 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:19:32,819 basehttp 23020 1592 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:19:32,853 basehttp 23020 1592 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:19:32,853 basehttp 23020 21316 "GET /api/dishes/41/ HTTP/1.1" 200 796
+INFO 2025-07-09 10:31:13,407 basehttp 23020 22828 "OPTIONS /api/stripe/create-checkout-session/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:13,414 views 23020 23188 Checkout session request received from user: amrelsaid6288@gmail.com
+INFO 2025-07-09 10:31:13,414 views 23020 23188 Request headers: {'Content-Length': '165', 'Content-Type': 'application/json', 'Host': '127.0.0.1:8000', 'Connection': 'keep-alive', 'Sec-Ch-Ua-Platform': '"Windows"', 'X-Session-Key': '9ffk9wci74lxiro7dh14zgy3b4rr8nvx', 'X-Csrftoken': '7V6q509Z1E2b8ILiK3ienzbiBLbjZVdlroDnhqMco9hRlB2VZfeLNBDnVmYniEDP', 'Sec-Ch-Ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Origin': 'http://localhost:5173', 'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Storage-Access': 'active', 'Referer': 'http://localhost:5173/', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'en-EG,en;q=0.9,ar-EG;q=0.8,ar;q=0.7,en-GB;q=0.6,en-US;q=0.5'}
+INFO 2025-07-09 10:31:13,415 views 23020 23188 Checkout data: items=1, address=, , 
+INFO 2025-07-09 10:31:13,415 views 23020 23188 Initial user: amrelsaid6288@gmail.com, authenticated: True
+INFO 2025-07-09 10:31:13,415 views 23020 23188 Using authenticated user: amrelsaid6288@gmail.com (ID: 14)
+INFO 2025-07-09 10:31:13,416 views 23020 23188 Customer: Amr Elsayed (ID: 12, created: False)
+INFO 2025-07-09 10:31:14,040 _util 23020 23188 message='Request to Stripe api' method=post url=https://api.stripe.com/v1/checkout/sessions
+INFO 2025-07-09 10:31:15,141 _util 23020 23188 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions response_code=200
+INFO 2025-07-09 10:31:15,150 views 23020 23188 Created Stripe session for customer 12 (user: amrelsaid6288@gmail.com)
+INFO 2025-07-09 10:31:15,152 basehttp 23020 23188 "POST /api/stripe/create-checkout-session/ HTTP/1.1" 200 481
+INFO 2025-07-09 10:31:27,706 basehttp 23020 22828 "OPTIONS /api/stripe/success/?session_id=cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:27,716 basehttp 23020 22828 "OPTIONS /api/stripe/success/?session_id=cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:27,737 basehttp 23020 23188 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:31:27,738 _util 23020 6920 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv
+INFO 2025-07-09 10:31:27,747 basehttp 23020 23188 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:31:28,035 basehttp 23020 23188 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 10:31:28,228 basehttp 23020 23188 "GET /api/check-user-type/ HTTP/1.1" 200 188
+INFO 2025-07-09 10:31:28,791 _util 23020 6920 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv response_code=200
+INFO 2025-07-09 10:31:28,798 models 23020 6920 Order saved: #None - Customer: Amr Elsayed - Total: $93.99
+INFO 2025-07-09 10:31:28,826 views 23020 6920 Order #44 created successfully for customer amrelsaid6288@gmail.com.
+INFO 2025-07-09 10:31:28,843 utils 23020 6920 Notification created for user amr: New Order Alert
+INFO 2025-07-09 10:31:28,852 utils 23020 6920 Notification created for user admin: New Order Alert
+INFO 2025-07-09 10:31:28,855 basehttp 23020 6920 "GET /api/stripe/success/?session_id=cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv HTTP/1.1" 200 90
+INFO 2025-07-09 10:31:28,862 _util 23020 6920 message='Request to Stripe api' method=get url=https://api.stripe.com/v1/checkout/sessions/cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv
+INFO 2025-07-09 10:31:29,103 _util 23020 6920 message='Stripe API response' path=https://api.stripe.com/v1/checkout/sessions/cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv response_code=200
+INFO 2025-07-09 10:31:29,108 views 23020 6920 Order #44 already exists for this payment.
+INFO 2025-07-09 10:31:29,110 basehttp 23020 6920 "GET /api/stripe/success/?session_id=cs_test_b1HH2uvopMZXbYsDLmO3CrsApsdzdnwosmVBGQ7MctWfjevC45bPQYI4rv HTTP/1.1" 200 85
+INFO 2025-07-09 10:31:33,360 basehttp 23020 22828 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:33,360 basehttp 23020 19292 "OPTIONS /api/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:33,380 views 23020 6920 Found 6 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 10:31:33,522 basehttp 23020 6920 "GET /api/orders/ HTTP/1.1" 200 11396
+INFO 2025-07-09 10:31:33,531 views 23020 6920 Found 6 orders for user amrelsaid6288@gmail.com
+INFO 2025-07-09 10:31:33,620 basehttp 23020 6920 "GET /api/orders/ HTTP/1.1" 200 11396
+INFO 2025-07-09 10:31:37,281 basehttp 23020 19292 "OPTIONS /api/logout/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:37,289 basehttp 23020 6920 "POST /api/logout/ HTTP/1.1" 200 31
+INFO 2025-07-09 10:31:44,418 basehttp 23020 6920 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:31:44,424 basehttp 23020 19292 "OPTIONS /api/admin/login/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:31:45,380 basehttp 23020 6920 "POST /api/admin/login/ HTTP/1.1" 200 254
+INFO 2025-07-09 10:31:45,619 basehttp 23020 6920 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:31:45,983 basehttp 23020 19292 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:31:46,081 basehttp 23020 19292 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:31:46,530 basehttp 23020 22828 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:31:46,924 basehttp 23020 19292 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:32:31,881 basehttp 23020 22828 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:31,882 basehttp 23020 19292 "OPTIONS /api/admin/orders/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:32,267 basehttp 23020 6920 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:32:32,437 basehttp 23020 23188 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:32:38,385 basehttp 23020 22828 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:38,385 basehttp 23020 19292 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:38,396 basehttp 23020 7624 "OPTIONS /api/admin/dishes/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:38,396 basehttp 23020 22828 "OPTIONS /api/admin/categories/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:32:38,477 basehttp 23020 23188 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:32:38,539 basehttp 23020 23188 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:32:38,546 basehttp 23020 6920 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:32:38,660 basehttp 23020 6920 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:33:00,682 basehttp 23020 22828 "OPTIONS /api/admin/dishes/40/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:33:00,799 models 23020 6920 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 10:33:00,862 basehttp 23020 6920 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 800
+INFO 2025-07-09 10:33:00,978 basehttp 23020 23188 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:33:01,071 basehttp 23020 6920 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:33:06,188 models 23020 6920 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 10:33:06,263 basehttp 23020 6920 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 801
+INFO 2025-07-09 10:33:10,738 models 23020 6920 Dish saved: Bacon Burger - Stock: 50
+INFO 2025-07-09 10:33:10,797 basehttp 23020 6920 "PATCH /api/admin/dishes/40/ HTTP/1.1" 200 800
+INFO 2025-07-09 10:33:13,362 basehttp 23020 6920 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:33:13,376 basehttp 23020 6920 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:33:16,440 basehttp 23020 22828 "OPTIONS /api/admin/categories/4/ HTTP/1.1" 200 0
+WARNING 2025-07-09 10:33:16,463 log 23020 6920 Bad Request: /api/admin/categories/4/
+WARNING 2025-07-09 10:33:16,466 basehttp 23020 6920 "PUT /api/admin/categories/4/ HTTP/1.1" 400 36
+INFO 2025-07-09 10:33:52,735 basehttp 23020 22828 "OPTIONS /api/admin/categories/7/ HTTP/1.1" 200 0
+WARNING 2025-07-09 10:33:52,763 log 23020 6920 Bad Request: /api/admin/categories/7/
+WARNING 2025-07-09 10:33:52,767 basehttp 23020 6920 "PUT /api/admin/categories/7/ HTTP/1.1" 400 36
+INFO 2025-07-09 10:37:26,571 autoreload 23020 18556 C:\Users\CompuTouch\Desktop\django\Restaurant\restaurant-backend\restaurant\views.py changed, reloading.
+INFO 2025-07-09 10:37:28,136 autoreload 20080 6820 Watching for file changes with StatReloader
+INFO 2025-07-09 10:37:29,084 views 20080 6820 Stripe initialized successfully
+INFO 2025-07-09 10:37:36,125 models 20080 7788 Category saved: Appetizers
+INFO 2025-07-09 10:37:36,165 basehttp 20080 7788 "PUT /api/admin/categories/7/ HTTP/1.1" 200 214
+INFO 2025-07-09 10:37:39,900 models 20080 7788 Category saved: Appetizers
+INFO 2025-07-09 10:37:39,955 basehttp 20080 7788 "PUT /api/admin/categories/7/ HTTP/1.1" 200 213
+INFO 2025-07-09 10:37:41,996 basehttp 20080 16488 "OPTIONS /api/admin/categories/2/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:37:42,019 models 20080 7788 Category saved: Burgers
+INFO 2025-07-09 10:37:42,067 basehttp 20080 7788 "PUT /api/admin/categories/2/ HTTP/1.1" 200 233
+INFO 2025-07-09 10:37:46,358 basehttp 20080 8084 "GET /api/categories/ HTTP/1.1" 200 1324
+INFO 2025-07-09 10:37:46,412 basehttp 20080 8084 "GET /api/categories/ HTTP/1.1" 200 1324
+INFO 2025-07-09 10:37:46,459 basehttp 20080 7788 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11668
+INFO 2025-07-09 10:37:46,621 basehttp 20080 7788 "GET /api/dishes/?page_size=100 HTTP/1.1" 200 11668
+INFO 2025-07-09 10:37:55,929 basehttp 20080 8084 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:37:55,929 basehttp 20080 7788 "GET /api/dishes/41/ HTTP/1.1" 200 797
+INFO 2025-07-09 10:37:56,094 basehttp 20080 8084 "GET /api/dishes/41/ratings/ HTTP/1.1" 200 2
+INFO 2025-07-09 10:37:56,112 basehttp 20080 7788 "GET /api/dishes/41/ HTTP/1.1" 200 797
+INFO 2025-07-09 10:38:01,883 basehttp 20080 16488 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:38:01,929 basehttp 20080 16488 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:38:02,157 basehttp 20080 2960 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40285
+INFO 2025-07-09 10:38:02,361 basehttp 20080 16488 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40285
+INFO 2025-07-09 10:38:05,358 basehttp 20080 16488 "OPTIONS /api/admin/customers/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:38:05,358 basehttp 20080 2960 "OPTIONS /api/admin/customers/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:38:05,497 basehttp 20080 7788 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:38:05,566 basehttp 20080 8084 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:38:07,906 basehttp 20080 8084 "GET /api/admin/categories/ HTTP/1.1" 200 1558
+INFO 2025-07-09 10:38:07,926 basehttp 20080 8084 "GET /api/admin/categories/ HTTP/1.1" 200 1558
+INFO 2025-07-09 10:38:10,407 models 20080 8084 Category saved: Burgers
+INFO 2025-07-09 10:38:10,433 basehttp 20080 8084 "PUT /api/admin/categories/2/ HTTP/1.1" 200 232
+INFO 2025-07-09 10:38:50,493 basehttp 20080 2960 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:38:50,543 basehttp 20080 2960 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:38:50,852 basehttp 20080 16488 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:38:51,057 basehttp 20080 16488 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:38:51,776 basehttp 20080 8084 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:38:51,857 basehttp 20080 8084 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:42,253 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:42,257 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:42,337 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:42,517 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:42,631 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:42,642 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:44,248 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:44,254 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:44,354 basehttp 20080 5992 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:44,605 basehttp 20080 22600 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:44,642 basehttp 20080 5992 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:44,704 basehttp 20080 22600 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:47,266 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:47,274 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:47,383 basehttp 20080 5992 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:47,667 basehttp 20080 22600 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:47,688 basehttp 20080 5992 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:47,764 basehttp 20080 22600 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:48,283 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:48,289 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:48,403 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:48,707 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:49,000 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:49,231 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:50,294 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:50,298 basehttp 20080 22600 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:50,381 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:50,646 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:50,789 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:50,852 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:51,255 basehttp 20080 5992 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:51,268 basehttp 20080 5992 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:44:51,376 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:44:51,490 basehttp 20080 5992 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:51,590 basehttp 20080 6340 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:44:51,635 basehttp 20080 22600 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:46:21,340 basehttp 20080 22600 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:46:21,938 basehttp 20080 6340 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:46:23,543 basehttp 20080 6340 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:46:24,113 basehttp 20080 22600 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:46:24,989 basehttp 20080 2888 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:46:25,185 basehttp 20080 22252 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:46:25,567 basehttp 20080 6244 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:46:25,763 basehttp 20080 18300 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:48:04,924 basehttp 20080 22600 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:48:05,423 basehttp 20080 6340 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:48:10,864 basehttp 20080 18300 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:48:11,105 basehttp 20080 6244 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:48:11,427 basehttp 20080 22252 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:48:11,571 basehttp 20080 2888 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:51:26,268 basehttp 20080 2888 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:51:26,721 basehttp 20080 22252 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:52:08,507 basehttp 20080 6340 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:09,043 basehttp 20080 22600 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:11,835 basehttp 20080 6340 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:52:11,875 basehttp 20080 22600 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:52:12,413 basehttp 20080 1108 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:52:12,486 basehttp 20080 13732 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:52:15,038 basehttp 20080 13732 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:52:15,606 basehttp 20080 1108 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:52:17,668 basehttp 20080 1108 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:52:18,243 basehttp 20080 13732 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:52:19,907 basehttp 20080 22252 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:52:20,417 basehttp 20080 2888 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:52:20,448 basehttp 20080 6244 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:52:20,767 basehttp 20080 22252 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:52:23,108 basehttp 20080 13732 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:23,695 basehttp 20080 1108 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:26,163 basehttp 20080 1108 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:52:26,712 basehttp 20080 13732 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:52:32,599 basehttp 20080 13732 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:32,976 basehttp 20080 1108 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:52:35,569 basehttp 20080 1108 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:52:36,117 basehttp 20080 13732 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:54:44,802 basehttp 20080 13732 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:54:45,358 basehttp 20080 1108 "GET /api/csrf-token/ HTTP/1.1" 200 81
+INFO 2025-07-09 10:54:45,484 basehttp 20080 13732 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:54:46,051 basehttp 20080 13732 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:54:46,096 basehttp 20080 1108 "GET /api/check-user-type/ HTTP/1.1" 200 176
+INFO 2025-07-09 10:54:46,554 basehttp 20080 1108 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:55:21,244 basehttp 20080 1108 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:21,808 basehttp 20080 13732 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:24,574 basehttp 20080 13732 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:55:25,142 basehttp 20080 1108 "GET /api/admin/customers/ HTTP/1.1" 200 4219
+INFO 2025-07-09 10:55:43,783 basehttp 20080 1108 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:44,350 basehttp 20080 13732 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:45,036 basehttp 20080 1108 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:45,070 basehttp 20080 13732 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:55:45,582 basehttp 20080 22600 "GET /api/admin/categories/ HTTP/1.1" 200 1557
+INFO 2025-07-09 10:55:45,631 basehttp 20080 6340 "GET /api/admin/dishes/ HTTP/1.1" 200 12307
+INFO 2025-07-09 10:55:46,466 basehttp 20080 6340 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:55:46,963 basehttp 20080 22600 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:55:47,745 basehttp 20080 22252 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:55:48,017 basehttp 20080 6244 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:55:48,268 basehttp 20080 2888 "GET /api/admin/dashboard/ HTTP/1.1" 200 922
+INFO 2025-07-09 10:55:48,428 basehttp 20080 11136 "GET /api/admin/orders/?limit=5 HTTP/1.1" 200 40277
+INFO 2025-07-09 10:55:51,743 basehttp 20080 22600 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:55:52,215 basehttp 20080 6340 "GET /api/admin/orders/ HTTP/1.1" 200 40269
+INFO 2025-07-09 10:56:00,481 basehttp 20080 11136 "OPTIONS /api/admin/orders/44/update_status/ HTTP/1.1" 200 0
+INFO 2025-07-09 10:56:00,504 models 20080 6340 Order saved: #44 - Customer: Amr Elsayed - Total: $93.99
+INFO 2025-07-09 10:56:00,533 basehttp 20080 6340 "PATCH /api/admin/orders/44/update_status/ HTTP/1.1" 200 47
+INFO 2025-07-09 10:56:10,595 models 20080 6340 Order saved: #44 - Customer: Amr Elsayed - Total: $93.99
+INFO 2025-07-09 10:56:10,620 basehttp 20080 6340 "PATCH /api/admin/orders/44/update_status/ HTTP/1.1" 200 47

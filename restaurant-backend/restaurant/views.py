@@ -31,7 +31,7 @@ from .utils import (
     get_popular_dishes, send_order_notifications, send_stock_alert,
     calculate_daily_analytics, invalidate_dish_cache, send_notification_to_admins
 )
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -88,6 +88,22 @@ class DishViewSet(viewsets.ReadOnlyModelViewSet):
         """الأطباق الشعبية"""
         popular_dishes = get_popular_dishes(limit=10)
         return Response(popular_dishes)
+    
+    @action(detail=False, methods=['get'])
+    def most_ordered(self, request):
+        """Most ordered dishes based on order items"""
+        from django.db.models import Sum, Count
+        
+        # Get dishes ordered by total quantity
+        dishes = Dish.objects.filter(is_available=True).annotate(
+            total_ordered=Sum('orderitem__quantity'),
+            order_count=Count('orderitem')
+        ).filter(
+            total_ordered__isnull=False
+        ).order_by('-total_ordered')[:10]
+        
+        serializer = self.get_serializer(dishes, many=True)
+        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def low_stock(self, request):
@@ -294,10 +310,40 @@ class AdminCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]  # Temporarily allow any for testing
 
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
+
 class AdminDishViewSet(viewsets.ModelViewSet):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
     permission_classes = [AllowAny]  # Temporarily allow any for testing
+    
+    def update(self, request, *args, **kwargs):
+        """Override update to add debugging for PATCH requests"""
+        logger.info(f"📝 AdminDishViewSet PATCH request data: {request.data}")
+        logger.info(f"📝 Content-Type: {request.content_type}")
+        logger.info(f"📝 Files: {request.FILES}")
+        
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        # Log current instance data
+        logger.info(f"📝 Current dish: {instance.name} (ID: {instance.id})")
+        
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        
+        if not serializer.is_valid():
+            logger.error(f"❌ Validation errors: {serializer.errors}")
+            return Response(serializer.errors, status=400)
+        
+        self.perform_update(serializer)
+        
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        logger.info(f"✅ Dish updated successfully: {serializer.data}")
+        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def stats(self, request):
@@ -312,6 +358,20 @@ class AdminDishViewSet(viewsets.ModelViewSet):
             'available_dishes': available_dishes,
             'vegetarian_dishes': vegetarian_dishes,
             'spicy_dishes': spicy_dishes
+        })
+    
+    @action(detail=True, methods=['patch'])
+    def set_availability(self, request, pk=None):
+        """Toggle dish availability"""
+        dish = self.get_object()
+        is_available = request.data.get('is_available', dish.is_available)
+        
+        dish.is_available = is_available
+        dish.save()
+        
+        return Response({
+            'message': 'Dish availability updated successfully',
+            'is_available': dish.is_available
         })
 
 class AdminOrderViewSet(viewsets.ModelViewSet):
@@ -411,36 +471,200 @@ def menu_overview(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    """Register a new user"""
+    """Register a new user with enhanced validation and phone verification"""
     data = request.data
     
+    # Validate required fields
+    required_fields = ['username', 'email', 'password', 'first_name', 'last_name', 'phone']
+    missing_fields = [field for field in required_fields if not data.get(field)]
+    if missing_fields:
+        return Response({
+            'error': f'Missing required fields: {", ".join(missing_fields)}'
+        }, status=400)
+    
+    # Check if username exists
     if User.objects.filter(username=data.get('username')).exists():
-        return Response({'error': 'Username already exists'}, status=400)
+        return Response({
+            'error': 'Username already exists. Please choose a different username.'
+        }, status=400)
     
+    # Check if email exists
     if User.objects.filter(email=data.get('email')).exists():
-        return Response({'error': 'Email already exists'}, status=400)
+        return Response({
+            'error': 'Email already exists. Please use a different email address.'
+        }, status=400)
     
-    user = User.objects.create_user(
-        username=data.get('username'),
-        email=data.get('email'),
-        password=data.get('password'),
-        first_name=data.get('first_name', ''),
-        last_name=data.get('last_name', '')
-    )
+    # Check if phone exists
+    if Customer.objects.filter(phone=data.get('phone')).exists():
+        return Response({
+            'error': 'Phone number already exists. Please use a different phone number.'
+        }, status=400)
     
-    Customer.objects.create(
-        user=user,
-        phone=data.get('phone', ''),
-        address=data.get('address', '')
-    )
+    # Validate phone number (basic validation)
+    phone = data.get('phone')
+    if not phone.isdigit() or len(phone) < 10:
+        return Response({
+            'error': 'Invalid phone number. Please enter a valid phone number.'
+        }, status=400)
     
-    return Response({'message': 'User created successfully'}, status=201)
+    # Validate password strength
+    password = data.get('password')
+    if len(password) < 8:
+        return Response({
+            'error': 'Password must be at least 8 characters long.'
+        }, status=400)
+    
+    try:
+        # Create user
+        user = User.objects.create_user(
+            username=data.get('username'),
+            email=data.get('email'),
+            password=password,
+            first_name=data.get('first_name', ''),
+            last_name=data.get('last_name', '')
+        )
+        
+        # Create customer profile
+        customer = Customer.objects.create(
+            user=user,
+            phone=phone,
+            address=data.get('address', ''),
+            is_phone_verified=False,  # Will be verified later
+            is_email_verified=False   # Will be verified later
+        )
+        
+        # Generate verification codes (we'll implement this properly)
+        # For now, we'll just return success
+        
+        return Response({
+            'message': 'User created successfully',
+            'user_id': user.id,
+            'phone_verification_required': True,
+            'email_verification_required': True
+        }, status=201)
+        
+    except Exception as e:
+        logger.error(f"Error creating user: {e}")
+        return Response({
+            'error': 'Failed to create user. Please try again.'
+        }, status=500)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_verification_code(request):
+    """Send verification code to phone or email"""
+    import random
+    from datetime import datetime, timedelta
+    from django.utils import timezone
+    
+    data = request.data
+    verification_type = data.get('type')  # 'phone' or 'email'
+    identifier = data.get('identifier')  # phone number or email
+    
+    if verification_type not in ['phone', 'email']:
+        return Response({'error': 'Invalid verification type'}, status=400)
+    
+    try:
+        # Find customer by phone or email
+        if verification_type == 'phone':
+            customer = Customer.objects.get(phone=identifier)
+        else:
+            customer = Customer.objects.get(user__email=identifier)
+        
+        # Generate 6-digit verification code
+        verification_code = str(random.randint(100000, 999999))
+        
+        # Set expiration time (10 minutes from now)
+        expires_at = timezone.now() + timedelta(minutes=10)
+        
+        # Update customer with verification code
+        if verification_type == 'phone':
+            customer.phone_verification_code = verification_code
+        else:
+            customer.email_verification_code = verification_code
+        
+        customer.verification_code_expires_at = expires_at
+        customer.save()
+        
+        # TODO: In production, send actual SMS/email
+        # For now, we'll return the code for testing
+        logger.info(f"Verification code for {identifier}: {verification_code}")
+        
+        return Response({
+            'message': f'Verification code sent to {verification_type}',
+            'code': verification_code,  # Remove this in production
+            'expires_in_minutes': 10
+        })
+        
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error sending verification code: {e}")
+        return Response({'error': 'Failed to send verification code'}, status=500)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_code(request):
+    """Verify phone or email verification code"""
+    from django.utils import timezone
+    
+    data = request.data
+    verification_type = data.get('type')  # 'phone' or 'email'
+    identifier = data.get('identifier')  # phone number or email
+    code = data.get('code')
+    
+    if verification_type not in ['phone', 'email']:
+        return Response({'error': 'Invalid verification type'}, status=400)
+    
+    if not code or len(code) != 6:
+        return Response({'error': 'Invalid verification code'}, status=400)
+    
+    try:
+        # Find customer by phone or email
+        if verification_type == 'phone':
+            customer = Customer.objects.get(phone=identifier)
+            stored_code = customer.phone_verification_code
+        else:
+            customer = Customer.objects.get(user__email=identifier)
+            stored_code = customer.email_verification_code
+        
+        # Check if code matches and hasn't expired
+        if not stored_code:
+            return Response({'error': 'No verification code found'}, status=400)
+        
+        if stored_code != code:
+            return Response({'error': 'Invalid verification code'}, status=400)
+        
+        if customer.verification_code_expires_at and customer.verification_code_expires_at < timezone.now():
+            return Response({'error': 'Verification code has expired'}, status=400)
+        
+        # Mark as verified and clear verification code
+        if verification_type == 'phone':
+            customer.is_phone_verified = True
+            customer.phone_verification_code = None
+        else:
+            customer.is_email_verified = True
+            customer.email_verification_code = None
+        
+        customer.verification_code_expires_at = None
+        customer.save()
+        
+        return Response({
+            'message': f'{verification_type.capitalize()} verified successfully',
+            'verified': True
+        })
+        
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error verifying code: {e}")
+        return Response({'error': 'Failed to verify code'}, status=500)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
     """
-    Fetches the extended user profile including stats.
+    Fetches the extended user profile including stats and additional info.
     """
     user = request.user
     try:
@@ -452,18 +676,49 @@ def user_profile(request):
     total_orders = Order.objects.filter(customer=customer).count()
     avg_rating = DishRating.objects.filter(customer=customer).aggregate(Avg('rating'))['rating__avg']
     
+    # Recent orders
+    recent_orders = Order.objects.filter(customer=customer).order_by('-order_date')[:5]
+    
+    # Favorite dishes (most ordered)
+    favorite_dishes = OrderItem.objects.filter(order__customer=customer)\
+        .values('dish__name', 'dish__id')\
+        .annotate(total_ordered=Sum('quantity'))\
+        .order_by('-total_ordered')[:3]
+    
     # VIP status logic (example: > 10 orders)
     is_vip = total_orders > 10
 
     serializer = UserSerializer(user)
     profile_data = serializer.data
     profile_data.update({
+        'username': user.username,  # Add username
         'phone': customer.phone,
         'address': customer.address,
+        'is_phone_verified': customer.is_phone_verified,
+        'is_email_verified': customer.is_email_verified,
         'stats': {
             'total_orders': total_orders,
             'avg_rating': round(avg_rating, 1) if avg_rating else 0,
             'is_vip': is_vip,
+        },
+        'recent_orders': [
+            {
+                'id': order.id,
+                'date': order.order_date,
+                'status': order.status,
+                'total': order.total_amount
+            } for order in recent_orders
+        ],
+        'favorite_dishes': list(favorite_dishes),
+        'preferences': {
+            'notifications_enabled': True,  # Default preference
+            'email_notifications': True,
+            'sms_notifications': customer.is_phone_verified,
+        },
+        'security': {
+            'last_login': user.last_login,
+            'date_joined': user.date_joined,
+            'password_last_changed': None,  # We can implement this later
         }
     })
     
@@ -505,8 +760,8 @@ def update_user_profile(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])  # Temporarily allow any for testing
 def admin_dashboard_stats(request):
-    """Get comprehensive admin dashboard statistics"""
-    from django.db.models import Count, Sum, Avg
+    """Get comprehensive admin dashboard statistics - optimized version"""
+    from django.db.models import Count, Sum, Avg, Case, When, Q
     from django.utils import timezone
     from datetime import timedelta
     
@@ -515,90 +770,69 @@ def admin_dashboard_stats(request):
     yesterday = today - timedelta(days=1)
     week_ago = now - timedelta(days=7)
     
-    # Today's stats
-    today_orders = Order.objects.filter(order_date__date=today).count()
-    today_revenue = Order.objects.filter(
-        order_date__date=today, 
-        payment_status='paid'
-    ).aggregate(total=Sum('total_amount'))['total'] or 0
+    # Optimize multiple queries into single aggregations
+    order_stats = Order.objects.aggregate(
+        total_orders=Count('id'),
+        today_orders=Count('id', filter=Q(order_date__date=today)),
+        yesterday_orders=Count('id', filter=Q(order_date__date=yesterday)),
+        recent_orders=Count('id', filter=Q(order_date__gte=week_ago)),
+        pending_orders=Count('id', filter=Q(status='pending')),
+        delivered_orders=Count('id', filter=Q(status='delivered')),
+        total_revenue=Sum('total_amount', filter=Q(payment_status='paid')),
+        today_revenue=Sum('total_amount', filter=Q(order_date__date=today, payment_status='paid')),
+        yesterday_revenue=Sum('total_amount', filter=Q(order_date__date=yesterday, payment_status='paid')),
+        recent_revenue=Sum('total_amount', filter=Q(order_date__gte=week_ago, payment_status='paid')),
+        avg_order_value=Avg('total_amount', filter=Q(payment_status='paid'))
+    )
     
-    # Yesterday's stats for comparison
-    yesterday_orders = Order.objects.filter(order_date__date=yesterday).count()
-    yesterday_revenue = Order.objects.filter(
-        order_date__date=yesterday, 
-        payment_status='paid'
-    ).aggregate(total=Sum('total_amount'))['total'] or 0
-    
-    # Calculate percentage changes
-    orders_change = ((today_orders - yesterday_orders) / max(yesterday_orders, 1)) * 100 if yesterday_orders else 0
-    revenue_change = ((today_revenue - yesterday_revenue) / max(yesterday_revenue, 1)) * 100 if yesterday_revenue else 0
-    
-    # Basic counts
-    total_orders = Order.objects.count()
+    # Basic counts in single queries
     total_customers = Customer.objects.count()
     total_dishes = Dish.objects.count()
     total_categories = Category.objects.count()
-    active_customers = Customer.objects.filter(
-        user__last_login__gte=week_ago
-    ).count()
-    
-    # Revenue stats
-    total_revenue = Order.objects.filter(payment_status='paid').aggregate(
-        total=Sum('total_amount')
-    )['total'] or 0
-    
-    # Recent stats (last 7 days)
-    recent_orders = Order.objects.filter(order_date__gte=week_ago).count()
-    recent_revenue = Order.objects.filter(
-        order_date__gte=week_ago, 
-        payment_status='paid'
-    ).aggregate(total=Sum('total_amount'))['total'] or 0
+    active_customers = Customer.objects.filter(user__last_login__gte=week_ago).count()
     
     # Order status breakdown
     order_statuses = Order.objects.values('status').annotate(count=Count('id'))
     
     # Top dishes by orders
-    top_dishes = OrderItem.objects.values('dish__name').annotate(
+    top_dishes = OrderItem.objects.select_related('dish').values('dish__name').annotate(
         total_ordered=Sum('quantity')
     ).order_by('-total_ordered')[:5]
     
     # Average rating
     avg_rating = DishRating.objects.aggregate(avg=Avg('rating'))['avg'] or 0
     
-    # Additional analytics
-    pending_orders = Order.objects.filter(status='pending').count()
-    delivered_orders = Order.objects.filter(status='delivered').count()
-    avg_order_value = Order.objects.filter(payment_status='paid').aggregate(
-        avg=Avg('total_amount')
-    )['avg'] or 0
+    # Calculate percentage changes
+    orders_change = ((order_stats['today_orders'] - order_stats['yesterday_orders']) / max(order_stats['yesterday_orders'], 1)) * 100 if order_stats['yesterday_orders'] else 0
+    revenue_change = ((order_stats['today_revenue'] or 0) - (order_stats['yesterday_revenue'] or 0)) / max(order_stats['yesterday_revenue'] or 1, 1) * 100 if order_stats['yesterday_revenue'] else 0
     
     return Response({
         'overview': {
-            'total_orders': total_orders,
+            'total_orders': order_stats['total_orders'],
             'total_customers': total_customers,
             'total_dishes': total_dishes,
             'total_categories': total_categories,
-            'total_revenue': float(total_revenue),
+            'total_revenue': float(order_stats['total_revenue'] or 0),
             'average_rating': round(float(avg_rating), 2)
         },
         'today_stats': {
-            'today_orders': today_orders,
-            'today_revenue': float(today_revenue),
-            'yesterday_orders': yesterday_orders,
-            'yesterday_revenue': float(yesterday_revenue),
+            'today_orders': order_stats['today_orders'],
+            'today_revenue': float(order_stats['today_revenue'] or 0),
+            'yesterday_orders': order_stats['yesterday_orders'],
+            'yesterday_revenue': float(order_stats['yesterday_revenue'] or 0),
             'orders_change': round(float(orders_change), 1),
             'revenue_change': round(float(revenue_change), 1)
         },
         'recent_stats': {
-            'recent_orders': recent_orders,
-            'recent_revenue': float(recent_revenue),
+            'recent_orders': order_stats['recent_orders'],
+            'recent_revenue': float(order_stats['recent_revenue'] or 0),
             'active_customers': active_customers,
-            'pending_orders': pending_orders
+            'pending_orders': order_stats['pending_orders']
         },
         'performance': {
-            'delivered_orders': delivered_orders,
-            'average_order_value': round(float(avg_order_value), 2),
-            'completion_rate': round((delivered_orders / max(total_orders, 1)) * 100, 1)
+            'delivered_orders': order_stats['delivered_orders'],
+            'average_order_value': round(float(order_stats['avg_order_value'] or 0), 2),
+            'completion_rate': round((order_stats['delivered_orders'] / max(order_stats['total_orders'], 1)) * 100, 1)
         },
         'order_statuses': list(order_statuses),
         'top_dishes': list(top_dishes)
@@ -706,8 +940,7 @@ def customer_login(request):
         # Log the user in
         login(request, user)
         
-        # Force session creation and save
-        request.session.create()
+        # Session is automatically created by login(), no need to force it
         request.session['user_id'] = user.id
         request.session['is_customer'] = True
         request.session['customer_email'] = user.email
@@ -797,8 +1030,7 @@ def admin_login(request):
         has_customer = hasattr(user, 'customer')
         logger.info(f"🔍 Admin user has customer profile: {has_customer}")
         
-        # Force session creation and save
-        request.session.create()
+        # Session is automatically created by login(), no need to force it
         request.session['user_id'] = user.id
         request.session['is_admin'] = True
         request.session['is_customer'] = has_customer  # Add customer flag for dual-role users
@@ -1045,7 +1277,6 @@ def submit_rating_simple(request):
         return Response({'error': str(e)}, status=400)
 
 @csrf_exempt
-@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def add_rating(request):
@@ -1182,24 +1413,8 @@ def create_checkout_session(request):
         current_user = request.user
         logger.info(f"Initial user: {current_user}, authenticated: {current_user.is_authenticated}")
         
-        # If user is not authenticated, try session-based authentication
+        # If user is not authenticated, check cookies
         if not current_user.is_authenticated:
-            session_key = request.headers.get('X-Session-Key')
-            logger.info(f"Checking session key: {session_key}")
-            if session_key:
-                try:
-                    from django.contrib.sessions.models import Session
-                    session = Session.objects.get(session_key=session_key)
-                    session_data = session.get_decoded()
-                    user_id = session_data.get('_auth_user_id')
-                    if user_id:
-                        current_user = User.objects.get(id=user_id)
-                        logger.info(f"Found user via session: {current_user}")
-                except Exception as e:
-                    logger.warning(f"Session user error: {e}")
-        
-        # If still no authenticated user, check cookies
-        if not current_user or current_user.is_anonymous:
             sessionid = request.COOKIES.get('sessionid')
             logger.info(f"Checking sessionid cookie: {sessionid}")
             if sessionid:
@@ -1214,21 +1429,15 @@ def create_checkout_session(request):
                 except Exception as e:
                     logger.warning(f"Sessionid cookie error: {e}")
         
-        # Create guest user if no authentication found
+        # If no authenticated user found, DO NOT create a guest user.
+        # Let Stripe handle guest checkout by passing customer_email.
         if not current_user or current_user.is_anonymous:
-            logger.warning("No authenticated user found, creating guest user")
-            timestamp = int(time.time())
-            guest_email = f"guest_{timestamp}@restaurant.com"
-            guest_user, created = User.objects.get_or_create(
-                username=f'guest_{timestamp}',
-                defaults={
-                    'email': guest_email,
-                    'first_name': 'Guest',
-                    'last_name': 'User'
-                }
-            )
-            current_user = guest_user
-            logger.info(f"Created guest user: {current_user} (created: {created})")
+            logger.warning("No authenticated user found for checkout.")
+            # We can proceed with a temporary customer email for Stripe if needed,
+            # but we won't create a User object.
+            # For this implementation, we will require login for checkout.
+            return Response({'error': 'User authentication required for checkout.'}, status=401)
+
         else:
             logger.info(f"Using authenticated user: {current_user} (ID: {current_user.id})")
         
@@ -1439,12 +1648,12 @@ def _create_order_from_stripe_session(session):
     special_instructions = metadata.get('special_instructions', '')
     items_json = metadata.get('items', '[]')
     total_amount = float(metadata.get('total_amount', 0))
-
+    
     try:
         items = json.loads(items_json)
     except json.JSONDecodeError:
         items = []
-
+    
     if not customer_id:
         logger.error("No customer_id in Stripe session metadata")
         return None, "Customer information missing"
@@ -1454,14 +1663,14 @@ def _create_order_from_stripe_session(session):
     except Customer.DoesNotExist:
         logger.error(f"Customer not found for customer_id: {customer_id}")
         return None, "Customer not found"
-
+            
     # Check if order already exists
     existing_order = Order.objects.filter(
         customer=customer,
         total_amount=total_amount,
         payment_status='paid'
     ).order_by('-order_date').first()
-
+    
     if existing_order:
         logger.info(f"Order #{existing_order.id} already exists for this payment.")
         return existing_order, "Order already created"
@@ -1475,7 +1684,7 @@ def _create_order_from_stripe_session(session):
         status='pending',  # As requested by user
         payment_status='paid'
     )
-
+    
     # Create order items
     for item_data in items:
         try:
@@ -1490,7 +1699,7 @@ def _create_order_from_stripe_session(session):
         except Dish.DoesNotExist:
             logger.warning(f"Dish with id {item_data.get('dish_id')} not found during order creation.")
             continue
-    
+            
     logger.info(f"Order #{order.id} created successfully for customer {customer.user.username}.")
     
     # Send notifications
@@ -1510,5 +1719,5 @@ def _create_order_from_stripe_session(session):
         )
     except Exception as e:
         logger.error(f"Failed to send notifications for order #{order.id}: {e}")
-
+    
     return order, "Order created successfully"
