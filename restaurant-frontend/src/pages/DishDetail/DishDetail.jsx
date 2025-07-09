@@ -5,7 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
 import toast from 'react-hot-toast';
-import { getDishById, createReview } from '../../services/api';
+import { menuAPI, ratingsAPI } from '@/services/api';
 
 const DishDetail = () => {
   const { id } = useParams();
@@ -36,11 +36,15 @@ const DishDetail = () => {
   const fetchDishDetails = useCallback(async () => {
     try {
       setLoading(true);
-      const dishData = await getDishById(id);
+      // Fetch dish and reviews in parallel
+      const [dishData, reviewsData] = await Promise.all([
+        menuAPI.getDish(id),
+        menuAPI.getDishRatings(id)
+      ]);
       setDish(dishData);
-      setReviews(dishData.reviews || []);
+      setReviews(reviewsData || []);
     } catch (err) {
-      setError(err.message);
+      setError(err);
       showError('Failed to load dish details.');
     } finally {
       setLoading(false);
@@ -76,13 +80,14 @@ const DishDetail = () => {
       showError('You must be logged in to write a review.', 'Login Required');
       return;
     }
+    setSubmittingReview(true);
     try {
       const reviewData = {
         dish_id: id,
         rating: newReview.rating,
         comment: newReview.comment,
       };
-      const createdReview = await createReview(id, reviewData);
+      const createdReview = await ratingsAPI.submitRating(reviewData);
       setReviews([createdReview, ...reviews]);
       showSuccess('Thank you for your review!', 'Review Submitted');
       setShowReviewForm(false);
@@ -93,8 +98,10 @@ const DishDetail = () => {
       } else {
         showError('Failed to submit review. Please try again.', 'Submission Failed');
       }
+    } finally {
+      setSubmittingReview(false);
     }
-  }, [id, isAuthenticated, newReview, reviews, showError]);
+  }, [id, isAuthenticated, newReview, reviews, showError, showSuccess]);
 
   // Render stars utility function
   const renderStars = (rating) => {
@@ -151,7 +158,7 @@ const DishDetail = () => {
         >
           <div className="text-6xl mb-4">😕</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Dish not found</h2>
-          <p className="text-gray-600 mb-6">{error.message || error}</p>
+          <p className="text-gray-600 mb-6">{error?.message || 'An unexpected error occurred.'}</p>
           <motion.button
             className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
             onClick={() => navigate('/menu')}
@@ -208,7 +215,7 @@ const DishDetail = () => {
         >
           {/* Dish Image */}
             <motion.div 
-            className="lg:col-span-2"
+            className="lg:col-span-1"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}

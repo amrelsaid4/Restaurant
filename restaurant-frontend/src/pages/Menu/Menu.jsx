@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { menuAPI } from '@/services/api';
 import { useCart } from '@/contexts/CartContext';
 import { useAlert } from '@/contexts/AlertContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -210,13 +210,13 @@ const Menu = () => {
         setLoading(true);
         
         const [dishesResponse, categoriesResponse] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/dishes/'),
-          axios.get('http://127.0.0.1:8000/api/categories/')
+          menuAPI.getDishes({ page_size: 100 }), // Fetch all dishes
+          menuAPI.getCategories()
         ]);
 
         if (isMounted) {
-          setDishes(dishesResponse.data.results || dishesResponse.data);
-          setCategories(categoriesResponse.data.results || categoriesResponse.data);
+          setDishes(dishesResponse.results || dishesResponse.data || []);
+          setCategories(categoriesResponse.results || categoriesResponse.data || []);
         }
       } catch (error) {
         if (isMounted) {
@@ -366,26 +366,7 @@ const Menu = () => {
         </motion.div>
 
         {/* Dishes Grid */}
-        <AnimatePresence mode="wait">
-          {filteredDishes.length === 0 ? (
-            <motion.div 
-              className="text-center py-12"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-            >
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No dishes found</h3>
-              <p className="text-gray-500">
-                Try adjusting your search or filter criteria
-              </p>
-            </motion.div>
-          ) : (
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              initial="hidden"
-              animate="visible"
-            >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredDishes.map((dish) => (
                 <DishCard 
                   key={dish.id} 
@@ -393,9 +374,7 @@ const Menu = () => {
                   onAddToCart={handleAddToCart}
                 />
               ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   );

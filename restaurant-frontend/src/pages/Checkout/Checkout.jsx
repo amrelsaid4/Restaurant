@@ -294,32 +294,32 @@ const Checkout = () => {
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                           {/* Address */}
-                          <div>
+                        <div>
                             <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
                               Address
-                            </label>
-                            <input 
-                              type="text" 
+                          </label>
+                          <input
+                            type="text"
                               id="address" 
-                              name="address" 
-                              value={orderForm.address} 
-                              onChange={handleInputChange} 
+                            name="address"
+                            value={orderForm.address}
+                            onChange={handleInputChange}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
                               placeholder="123 Main St"
-                            />
-                          </div>
-
+                          />
+                        </div>
+                        
                           {/* City */}
                           <div>
                             <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
                               City
                             </label>
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               id="city" 
-                              name="city" 
-                              value={orderForm.city} 
-                              onChange={handleInputChange} 
+                              name="city"
+                              value={orderForm.city}
+                              onChange={handleInputChange}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
                               placeholder="Anytown"
                             />
@@ -330,32 +330,32 @@ const Checkout = () => {
                             <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-2">
                               Zip Code
                             </label>
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               id="zipCode" 
-                              name="zipCode" 
-                              value={orderForm.zipCode} 
-                              onChange={handleInputChange} 
+                              name="zipCode"
+                              value={orderForm.zipCode}
+                              onChange={handleInputChange}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
                               placeholder="12345"
                             />
-                          </div>
-                          
+                        </div>
+                        
                           {/* Phone */}
-                          <div>
+                        <div>
                             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                               Phone Number
-                            </label>
-                            <input 
-                              type="tel" 
+                          </label>
+                          <input
+                            type="tel"
                               id="phone" 
-                              name="phone" 
-                              value={orderForm.phone} 
-                              onChange={handleInputChange} 
+                            name="phone"
+                            value={orderForm.phone}
+                            onChange={handleInputChange}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" 
                               placeholder="(123) 456-7890"
-                            />
-                          </div>
+                          />
+                        </div>
                         </div>
                       </motion.div>
                     )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import axios from 'axios';
+import { menuAPI, restaurantAPI } from '@/services/api';
 
 const Home = () => {
   const { user } = useAuth();
@@ -20,7 +20,6 @@ const Home = () => {
   // Hero background images
   const heroImages = [
     'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80',
-    'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1981&q=80',
     'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1970&q=80',
     'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1965&q=80'
   ];
@@ -30,10 +29,10 @@ const Home = () => {
     const fetchPopularDishes = async () => {
       try {
         setLoadingDishes(true);
-        const response = await axios.get('http://127.0.0.1:8000/api/dishes/popular/');
-        setSpecialDishes(response.data.slice(0, 3)); // Get only top 3 dishes
+        const response = await menuAPI.getMostOrderedDishes();
+        setSpecialDishes(response || []);
       } catch (error) {
-        console.error('Error fetching popular dishes:', error);
+        console.error('Error fetching dishes for homepage:', error);
         // Fallback to static data if API fails
         setSpecialDishes([
           {
@@ -71,8 +70,8 @@ const Home = () => {
     const fetchHomepageStats = async () => {
       try {
         setLoadingStats(true);
-        const response = await axios.get('http://127.0.0.1:8000/api/homepage-stats/');
-        setHomepageStats(response.data);
+        const response = await restaurantAPI.getHomepageStats();
+        setHomepageStats(response);
       } catch (error) {
         console.error('Error fetching homepage stats:', error);
         // Keep default values on error
@@ -190,7 +189,7 @@ const Home = () => {
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}
                 whileTap={{ scale: 0.95 }}
               >
-                🍽️ View Menu
+                 View Menu
               </motion.button>
             </Link>
             
@@ -201,7 +200,7 @@ const Home = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  🎉 Join Us
+                   Join Us
                 </motion.button>
               </Link>
             )}
@@ -317,13 +316,13 @@ const Home = () => {
                       }}
                     />
                     <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full font-semibold">
-                      ${typeof dish.price === 'number' ? dish.price.toFixed(2) : dish.price}
+                      ${typeof dish.price === 'number' ? dish.price.toFixed(2) : parseFloat(dish.price).toFixed(2)}
                     </div>
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{dish.name}</h3>
                     <p className="text-gray-600 mb-4">{dish.description}</p>
-                    <Link to="/menu">
+                    <Link to={`/dish/${dish.id}`}>
                       <motion.button
                         className="w-full px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors duration-300"
                         whileHover={{ scale: 1.02 }}
@@ -336,6 +335,19 @@ const Home = () => {
                 </motion.div>
               ))
             )}
+          </div>
+
+          {/* View Full Menu Button */}
+          <div className="mt-16 text-center">
+            <Link to="/menu">
+              <motion.button
+                className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View Full Menu
+              </motion.button>
+            </Link>
           </div>
         </div>
       </section>
@@ -367,7 +379,7 @@ const Home = () => {
                 whileHover={{ scale: 1.05, boxShadow: "0 15px 30px rgba(0,0,0,0.3)" }}
                 whileTap={{ scale: 0.95 }}
               >
-                🛒 Order Now
+                 Order Now
               </motion.button>
             </Link>
           </motion.div>

@@ -53,25 +53,30 @@ const Cart = () => {
     setLoading(false);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = (e) => {
+    e.preventDefault();
+    
     if (!user) {
       toast.error('Please login to proceed with checkout');
       navigate('/login');
       return;
     }
-
+    
+    // Prepare checkout data and store in session storage
     const checkoutData = {
       items: cartItems.map(item => ({
         dish_id: item.id,
         name: item.name,
         quantity: item.quantity,
         price: item.price,
-        special_instructions: item.special_instructions || ''
+        special_instructions: item.specialInstructions || '',
       })),
-      total: subtotal
+      subtotal: subtotal,
+      total: total,
     };
     
     sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+    
     navigate('/checkout');
   };
 

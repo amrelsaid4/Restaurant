@@ -97,7 +97,7 @@ const OrderSuccess = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                 >
-                    Order Confirmed!
+            Order Confirmed!
                 </motion.h1>
                 <motion.p 
                     className="text-gray-600 mb-8"
@@ -129,7 +129,7 @@ const OrderSuccess = () => {
                         <span className="text-gray-600">Order Status:</span>
                         <span className="font-medium text-orange-500 capitalize">Pending</span>
                     </div>
-                </div>
+          </div>
             </motion.div>
 
             <motion.div 
@@ -143,7 +143,7 @@ const OrderSuccess = () => {
                     You'll receive an email confirmation shortly. You can track your order status in the "My Orders" section.
                 </p>
             </motion.div>
-
+            
             <motion.div 
                 className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
                 initial={{ opacity: 0, y: 20 }}
@@ -156,14 +156,14 @@ const OrderSuccess = () => {
                 >
                     <ShoppingCart size={20} />
                     View My Orders
-                </button>
-                <button
-                    onClick={() => navigate('/')}
+            </button>
+            <button
+              onClick={() => navigate('/')}
                     className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
                 >
                     <Home size={20} />
-                    Back to Home
-                </button>
+              Back to Home
+            </button>
             </motion.div>
 
         </motion.div>

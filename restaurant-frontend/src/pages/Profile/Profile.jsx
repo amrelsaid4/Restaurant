@@ -27,17 +27,17 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (user) {
+    if (user) {
         try {
           setStatsLoading(true);
           const profileData = await authAPI.getUserProfile();
-          setFormData({
+      setFormData({
             first_name: profileData.first_name || '',
             last_name: profileData.last_name || '',
             email: profileData.email || '',
             phone: profileData.phone || '',
             address: profileData.address || ''
-          });
+      });
           if (profileData.stats) {
             setStats(profileData.stats);
           }

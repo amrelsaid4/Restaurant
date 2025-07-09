@@ -84,7 +84,7 @@ function Register() {
     setLoading(true);
     
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/register/', {
+      const response = await axios.post('http://127.0.0.1:8000/api/register/', {
         username: formData.username,
         email: formData.email,
         password: formData.password,
