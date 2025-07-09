@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import AdminNavbar from '../../components/admin/AdminNavbar';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -64,56 +65,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Admin Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-orange-600">
-                Restaurant Admin
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/admin/dashboard" 
-                className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
-              >
-                Dashboard
-              </Link>
-              <Link 
-                to="/admin/orders" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Orders
-              </Link>
-              <Link 
-                to="/admin/dishes" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Menu
-              </Link>
-              <Link 
-                to="/admin/categories" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Categories
-              </Link>
-              <Link 
-                to="/admin/customers" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Customers
-              </Link>
-              <Link 
-                to="/" 
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
-              >
-                View Website
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <AdminNavbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

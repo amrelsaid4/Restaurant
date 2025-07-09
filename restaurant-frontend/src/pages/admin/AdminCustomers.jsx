@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAlert } from '../../contexts/AlertContext';
 import { getCustomers } from '../../services/api';
+import { color } from 'framer-motion';
+import AdminNavbar from '../../components/admin/AdminNavbar';
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
@@ -36,9 +38,10 @@ const AdminCustomers = () => {
   );
 
   const getCustomerLevel = (totalSpent) => {
-    if (totalSpent >= 1000) return { level: '🥇 Gold', color: 'var(--primary-gold)' };
-    if (totalSpent >= 500) return { level: '🥈 Silver', color: 'var(--medium-gray)' };
-    return { level: '🥉 Bronze', color: 'var(--primary-brown)' };
+    if (totalSpent >= 1000) return { level: '🥇 Gold', color: 'black' };
+    if (totalSpent >= 500) return { level: '🥈 Silver', color: 'black' };
+    if (totalSpent >= 50) return { level: '🥉 Bronze', color: 'black' };
+    return {level: 'New', color: 'black'};
   };
 
   if (loading) {
@@ -53,56 +56,7 @@ const AdminCustomers = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-orange-600">
-                Restaurant Admin
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/admin/dashboard" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Dashboard
-            </Link>
-              <Link 
-                to="/admin/orders" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Orders
-            </Link>
-              <Link 
-                to="/admin/dishes" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Menu
-            </Link>
-              <Link 
-                to="/admin/categories" 
-                className="text-gray-600 hover:text-orange-600 px-3 py-2 transition-colors"
-              >
-                Categories
-            </Link>
-              <Link 
-                to="/admin/customers" 
-                className="text-orange-600 border-b-2 border-orange-600 px-3 py-2"
-              >
-                Customers
-            </Link>
-              <Link 
-                to="/" 
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors"
-              >
-                View Website
-            </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+     <AdminNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
